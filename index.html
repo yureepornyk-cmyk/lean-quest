@@ -1894,79 +1894,84 @@ const KZ=(()=>{
 })();
 
 // ---------------- Workstation designer (5S, part layout, labelling, work sequence) ----------------
-// ASSY: the assembly job used by the designer. Replace this object with the plant's real process.
+// ASSY: the real job used by the designer — OIS-CATH-BS-C857-FA-10B rev.1.1 (Front & Rear Door adjustment, Body In White)
 const ASSY={
-  name:"ติดตั้งไฟหน้ารถ (Headlamp LH)",
-  other:100, // seconds of other work done at the assembly station besides this job
+  name:"FA-10 ปรับตั้งประตูหน้าและหลัง (Body In White) · รุ่น C857",
+  ois:"OIS-CATH-BS-C857-FA-10B rev.1.1",takt:244,oisTotal:243,
+  // car work points on the plan (front of the car faces left)
+  points:{F:{x:428,y:178,n:"ประตูหน้า"},R:{x:528,y:178,n:"ประตูหลัง"}},home:{x:478,y:178},
   parts:[
-    {id:"lamp",n:"ไฟหน้า LH/RH",em:"🔦",col:"#e8e8e3",heavy:true,risk:.25,riskWhy:"ไฟหน้าซ้ายและขวาหน้าตาคล้ายกัน",labels:[{id:"name",n:"ป้ายชื่อ + รหัส Part"},{id:"sep",n:"แยกช่อง LH / RH + รหัสสี",cut:true}]},
-    {id:"bolt",n:"น็อต M6",em:"🔩",col:"#9aa0a6",risk:.15,riskWhy:"น็อต M6 ปนกับ M8 ในถาดเดียวกัน",labels:[{id:"name",n:"ป้ายชื่อ + รหัส Part"},{id:"sep",n:"แยกถาด M6 / M8 สีต่างกัน",cut:true}]},
-    {id:"clip",n:"คลิปยึด",em:"📎",col:"#2356a3",risk:0,labels:[{id:"name",n:"ป้ายชื่อ + รหัส Part"}]},
-    {id:"tool",n:"ไขควงไฟฟ้า (Nutrunner)",em:"🔧",col:"#c98f00",tool:true,risk:0,labels:[{id:"name",n:"แผงเงา / ป้ายจุดวาง"}]}
+    {id:"gauge",n:"Fitting gauge ประตูหน้า/หลัง",code:"FA-LG-PD-06-S01R / S03R",em:"📐",risk:.2,riskWhy:"เกจประตูหน้าและหลังหน้าตาคล้ายกัน ใส่สลับทำให้วัด Gap/Flush ผิด",labels:[{id:"name",n:"ป้ายชื่อ + รหัสเกจ"},{id:"sep",n:"แยกตำแหน่ง Front / Rear + สีต่างกัน"}]},
+    {id:"meas",n:"Taper gauge + Step gauge",em:"📏",tool:true,risk:0,labels:[{id:"name",n:"แผงเงา / ป้ายจุดวาง"}]},
+    {id:"wrench",n:"ประแจทอร์ค QL50N-MH (บล็อก No.13)",em:"🔧",tool:true,risk:.12,riskWhy:"หยิบประแจที่ตั้งค่าอื่น ค่าทอร์ค 33±3.5 N.m (CC) จะผิด",labels:[{id:"name",n:"แผงเงา + ป้ายรุ่นประแจ"},{id:"sep",n:"ป้ายค่าทอร์ค No.13 (33±3.5 N.m) สีเฉพาะ"}]}
   ],
+  // t = OIS time in seconds; pick/store steps keep only handling time because walking is computed from the layout
   tasks:[
-    {id:"scan",n:"สแกนบาร์โค้ดรถ เช็กรุ่น",at:"car",t:2,va:false},
-    {id:"pLamp",n:"หยิบไฟหน้าให้ตรงรุ่น",at:"lamp",t:1.5,va:false,req:["scan"],why:"ต้องรู้รุ่นรถก่อนหยิบไฟหน้า"},
-    {id:"place",n:"วางไฟหน้าเข้าตำแหน่ง",at:"car",t:3,va:true,req:["pLamp"],why:"ต้องหยิบไฟหน้ามาก่อน"},
-    {id:"conn",n:"เสียบคอนเนคเตอร์ไฟ",at:"car",t:2.5,va:true,req:["place"],why:"ต้องวางไฟหน้าก่อน"},
-    {id:"pClip",n:"หยิบคลิป 2 ตัว",at:"clip",t:1,va:false},
-    {id:"clip",n:"กดคลิปยึด 2 จุด",at:"car",t:2,va:true,req:["place","pClip"],why:"ต้องวางไฟหน้าและมีคลิปในมือ"},
-    {id:"pBolt",n:"หยิบน็อต M6 3 ตัว",at:"bolt",t:1,va:false},
-    {id:"bolt",n:"ขันน็อต 3 ตัวด้วย Nutrunner",at:"car",t:6,va:true,tool:"tool",req:["place","pBolt"],why:"ต้องวางไฟหน้าและมีน็อตในมือ"},
-    {id:"check",n:"ตรวจแรงบิดและทำเครื่องหมาย",at:"car",t:2,va:false,req:["bolt","clip","conn"],why:"ตรวจได้เมื่อประกอบครบแล้ว"}
+    {id:"t1",no:1,n:"หยิบ Fitting gauge",at:"gauge",t:1.5,oisT:10,pick:"gauge"},
+    {id:"t2",no:2,n:"ติดตั้ง Fitting gauge ที่ประตูหลังและหน้า",at:"RF",t:5,req:["t1"],why:"ต้องหยิบ Fitting gauge มาก่อน"},
+    {id:"t3",no:3,n:"วัดค่า Gap และ Flushness ตามจุดที่กำหนด",at:"RF",t:30,tool:"meas",req:["t2"],why:"ต้องติดตั้ง Fitting gauge ก่อนจึงวัดได้"},
+    {id:"t4",no:4,n:"ปรับตั้งประตูหลังและหน้า (เริ่มจากประตูหลังก่อน)",at:"RF",t:55,va:true,req:["t3"],why:"ต้องวัดค่าก่อนจึงรู้ว่าต้องปรับเท่าไร"},
+    {id:"t5",no:5,n:"ทำตามข้อ 3 และ 4 จนได้ค่ามาตรฐาน",at:"RF",t:50,tool:"meas",va:true,req:["t4"],why:"ต้องปรับตั้งรอบแรกก่อน"},
+    {id:"t6",no:6,n:"หยิบประแจทอร์ค",at:"wrench",t:1,oisT:3,pick:"wrench"},
+    {id:"t7",no:7,n:"ขันทอร์คโบลท์ M8 จำนวน 8 ตัว (33±3.5 N.m) · CC",at:"RF",t:60,va:true,cc:true,req:["t5","t6"],why:"ต้องปรับได้ค่ามาตรฐานและมีประแจทอร์คในมือ"},
+    {id:"t8",no:8,n:"ถอด Fitting gauge ที่ประตูหลังและหน้า",at:"RF",t:10,req:["t7"],why:"ต้องขันทอร์คให้เสร็จก่อน ประตูจึงไม่เคลื่อน"},
+    {id:"t9",no:9,n:"จัดเก็บ Fitting gauge",at:"gauge",t:1.5,oisT:10,store:"gauge",req:["t8"],why:"ต้องถอดเกจออกก่อน"},
+    {id:"t10",no:10,n:"ตรวจสอบคุณภาพชิ้นงานก่อนไปกระบวนการถัดไป",at:"RF",t:10,req:["t8"],why:"ตรวจได้หลังถอดเกจแล้ว"}
   ]
 };
 const STN=(()=>{
-  const W=960,H=420,WP={x:300,y:178},PX=100;// 100px = 1 m
+  const W=960,H=420,PX=100;// 100px = 1 m
+  const WP=ASSY.home;
   const SLOTS=[
-    {id:"s1",x:210,y:258,lbl:"ข้างตัวถัง"},{id:"s2",x:400,y:258,lbl:"ข้างตัวถัง"},{id:"bal",x:400,y:112,lbl:"จุดแขวน Balancer",toolOnly:true},
-    {id:"s3",x:120,y:340,lbl:""},{id:"s4",x:300,y:350,lbl:"ชั้นล่าง (ต้องก้ม)",low:true},{id:"s5",x:480,y:340,lbl:""},
-    {id:"s6",x:640,y:340,lbl:""},{id:"s7",x:800,y:340,lbl:""},{id:"s8",x:60,y:250,lbl:""}
+    {id:"s1",x:330,y:258,lbl:"ข้างประตูหน้า"},{id:"s2",x:630,y:258,lbl:"ข้างประตูหลัง"},{id:"bal",x:478,y:112,lbl:"จุดแขวนเครื่องมือ",toolOnly:true},
+    {id:"s3",x:150,y:340,lbl:""},{id:"s4",x:330,y:350,lbl:"ชั้นล่าง (ต้องก้ม)",low:true},{id:"s5",x:500,y:340,lbl:""},
+    {id:"s6",x:670,y:340,lbl:""},{id:"s7",x:830,y:340,lbl:""},{id:"s8",x:70,y:250,lbl:""}
   ];
   const CLUTTER=[
     {id:"box",n:"กล่องเปล่า",em:"📦",slot:"s1",need:false,why:"กินพื้นที่ตำแหน่งที่ดีที่สุด"},
     {id:"cart",n:"รถเข็นเสีย",em:"🛒",slot:"s2",need:false,why:"ใช้งานไม่ได้ ยึดพื้นที่ข้างตัวถัง"},
-    {id:"pallet",n:"พาเลทเปล่าขวางทางเดิน",em:"🪵",path:{x:300,y:300},need:false,why:"ทำให้ต้องเดินอ้อมทุกรอบ"},
+    {id:"pallet",n:"พาเลทเปล่าขวางทางเดิน",em:"🪵",path:{x:478,y:300},need:false,why:"ทำให้ต้องเดินอ้อมทุกรอบ"},
     {id:"cup",n:"แก้วกาแฟส่วนตัว",em:"☕",slot:"s5",need:false,why:"ของส่วนตัวไม่ควรอยู่ในพื้นที่ทำงาน"},
     {id:"ext",n:"ถังดับเพลิง",em:"🧯",slot:"s8",need:true,why:"อุปกรณ์ความปลอดภัยต้องอยู่ประจำที่"}
   ];
   const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)/PX;
-  function newDesign(){return {clutter:Object.fromEntries(CLUTTER.map(c=>[c.id,null])),pos:{lamp:"s7",bolt:"s6",clip:"s3",tool:"s4"},labels:{},seq:[]}}
+  const nearPt=s=>{const P=Object.values(ASSY.points);return Math.min(...P.map(p=>dist(p,s)))};
+  function newDesign(){return {clutter:Object.fromEntries(CLUTTER.map(c=>[c.id,null])),pos:{gauge:"s7",meas:"s3",wrench:"s4"},labels:{},seq:[]}}
   function occupied(d,slot,except){if(CLUTTER.some(c=>c.slot===slot&&d.clutter[c.id]!=="red"))return "clutter";return Object.entries(d.pos).find(([p,s])=>s===slot&&p!==except)?.[0]||null}
   function lab(d,pid,lid){return !!(d.labels[pid]&&d.labels[pid][lid])}
   // simulate one cycle → time breakdown + waypoints
   function evaluate(d){
-    const errs=[],done=new Set(),pts=[{x:WP.x,y:WP.y}],segs=[],ev=[];let cur={x:WP.x,y:WP.y},holdLamp=false,walkM=0;
+    const errs=[],done=new Set(),pts=[],segs=[],held={};let cur=null,walkM=0,first=null;
     const T={va:0,walk:0,search:0,nva:0,err:0},pathBlock=d.clutter.pallet!=="red",messy=CLUTTER.filter(c=>!c.need&&d.clutter[c.id]!=="red").length;
     const posOf=pid=>{const s=SLOTS.find(x=>x.id===d.pos[pid]);return s?{x:s.x,y:s.y,low:s.low,slot:s.id}:null};
-    const walk=(to,why)=>{let m=dist(cur,to);if(pathBlock&&((cur.y<300&&to.y>=300)||(cur.y>=300&&to.y<300)))m+=1.2;if(m<.05)return;const t=m/1.0;T.walk+=t;walkM+=m;segs.push({k:"walk",t,why});cur={x:to.x,y:to.y};pts.push({x:to.x,y:to.y})};
-    if(!d.seq.length)return {ok:false,errs:["ยังไม่ได้จัดลำดับงาน"],T,ct:0,walkM:0,pts,segs,risk:0};
-    const missing=ASSY.tasks.filter(t=>!d.seq.includes(t.id));if(missing.length)errs.push("ยังขาดขั้นตอน: "+missing.map(t=>t.n).join(", "));
+    const walk=(to,why)=>{if(!cur){cur={x:to.x,y:to.y};first=first||{x:to.x,y:to.y};pts.push({x:to.x,y:to.y});return}let m=dist(cur,to);if(pathBlock&&((cur.y<300&&to.y>=300)||(cur.y>=300&&to.y<300)))m+=1.2;if(m<.05)return;const t=m/1.0;T.walk+=t;walkM+=m;segs.push({k:"walk",t,why});cur={x:to.x,y:to.y};pts.push({x:to.x,y:to.y})};
+    const work=(tk,t)=>{if(tk.va){T.va+=t;segs.push({k:"va",t,why:tk.n})}else{T.nva+=t;segs.push({k:"nva",t,why:tk.n})}};
+    if(!d.seq.length)return {ok:false,errs:["ยังไม่ได้จัดลำดับงาน"],T,ct:0,walkM:0,pts:[WP],segs,risk:0,messy};
+    const missing=ASSY.tasks.filter(t=>!d.seq.includes(t.id));if(missing.length)errs.push("ยังขาดขั้นตอน: "+missing.map(t=>t.no+". "+t.n).join(", "));
     d.seq.forEach((tid,i)=>{const tk=ASSY.tasks.find(t=>t.id===tid);
-      (tk.req||[]).forEach(r=>{if(!done.has(r))errs.push(`ขั้นที่ ${i+1} "${tk.n}" ทำไม่ได้: ${tk.why}`)});
-      if(tk.at==="car"){walk(WP);
-        if(holdLamp&&tid!=="place"){T.nva+=2;segs.push({k:"nva",t:2,why:"ถือไฟหน้าค้างไว้ ทำงานอื่นไม่สะดวก"})}
-        if(tk.tool){const tp=posOf(tk.tool);if(tp&&tp.slot==="bal"){T.nva+=.6;segs.push({k:"nva",t:.6,why:"ดึงเครื่องมือจากจุดแขวน"})}else if(tp){const back={...cur};walk(tp,"ไปหยิบเครื่องมือ");const s=lab(d,"tool","name")?.3:1.5;T.search+=s+messy*.3;T.nva+=1;segs.push({k:"search",t:s+messy*.3});walk(back);ev.push("tool")}}
-        if(tid==="place")holdLamp=false;
-        if(tk.va){T.va+=tk.t;segs.push({k:"va",t:tk.t,why:tk.n})}else{T.nva+=tk.t;segs.push({k:"nva",t:tk.t,why:tk.n})}}
-      else{const p=posOf(tk.at);if(!p){errs.push(`ยังไม่ได้วาง ${tk.at}`);return}walk(p);const part=ASSY.parts.find(x=>x.id===tk.at);
-        const s=(lab(d,tk.at,"name")?.4:2)+messy*.3;T.search+=s;segs.push({k:"search",t:s,why:lab(d,tk.at,"name")?"":"หาของ ไม่มีป้ายบ่งชี้"});
-        T.nva+=tk.t+(p.low?.9:0);segs.push({k:"nva",t:tk.t+(p.low?.9:0),why:p.low?"ก้มหยิบ":""});
-        if(part.heavy)holdLamp=true}
+      (tk.req||[]).forEach(r=>{if(!done.has(r))errs.push(`ลำดับที่ ${i+1} "${tk.n}" ทำไม่ได้: ${tk.why}`)});
+      if(ASSY.points[tk.at[0]]){
+        if(tk.tool&&!held[tk.tool]){const tp=posOf(tk.tool);if(tp&&tp.slot==="bal"){T.nva+=.6;segs.push({k:"nva",t:.6,why:"ดึงเครื่องมือจากจุดแขวน"})}else if(tp){walk(tp,"ไปหยิบเครื่องมือ");const s=lab(d,tk.tool,"name")?.3:1.5;T.search+=s+messy*.3;T.nva+=1;segs.push({k:"search",t:s+messy*.3})}held[tk.tool]=true}
+        const sides=tk.at.split("");sides.forEach(sd=>{walk(ASSY.points[sd],"ไปจุดทำงาน"+ASSY.points[sd].n);work(tk,tk.t/sides.length)});
+        if(tk.tool&&tk.id==="t5"){const tp=posOf(tk.tool);if(tp&&tp.slot!=="bal"){walk(tp,"คืนเครื่องมือวัด");T.nva+=.5}held[tk.tool]=false}}
+      else{const p=posOf(tk.at);if(!p){errs.push(`ยังไม่ได้วาง ${tk.at}`);return}walk(p);
+        const s=(tk.store?.3:(lab(d,tk.at,"name")?.3:2))+messy*.3;T.search+=s;segs.push({k:"search",t:s,why:lab(d,tk.at,"name")?"":"หาของ ไม่มีป้ายบ่งชี้"});
+        T.nva+=tk.t+(p.low?.9:0);segs.push({k:"nva",t:tk.t+(p.low?.9:0),why:p.low?"ก้มหยิบ":tk.n});
+        if(tk.pick)held[tk.pick]=true;if(tk.store)held[tk.store]=false}
       done.add(tid)});
-    walk(WP);
+    if(first)walk(first,"กลับจุดเริ่มรอบถัดไป");
     let risk=0;ASSY.parts.forEach(p=>{if(!p.risk)return;let r=p.risk;if(lab(d,p.id,"sep"))r*=.05;else if(lab(d,p.id,"name"))r*=.6;risk=1-(1-risk)*(1-r)});
-    T.err=risk*10;// expected rework seconds
+    T.err=risk*30;// expected rework seconds (re-adjust / re-torque)
     const ct=T.va+T.walk+T.search+T.nva+T.err;
-    return {ok:!errs.length,errs,T,ct,walkM,pts,segs,risk,messy}
+    return {ok:!errs.length,errs,T,ct,walkM,pts:pts.length?pts:[WP],segs,risk,messy}
   }
   let IDEAL_CACHE=null;
   function ideal(){if(IDEAL_CACHE)return IDEAL_CACHE;const d=newDesign();CLUTTER.forEach(c=>d.clutter[c.id]=c.need?"keep":"red");ASSY.parts.forEach(p=>{d.labels[p.id]={};p.labels.forEach(l=>d.labels[p.id][l.id]=true)});
-    const free=SLOTS.filter(x=>!x.toolOnly&&!CLUTTER.some(c=>c.need&&c.slot===x.id)).map(x=>x.id),nonTool=ASSY.parts.filter(p=>!p.tool).map(p=>p.id),tools=ASSY.parts.filter(p=>p.tool).map(p=>p.id);
+    const cand=SLOTS.filter(x=>!CLUTTER.some(c=>c.need&&c.slot===x.id)).sort((a,b)=>nearPt(a)-nearPt(b)).slice(0,5).map(x=>x.id),parts=ASSY.parts.map(p=>p.id);
     let best=Infinity;const orders=[];
-    (function dfs(seq,done){if(orders.length>4000)return;if(seq.length===ASSY.tasks.length){orders.push(seq.slice());return}ASSY.tasks.forEach(t=>{if(done.has(t.id)||(t.req||[]).some(r=>!done.has(r)))return;done.add(t.id);seq.push(t.id);dfs(seq,done);seq.pop();done.delete(t.id)})})([],new Set());
-    const near=free.slice().sort((a,b)=>dist(WP,SLOTS.find(x=>x.id===a))-dist(WP,SLOTS.find(x=>x.id===b))).slice(0,Math.min(free.length,nonTool.length+1));
-    (function perm(i,used){if(i===nonTool.length){tools.forEach(t=>d.pos[t]="bal");orders.forEach(o=>{d.seq=o;const r=evaluate(d);if(r.ok&&r.ct<best)best=r.ct});return}near.forEach(sl=>{if(used.has(sl))return;used.add(sl);d.pos[nonTool[i]]=sl;perm(i+1,used);used.delete(sl)})})(0,new Set());
+    (function dfs(seq,done){if(orders.length>6000)return;if(seq.length===ASSY.tasks.length){orders.push(seq.slice());return}ASSY.tasks.forEach(t=>{if(done.has(t.id)||(t.req||[]).some(r=>!done.has(r)))return;done.add(t.id);seq.push(t.id);dfs(seq,done);seq.pop();done.delete(t.id)})})([],new Set());
+    (function perm(i,used){if(i===parts.length){orders.forEach(o=>{d.seq=o;const r=evaluate(d);if(r.ok&&r.ct<best)best=r.ct});return}
+      const part=ASSY.parts[i];cand.forEach(sl=>{const S=SLOTS.find(x=>x.id===sl);if(used.has(sl)||(S.toolOnly&&!part.tool))return;used.add(sl);d.pos[parts[i]]=sl;perm(i+1,used);used.delete(sl)})})(0,new Set());
     return (IDEAL_CACHE=best)}
   // ---------- drawing ----------
   function draw(c,d,R,anim){
@@ -1977,16 +1982,16 @@ const STN=(()=>{
     // overhead conveyor footprint + yellow hanger frame around the body (top view)
     c.fillStyle="rgba(60,66,72,.35)";c.fillRect(0,38,W,96);
     c.strokeStyle="#e8b10a";c.lineWidth=6;G.rr(c,236,40,588,104,10);c.stroke();c.lineWidth=4;[300,520,760].forEach(x=>{c.beginPath();c.moveTo(x,40);c.lineTo(x,144);c.stroke()});
-    // EV body shell top view: white with blue sills, front to the left
-    g=c.createLinearGradient(0,46,0,138);g.addColorStop(0,"#ffffff");g.addColorStop(.5,"#eef1f3");g.addColorStop(1,"#c2c9cf");c.fillStyle=g;G.rr(c,250,48,560,88,38);c.fill();
-    c.fillStyle="#2f6fd0";c.fillRect(330,48,380,7);c.fillRect(330,129,380,7);
-    g=c.createLinearGradient(380,0,560,0);g.addColorStop(0,"#2a3440");g.addColorStop(1,"#3d4a57");c.fillStyle=g;G.rr(c,388,58,170,68,16);c.fill();
-    c.fillStyle="rgba(42,52,64,.9)";G.rr(c,620,62,80,60,12);c.fill();c.fillStyle="rgba(255,255,255,.15)";c.fillRect(400,62,140,6);
-    c.fillStyle="#dfe4e8";G.rr(c,256,56,26,16,5);c.fill();G.rr(c,256,112,26,16,5);c.fill();c.strokeStyle="#ffd84d";c.lineWidth=2;G.rr(c,254,54,30,20,6);c.stroke();
+    // Body In White top view (bare steel), front to the left
+    g=c.createLinearGradient(0,46,0,138);g.addColorStop(0,"#e4e8eb");g.addColorStop(.5,"#c3c9ce");g.addColorStop(1,"#959da4");c.fillStyle=g;G.rr(c,250,48,560,88,38);c.fill();
+    c.strokeStyle="rgba(60,66,72,.45)";c.lineWidth=2;[[335,465],[470,640]].forEach(([a,b])=>{c.strokeRect(a,50,b-a,10);c.strokeRect(a,124,b-a,10)});
+    c.fillStyle="rgba(40,46,52,.55)";G.rr(c,380,62,190,60,14);c.fill();G.rr(c,610,64,90,56,12);c.fill();
+    c.fillStyle="rgba(255,255,255,.25)";for(let k=0;k<14;k++)c.fillRect(300+k*34,92,10,3);
+    Object.values(ASSY.points).forEach(p=>{c.fillStyle="#1d9152";c.beginPath();c.arc(p.x,p.y,7,0,7);c.fill();G.pill(c,p.n.replace("ประตู",""),p.x,p.y-24,"#1d9152")});
     c.fillStyle="rgba(242,183,5,.85)";c.fillRect(0,196,W,4);c.fillRect(0,292,W,3);
     G.text(c,"ทางเดินคนงาน",900,246,12,"rgba(255,255,255,.8)");
     SLOTS.forEach(s=>{const occ=occupied(d,s.id);c.strokeStyle=STN._sel&&!occ?"#f2b705":"rgba(255,255,255,.55)";c.setLineDash([5,4]);c.lineWidth=2;G.rr(c,s.x-34,s.y-26,68,52,6);c.stroke();c.setLineDash([]);
-      G.text(c,`${dist(WP,s).toFixed(1)} ม.`,s.x,s.y+38,11,"#fff","center",500);if(s.lbl)G.text(c,s.lbl,s.x,s.y-36,11,"#ffe9a8","center",500)});
+      G.text(c,`${nearPt(s).toFixed(1)} ม.`,s.x,s.y+38,11,"#fff","center",500);if(s.lbl)G.text(c,s.lbl,s.x,s.y-36,11,"#ffe9a8","center",500)});
     CLUTTER.forEach(cl=>{if(d.clutter[cl.id]==="red")return;const p=cl.slot?SLOTS.find(s=>s.id===cl.slot):cl.path;
       if(cl.id==="box"){G.box(c,p.x-28,p.y-16,56,34,12,"#b88a5a");c.strokeStyle="rgba(240,230,200,.8)";c.lineWidth=4;c.beginPath();c.moveTo(p.x-28,p.y-22);c.lineTo(p.x+28,p.y-22);c.stroke()}
       else if(cl.id==="pallet"){c.fillStyle="#b0875a";for(let k=0;k<5;k++)c.fillRect(p.x-44,p.y-22+k*10,88,6);c.fillStyle="#7d5c3a";c.fillRect(p.x-44,p.y-24,8,48);c.fillRect(p.x-4,p.y-24,8,48);c.fillRect(p.x+36,p.y-24,8,48)}
@@ -1995,7 +2000,7 @@ const STN=(()=>{
       if(d.clutter[cl.id]==="keep")G.pill(c,"เก็บไว้",p.x,p.y+22,"#1d9152")});
     ASSY.parts.forEach(p=>{const s=SLOTS.find(x=>x.id===d.pos[p.id]);if(!s)return;
       if(s.id==="bal"){c.strokeStyle="#888";c.beginPath();c.moveTo(s.x,30);c.lineTo(s.x,s.y-10);c.stroke()}
-      if(p.tool){G.box(c,s.x-24,s.y-12,48,30,8,"#5d666e")}else{c.strokeStyle=p.id==="lamp"?"#2353b3":"#2f8a3a";c.lineWidth=4;G.shadow(c,s.x,s.y+22,34,6,.3);c.strokeRect(s.x-30,s.y-18,60,40);c.fillStyle="rgba(30,36,42,.55)";c.fillRect(s.x-28,s.y-16,56,36);for(let k=0;k<3;k++){c.fillStyle=p.id==="lamp"?"#e9ecef":"#3a4048";G.rr(c,s.x-24+k*17,s.y-12,14,14,3);c.fill()}}
+      if(p.tool){G.box(c,s.x-24,s.y-12,48,30,8,"#5d666e")}else{c.strokeStyle="#2353b3";c.lineWidth=4;G.shadow(c,s.x,s.y+22,34,6,.3);c.strokeRect(s.x-30,s.y-18,60,40);c.fillStyle="rgba(30,36,42,.55)";c.fillRect(s.x-28,s.y-16,56,36);for(let k=0;k<3;k++){c.fillStyle="#d7dce0";G.rr(c,s.x-24+k*17,s.y-12,14,14,3);c.fill()}}
       G.emoji(c,p.em,s.x,s.y-4,22,false);
       const L=d.labels[p.id]||{};if(L.name){c.fillStyle="#fff";G.rr(c,s.x-26,s.y+8,52,12,2);c.fill();c.fillStyle="#1b222a";c.font="600 9px system-ui";c.textAlign="center";c.fillText(p.n.slice(0,12),s.x,s.y+15)}
       if(L.sep){c.fillStyle="#cf3a2e";c.fillRect(s.x-30,s.y-14,30,4);c.fillStyle="#2356a3";c.fillRect(s.x,s.y-14,30,4)}
@@ -2009,7 +2014,7 @@ const STN=(()=>{
   function open(el,opt){
     const d=newDesign(),IDEAL=ideal();let step=0,R=evaluate(d),anim=null,animH=0;STN._sel=null;STN._selPart=null;
     const steps=["1 · 5ส สะสาง","2 · จัดวาง Part","3 · บ่งชี้","4 · ลำดับงาน","5 · ทดลองเดินงาน"];
-    el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">Standard Work · ออกแบบสถานีประกอบ</span><h3>${ASSY.name}</h3><p>จัดพื้นที่ วางชิ้นส่วน บ่งชี้ และเรียงลำดับงานเอง Cycle time ที่ได้จะใช้เป็นเวลาของสถานีประกอบในไลน์</p></div><div class="kz-total"><span class="label">Cycle time งานนี้</span><b id="stCT">-</b></div></div>
+    el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">Standard Work · ออกแบบสถานีจริง</span><h3>${ASSY.name}</h3><p>ข้อมูลจาก ${ASSY.ois} · จัดพื้นที่ วางเกจและเครื่องมือ บ่งชี้ และเรียงลำดับงานเอง Cycle time ที่ได้จะใช้เป็นเวลาของสถานี FA-10 ในไลน์</p></div><div class="kz-total"><span class="label">Cycle time งานนี้</span><b id="stCT">-</b></div></div>
       <div class="seg st-tabs" id="stTabs">${steps.map((s,i)=>`<button type="button" data-s="${i}">${s}</button>`).join("")}</div>
       <div class="sim-wrap" id="stWrap"></div><div class="st-tl" id="stTL"></div><div class="st-kpi" id="stKPI"></div><div id="stPanel"></div>
       <div class="actions"><button class="btn go" id="stUse">ใช้มาตรฐานนี้กับไลน์ →</button></div></div>`;
@@ -2026,12 +2031,12 @@ const STN=(()=>{
     function toast(m){const w=$("stWrap");let t=w.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";w.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2000)}
     function panel(){const P=$("stPanel");
       if(step===0)P.innerHTML=`<p class="kz-q">แตะของในพื้นที่ (หรือปุ่มด้านล่าง) เพื่อตัดสินใจ: เก็บไว้ หรือ ติดป้ายแดงนำออก</p><div class="kz-grid">${CLUTTER.map(cl=>`<button type="button" class="kz-card s${d.clutter[cl.id]==="keep"?1:d.clutter[cl.id]==="red"?2:0}" data-cl="${cl.id}"><span class="em">${cl.em}</span><span>${cl.n}</span><small>${d.clutter[cl.id]==="keep"?"✓ เก็บไว้":d.clutter[cl.id]==="red"?"🏷️ ป้ายแดง นำออก":"แตะเพื่อเลือก"}</small></button>`).join("")}</div>`;
-      if(step===1)P.innerHTML=`<p class="kz-q">เลือกชิ้นส่วน แล้วแตะช่องบนแผนผังเพื่อย้าย ของที่หยิบบ่อยควรอยู่ใกล้ตำแหน่งติดตั้ง</p><div class="acts">${ASSY.parts.map(p=>`<button type="button" class="act ${STN._selPart===p.id?"":"alt"}" data-p="${p.id}"><span class="em">${p.em}</span>${p.n}<small>${dist(WP,SLOTS.find(s=>s.id===d.pos[p.id]))?.toFixed(1)} ม. จากจุดติดตั้ง</small></button>`).join("")}</div>`;
+      if(step===1)P.innerHTML=`<p class="kz-q">เลือกเกจหรือเครื่องมือ แล้วแตะช่องบนแผนผังเพื่อย้าย ของที่ใช้บ่อยควรอยู่ใกล้ประตูที่ต้องทำงาน</p><div class="acts">${ASSY.parts.map(p=>`<button type="button" class="act ${STN._selPart===p.id?"":"alt"}" data-p="${p.id}"><span class="em">${p.em}</span>${p.n}<small>${nearPt(SLOTS.find(s=>s.id===d.pos[p.id])).toFixed(1)} ม. จากจุดทำงาน</small></button>`).join("")}</div>`;
       if(step===2)P.innerHTML=`<p class="kz-q">เลือกวิธีบ่งชี้ให้แต่ละชิ้นส่วน เพื่อหาง่ายและป้องกันหยิบผิด</p><div class="kz-rows">${ASSY.parts.map(p=>`<div class="kz-row"><span class="kz-it"><span class="em">${p.em}</span>${p.n}${p.risk?`<small>เสี่ยง: ${p.riskWhy}</small>`:""}</span><div class="seg">${p.labels.map(l=>`<button type="button" data-lp="${p.id}" data-l="${l.id}" aria-pressed="${lab(d,p.id,l.id)}">${l.n}</button>`).join("")}</div></div>`).join("")}</div>`;
-      if(step===3){const pool=ASSY.tasks.filter(t=>!d.seq.includes(t.id));P.innerHTML=`<p class="kz-q">แตะขั้นตอนเพื่อเรียงลำดับ ลองสลับลำดับดูว่า Cycle time เปลี่ยนไปอย่างไร</p><div class="kz-seq"><div><span class="label">ขั้นตอนที่ยังไม่ได้ใส่</span><div class="kz-list">${pool.map(t=>`<button type="button" data-a="${t.id}">${t.n} <small>(${t.va?"เพิ่มคุณค่า":"ไม่เพิ่มคุณค่า"} ${t.t}s)</small></button>`).join("")||`<span class="label">ใส่ครบแล้ว</span>`}</div></div>
+      if(step===3){const pool=ASSY.tasks.filter(t=>!d.seq.includes(t.id));P.innerHTML=`<p class="kz-q">แตะขั้นตอนเพื่อเรียงลำดับ ลองสลับลำดับดูว่า Cycle time เปลี่ยนไปอย่างไร เทียบกับ OIS จริงได้ที่ปุ่มด้านล่าง</p><details class="bulk" style="margin-bottom:10px"><summary>ดู ${ASSY.ois} (ลำดับและเวลาจริง)</summary><ol class="ois-list">${ASSY.tasks.map(t=>`<li>${t.n} <b>${t.oisT||t.t}s</b>${t.cc?" <span class=\"kz-tag\">CC</span>":""}</li>`).join("")}</ol><p class="label" style="text-transform:none;letter-spacing:0">เวลารวม ${ASSY.oisTotal} วินาที · Takt C857 = ${ASSY.takt} วินาที</p></details><div class="kz-seq"><div><span class="label">ขั้นตอนที่ยังไม่ได้ใส่</span><div class="kz-list">${pool.map(t=>`<button type="button" data-a="${t.id}">${t.n} <small>(${t.va?"เพิ่มคุณค่า":"ไม่เพิ่มคุณค่า"} · OIS ${t.oisT||t.t}s)</small></button>`).join("")||`<span class="label">ใส่ครบแล้ว</span>`}</div></div>
         <div><span class="label">ลำดับงานมาตรฐานของคุณ</span><ol class="kz-list mine">${d.seq.map((id,i)=>`<li><button type="button" data-r="${id}">${ASSY.tasks.find(t=>t.id===id).n}</button><span class="ypm"><button type="button" data-up="${i}" ${i?"":"disabled"} aria-label="เลื่อนขึ้น">↑</button><button type="button" data-dn="${i}" ${i<d.seq.length-1?"":"disabled"} aria-label="เลื่อนลง">↓</button></span></li>`).join("")||`<span class="label">ยังว่าง</span>`}</ol></div></div>
         ${R.errs.length?`<div class="errs">${R.errs.map(e=>`<div class="lesson" style="border-color:var(--stop)">${e}</div>`).join("")}</div>`:""}`}
-      if(step===4)P.innerHTML=R.ok?`<div class="actions"><button type="button" class="btn" id="stPlay">▶ ดูคนงานเดินงาน 1 รอบ</button></div>${R.segs.filter(s=>s.why).slice(0,0).join("")}<div class="lesson">เทียบกับสถานีที่ออกแบบดีที่สุด ${IDEAL.toFixed(1)} วินาที คุณได้ ${R.ct.toFixed(1)} วินาที (${Math.min(100,Math.round(IDEAL/R.ct*100))}%)</div>${tips().map(t=>`<div class="lesson">${t}</div>`).join("")}`:`<div class="lesson" style="border-color:var(--stop)">ลำดับงานยังไม่ถูกต้อง กลับไปแก้ที่ขั้นที่ 4</div>`;
+      if(step===4)P.innerHTML=R.ok?`<div class="actions"><button type="button" class="btn" id="stPlay">▶ ดูคนงานเดินงาน 1 รอบ</button></div>${R.segs.filter(s=>s.why).slice(0,0).join("")}<div class="lesson">Takt รุ่น C857 = <b>${ASSY.takt} วินาที</b> · OIS จริง ${ASSY.oisTotal} วินาที · แบบที่ดีที่สุดที่ระบบหาได้ ${IDEAL.toFixed(0)} วินาที · <b>ของคุณ ${R.ct.toFixed(0)} วินาที</b> ${R.ct>ASSY.takt?"เกิน Takt ไลน์จะผลิตไม่ทัน":"ทัน Takt"}</div>${tips().map(t=>`<div class="lesson">${t}</div>`).join("")}`:`<div class="lesson" style="border-color:var(--stop)">ลำดับงานยังไม่ถูกต้อง กลับไปแก้ที่ขั้นที่ 4</div>`;
       P.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{const k=b.dataset.cl;d.clutter[k]=d.clutter[k]==="keep"?"red":"keep";upd()});
       P.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{STN._selPart=STN._selPart===b.dataset.p?null:b.dataset.p;upd()});
       P.querySelectorAll("[data-lp]").forEach(b=>b.onclick=()=>{const p=b.dataset.lp,l=b.dataset.l;d.labels[p]=d.labels[p]||{};d.labels[p][l]=!d.labels[p][l];upd()});
@@ -2043,8 +2048,9 @@ const STN=(()=>{
     function tips(){const t=[],T=R.T;
       if(R.messy)t.push(`<b>5ส:</b> ยังมีของไม่จำเป็น ${R.messy} ชิ้นในพื้นที่ ทำให้ค้นหานานขึ้นทุกครั้งที่หยิบ`);
       if(d.clutter.ext==="red")t.push(`<b>ความปลอดภัย:</b> ถังดับเพลิงถูกนำออก ต้องเก็บไว้ประจำที่`);
-      if(T.walk>6)t.push(`<b>Motion:</b> เดิน ${R.walkM.toFixed(1)} เมตรต่อคัน ย้ายชิ้นส่วนที่ใช้บ่อยมาไว้ข้างตัวถัง`);
-      if(d.pos.tool!=="bal")t.push(`<b>เครื่องมือ:</b> แขวน Nutrunner ไว้ที่จุด Balancer จะไม่ต้องเดินไปหยิบ`);
+      if(T.walk>8)t.push(`<b>Motion:</b> เดิน ${R.walkM.toFixed(1)} เมตรต่อคัน ย้ายเกจและเครื่องมือมาไว้ใกล้ประตูที่ใช้งาน`);
+      if(d.pos.meas!=="bal"&&d.pos.wrench!=="bal")t.push(`<b>เครื่องมือ:</b> แขวนเครื่องมือที่ใช้หลายครั้งไว้ที่จุดแขวนเหนือสถานี จะไม่ต้องเดินไปหยิบ`);
+      if(R.ct>ASSY.takt)t.push(`<b>Takt:</b> Cycle time ${R.ct.toFixed(0)} วินาที เกิน Takt ${ASSY.takt} วินาที ต้องลดการเดินและการค้นหา`);
       if(R.risk>.02)t.push(`<b>บ่งชี้:</b> โอกาสหยิบผิด ${(R.risk*100).toFixed(1)}% ต่อคัน ของที่หน้าตาคล้ายกันต้องแยกช่องและใช้สีต่างกัน`);
       if(T.search>3)t.push(`<b>ค้นหา:</b> เสียเวลาหาของ ${T.search.toFixed(1)} วินาทีต่อคัน`);
       return t}
@@ -2058,7 +2064,7 @@ const STN=(()=>{
       const st=performance.now();const f=()=>{const e=(performance.now()-st)/1000;const s=segs.find(q=>e<q.t1)||segs[segs.length-1];const k=Math.min(1,Math.max(0,(e-s.t0)/(s.t1-s.t0-.35)));anim={p:{x:s.a.x+(s.b.x-s.a.x)*k,y:s.a.y+(s.b.y-s.a.y)*k},msg:k>=1?"หยิบ/ทำงาน":""};redraw();if(e<t)animH=requestAnimationFrame(f);else{anim=null;redraw()}};f()}
     $("stTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{step=+b.dataset.s;STN._selPart=null;upd()});
     $("stUse").onclick=()=>{if(!R.ok)return;cancelAnimationFrame(animH);const sortOk=CLUTTER.filter(cl=>(d.clutter[cl.id]==="red")===!cl.need).length/CLUTTER.length;
-      const res={ct:R.ct,risk:R.risk,walkM:R.walkM,va:R.T.va/R.ct,ideal:IDEAL,eff:Math.min(1,IDEAL/R.ct),sort:sortOk,tips:tips()};el.innerHTML=`<div class="kz-sum"><span class="chip-s">สถานีประกอบ: CT ${R.ct.toFixed(1)}s (${Math.round(res.eff*100)}% ของที่ดีที่สุด)</span><span class="chip-s">เดิน ${R.walkM.toFixed(1)} ม./คัน</span><span class="chip-s ${R.risk>.02?"off":""}">หยิบผิด ${(R.risk*100).toFixed(1)}%</span></div>`;opt.onDone(res)};
+      const res={ct:R.ct,risk:R.risk,walkM:R.walkM,va:R.T.va/R.ct,ideal:IDEAL,eff:Math.min(1,IDEAL/R.ct),sort:sortOk,tips:tips()};el.innerHTML=`<div class="kz-sum"><span class="chip-s">FA-10: CT ${R.ct.toFixed(0)}s / Takt ${ASSY.takt}s (${Math.round(res.eff*100)}% ของที่ดีที่สุด)</span><span class="chip-s">เดิน ${R.walkM.toFixed(1)} ม./คัน</span><span class="chip-s ${R.risk>.02?"off":""}">หยิบผิด ${(R.risk*100).toFixed(1)}%</span></div>`;opt.onDone(res)};
     upd();el.scrollIntoView({block:"start",behavior:"smooth"});
   }
   return {open,evaluate,ideal,newDesign};
@@ -2470,12 +2476,12 @@ SIMS.push({id:"farm",name:"Lean Farm ฟาร์มผักตามสั่�
 // ---------------- GAME 3: Lean Factory City (economics, JPH, hiring, station design) ----------------
 (()=>{
 const W=960,H=540,SPEED=20,SHIFT=3600;// 1 play second = 20 shift seconds; a shift is 1 hour
-const ECON={price:1200,mat:700,wage:1000,hire:300,fire:200,hold:20,late:300,cash:15000};
-const ST_ALL={body:{n:"ตัวถัง",wc:80},weld:{n:"เชื่อม",wc:66},assy:{n:"ประกอบ",wc:133},paint:{n:"พ่นสี",wc:93},qc:{n:"ตรวจสอบ",wc:53}};
+const ECON={price:3600,mat:2100,wage:1000,hire:300,fire:200,hold:20,late:900,cash:30000};
+const ST_ALL={body:{n:"ปรับตั้งประตู",code:"FA-10",wc:243},weld:{n:"เชื่อม",wc:200},assy:{n:"ประกอบ",wc:300},paint:{n:"พ่นสี",wc:280},qc:{n:"ตรวจสอบ",wc:160}};
 const LEVELS=[
-  {st:["body","assy","paint","qc"],hired:5,init:[1,2,1,1],jph:30,cap:45,defect:0,brk:0,colors:1,acts:[]},
-  {st:["body","weld","assy","paint","qc"],hired:6,init:[1,1,2,1,1],jph:35,cap:55,defect:.08,brk:.00035,colors:1,acts:["shine","jidoka"]},
-  {st:["body","weld","assy","paint","qc"],hired:7,init:[2,1,2,1,1],jph:40,cap:65,defect:.1,brk:.00045,colors:3,chg:60,mura:true,acts:["shine","jidoka","smed"]}
+  {st:["body","assy","paint","qc"],hired:4,init:[1,1,1,1],jph:12,cap:15,defect:0,brk:0,colors:1,acts:[]},
+  {st:["body","weld","assy","paint","qc"],hired:5,init:[1,1,1,1,1],jph:13,cap:17,defect:.08,brk:.00012,colors:1,acts:["shine","jidoka"]},
+  {st:["body","weld","assy","paint","qc"],hired:6,init:[1,1,2,1,1],jph:15,cap:20,defect:.1,brk:.00015,colors:3,chg:60,mura:true,acts:["shine","jidoka","smed"]}
 ];
 const ACTS={
   shine:{lean:"TPM · ทำความสะอาดคือตรวจสอบ",title:"ทำความสะอาดเครื่องจักร",desc:"เช็ดเครื่องและหาจุดผิดปกติก่อนเครื่องเสีย",kind:"shine",data:{q:"แตะคราบน้ำมันให้หมด สังเกตจุดรั่วซึมหรือน็อตหลวม",dirt:12,abn:3,time:15,abnEm:"🛢️",abnName:"จุดน้ำมันรั่ว/น็อตหลวม",abnWhy:"สิ่งผิดปกติที่ไม่ถูกพบจะทำให้เครื่องเสียกลางกะ"},effect:s=>`เครื่องจักรเสียน้อยลง ${Math.round(s*70)}%`},
@@ -2509,8 +2515,9 @@ const baht=v=>(v<0?"-":"")+Math.abs(Math.round(v)).toLocaleString()+" ฿";
 
 function newState(lv){const n=lv.st.length;return {t:0,cash:ECON.cash,hired:lv.hired,alloc:lv.init.slice(),jph:lv.jph,mode:"pull",pushInt:3600/lv.jph,limit:2,relT:0,
   buf:[...Array(n+1)].map(()=>[]),cur:[...Array(n)].map(()=>null),blocked:[...Array(n)].fill(false),down:[...Array(n)].fill(0),lastColor:[...Array(n)].fill(null),setup:[...Array(n)].fill(0),
-  orders:0,backlog:0,shipped:0,rework:0,wrong:0,caught:0,breaks:0,changes:0,wipSum:0,lbeSum:0,lead:[],K:{},nextOrd:300,uid:0,fx:[],truck:0,rev:0,matCost:0,wages:0,hires:0,holdCost:0,idleSum:0,assyCT:ST_ALL.assy.wc,assyRisk:0}}
-function wcOf(st,lv,i){const k=lv.st[i];return k==="assy"?st.assyCT:ST_ALL[k].wc}
+  orders:0,backlog:0,shipped:0,rework:0,wrong:0,caught:0,breaks:0,changes:0,wipSum:0,lbeSum:0,lead:[],K:{},nextOrd:300,uid:0,fx:[],truck:0,rev:0,matCost:0,wages:0,hires:0,holdCost:0,idleSum:0,bodyCT:ASSY.oisTotal,bodyRisk:0}}
+function preload(st,lv){lv.st.forEach((k,i)=>{const w=i===0?st.bodyCT:ST_ALL[k].wc;st.cur[i]={id:++st.uid,born:-w*(i+1),color:COLORS[Math.floor(Math.random()*lv.colors)],rem:w*Math.random(),max:w,chk:1,pchk:1}});st.nextOrd=3600/st.jph}
+function wcOf(st,lv,i){const k=lv.st[i];return k==="body"?st.bodyCT:ST_ALL[k].wc}
 function ctOf(st,lv,i){const w=st.alloc[i];return w?wcOf(st,lv,i)/w:Infinity}
 function taktOf(st,lv){const base=3600/st.jph;return lv.mura?base:base}
 function marketRate(st,lv){const cap=lv.mura?lv.cap*(1+.25*Math.sin(st.t/600)):lv.cap;return Math.min(st.jph,cap)}
@@ -2585,7 +2592,7 @@ function render(c,st,lv,bg,s){
   cartonStack(c,8,430,.9,Math.min(8,2+st.buf[0].length),true);
   lv.st.forEach((k,i)=>{const x=stX(lv,i),t=ctOf(st,lv,i);
     // station sign plate
-    c.fillStyle="#555";c.fillRect(x-1,yRail+6,2,18);c.fillStyle="#1f3f8f";G.rr(c,x-34,yRail+22,68,20,3);c.fill();G.text(c,`TA1-${String(i+1).padStart(2,"0")}  ${ST_ALL[k].n}`,x,yRail+32,11,"#fff","center",600);
+    c.fillStyle="#555";c.fillRect(x-1,yRail+6,2,18);c.fillStyle="#1f3f8f";G.rr(c,x-34,yRail+22,68,20,3);c.fill();G.text(c,`${ST_ALL[k].code||"TA1-"+String(i+1).padStart(2,"0")}  ${ST_ALL[k].n}`,x,yRail+32,11,"#fff","center",600);
     // stack light
     const col=st.down[i]>0?"#ff3b2f":st.blocked[i]?"#f0b429":st.cur[i]?"#2fbf6b":"#8a949c";c.fillStyle="#333";c.fillRect(x+70,yBody-96,4,80);["#ff3b2f","#f0b429","#2fbf6b"].forEach((cc,j)=>{c.fillStyle=cc===col?cc:"rgba(80,80,80,.9)";c.fillRect(x+66,yBody-120+j*9,12,8)});if(col!=="#8a949c")G.light(c,x+72,yBody-112,26,col==="#ff3b2f"?"rgb(255,60,40)":col==="#f0b429"?"rgb(240,180,41)":"rgb(47,191,107)",.5);
     // line-side racks behind workers
@@ -2628,8 +2635,8 @@ SIMS.push({id:"factory",name:"Lean Factory ไลน์ประกอบรถ�
       $("pLBE").innerHTML=`Line Balance Efficiency <b>${Math.round(lbe(st,lv)*100)}%</b> · Takt ${tk.toFixed(0)} วิ · ต้องใช้อย่างน้อย ${need} คน (งานรวม ${Math.round(sumWC())} วิ ÷ Takt)`;
       $("pMode").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===st.mode));
       if(full){
-        $("pPlan").innerHTML=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>JPH เป้าหมาย</span><div class="ypm"><button data-j="-5">−</button><b>${st.jph}</b><button data-j="5">+</button></div><span class="label" style="text-transform:none;letter-spacing:0">ตลาดรับได้ไม่เกิน ~${lv.cap} คัน/ชม.${lv.mura?" (ขึ้นลง)":""}</span></div>`;
-        $("pPlan").querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{st.jph=Math.max(10,Math.min(90,st.jph+ +b.dataset.j));st.pushInt=3600/st.jph;sync(true)});
+        $("pPlan").innerHTML=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>JPH เป้าหมาย</span><div class="ypm"><button data-j="-1">−</button><b>${st.jph}</b><button data-j="1">+</button></div><span class="label" style="text-transform:none;letter-spacing:0">ตลาดรับได้ไม่เกิน ~${lv.cap} คัน/ชม.${lv.mura?" (ขึ้นลง)":""}</span></div>`;
+        $("pPlan").querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{st.jph=Math.max(5,Math.min(30,st.jph+ +b.dataset.j));st.pushInt=3600/st.jph;sync(true)});
         const canHire=st.cash>=ECON.hire+ECON.wage;
         $("pHire").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span>จ้างแล้ว <b>${st.hired}</b> คน · ว่าง <b>${free}</b></span><button class="btn small" id="pHireB" ${canHire?"":"disabled"}>+ จ้าง 1 คน</button><button class="btn ghost small" id="pFireB" ${free>0?"":"disabled"}>− เลิกจ้างคนว่าง</button></div><p class="label" style="text-transform:none;letter-spacing:0">ค่าจ้างแรกเข้า ${ECON.hire} ฿ · ค่าแรง ${ECON.wage.toLocaleString()} ฿/คน/ชม. (จ่ายแม้ไม่ได้ลงสถานี)${canHire?"":" · เงินสดไม่พอจ้าง"}</p>`;
         $("pHireB").onclick=()=>{if(st.cash<ECON.hire+ECON.wage)return;st.cash-=ECON.hire;st.hired++;st.hires++;api.toast(wrap,"จ้างคนเพิ่ม 1 คน");sync(true)};
@@ -2661,9 +2668,9 @@ SIMS.push({id:"factory",name:"Lean Factory ไลน์ประกอบรถ�
           if(k==="paint")st.lastColor[i]=u.color}
         if(u&&u.rem>0)u.rem-=dt*st.alloc[i];
         if(u&&u.rem<=0){
-          if(k==="assy"&&!u.chk){u.chk=1;if(Math.random()<st.assyRisk){u.wrong=true}}
-          if(k==="paint"&&lv.defect&&!u.pchk){u.pchk=1;if(Math.random()<lv.defect){if((K.jidoka||0)>=1){u.rem=u.max=30;st.caught++;fx("Jidoka แก้ทันที",stX(lv,i),250,"#ffd27a");continue}else u.defect=true}}
-          if(k==="qc"&&(u.defect||u.wrong)){const isW=!!u.wrong,back=isW?lv.st.indexOf("assy"):lv.st.indexOf("paint");if(isW)st.wrong++;st.rework++;u.defect=false;u.wrong=false;st.buf[back].push(u);st.cur[i]=null;fx(isW?"หยิบชิ้นส่วนผิด! ย้อนกลับไปประกอบใหม่":"สีเสีย! ย้อนกลับไปพ่นใหม่",stX(lv,i),250,"#ff8a7a");continue}
+          if(k==="body"&&!u.chk){u.chk=1;if(Math.random()<st.bodyRisk){u.wrong=true}}
+          if(k==="paint"&&lv.defect&&!u.pchk){u.pchk=1;if(Math.random()<lv.defect){if((K.jidoka||0)>=1){u.rem=u.max=90;st.caught++;fx("Jidoka แก้ทันที",stX(lv,i),250,"#ffd27a");continue}else u.defect=true}}
+          if(k==="qc"&&(u.defect||u.wrong)){const isW=!!u.wrong,back=isW?lv.st.indexOf("body"):lv.st.indexOf("paint");if(isW)st.wrong++;st.rework++;u.defect=false;u.wrong=false;st.buf[back].push(u);st.cur[i]=null;fx(isW?"Gap/Flush ไม่ผ่าน! ย้อนกลับไปปรับตั้งประตูใหม่":"สีเสีย! ย้อนกลับไปพ่นใหม่",stX(lv,i),250,"#ff8a7a");continue}
           const nb=st.buf[i+1];if(st.mode==="pull"&&i<n-1&&nb.length>=st.limit)st.blocked[i]=true;else{st.blocked[i]=false;nb.push(u);st.cur[i]=null}}
         else st.blocked[i]=false;}
       // ship & sell
@@ -2689,7 +2696,7 @@ SIMS.push({id:"factory",name:"Lean Factory ไลน์ประกอบรถ�
       const L2=[`<b>ผลประกอบการ:</b> รายได้ ${baht(st.rev)} − วัตถุดิบ ${baht(st.matCost)} − ค่าแรง ${baht(st.wages)} − ค่าจ้างแรกเข้า ${baht(st.hires*ECON.hire)} − ค่าเก็บสต็อก ${baht(st.holdCost)}${r.penalty?` − ค่าปรับส่งไม่ทัน ${baht(r.penalty)}`:""} = กำไร <b>${baht(r.profit)}</b>`];
       L2.push(`<b>Line balance:</b> LBE เฉลี่ย ${Math.round(r.lbe*100)}% ${cts.some(t=>t>tk)?`สถานี${ST_ALL[lv.st[bi]].n} CT ${isFinite(cts[bi])?Math.round(cts[bi]):"∞"} วินาที เกิน Takt ${Math.round(tk)} วินาที`:"ทุกสถานีทัน Takt"}${st.hired>st.alloc.reduce((a,b)=>a+b,0)?" มีคนว่างที่ยังรับค่าแรง":""}`);
       L2.push(`<b>เดิน Gemba ภาพจริง:</b> พบความผิดปกติ ${Math.round((st.K.gemba||0)*100)}%`);
-      L2.push(`<b>สถานีประกอบของคุณ:</b> ${STN_RES?`งานติดตั้งไฟหน้า ${STN_RES.ct.toFixed(1)} วินาที เดิน ${STN_RES.walkM.toFixed(1)} เมตร/คัน หยิบผิด ${(STN_RES.risk*100).toFixed(1)}% → หยิบผิดจริง ${st.wrong} คัน`:"-"}`);
+      L2.push(`<b>สถานีที่คุณออกแบบ:</b> ${STN_RES?`FA-10 ปรับตั้งประตู ${STN_RES.ct.toFixed(0)} วินาที (OIS ${ASSY.oisTotal} วินาที, Takt ${ASSY.takt} วินาที) เดิน ${STN_RES.walkM.toFixed(1)} เมตร/คัน โอกาสหยิบเกจ/ประแจผิด ${(STN_RES.risk*100).toFixed(1)}% → ต้องปรับตั้งใหม่จริง ${st.wrong} คัน`:"-"}`);
       if(STN_RES)STN_RES.tips.slice(0,2).forEach(t=>L2.push(t));
       L2.push(`<b>WIP & Lead time:</b> WIP เฉลี่ย ${avgWip.toFixed(1)} คัน Lead time เฉลี่ย ${avgL}${st.mode==="push"&&avgWip>n*2?" การ Push ทำให้งานกองหน้าคอขวดและจมเงินสด":""}`);
       if(st.orders>st.shipped)L2.push(`<b>JPH:</b> ส่งไม่ทัน ${st.backlog} คัน ${3600/st.jph<Math.max(...cts.filter(isFinite))?"กำลังการผลิตต่ำกว่า JPH ที่ตั้ง":""}`);
@@ -2698,12 +2705,12 @@ SIMS.push({id:"factory",name:"Lean Factory ไลน์ประกอบรถ�
     }
     let STN_RES=null;
     render(c,st,lv,api.bg);sync(true);
-    const go=()=>{["shine","jidoka","smed"].forEach(k=>st.K[k]=KZ.sc(acts,k));sync(true);
+    const go=()=>{["shine","jidoka","smed"].forEach(k=>st.K[k]=KZ.sc(acts,k));preload(st,lv);sync(true);
       api.overlay(wrap,`<span class="label">เริ่มกะ · ระดับ${LVN[L]}</span><h3>กะทำงาน 1 ชั่วโมง (เล่นจริง 3 นาที)</h3>
       <ul><li>ตั้ง JPH ตามที่ตลาดรับได้ (ไม่เกิน ~${lv.cap} คัน/ชม.) Takt = 3600 ÷ JPH</li><li>จ้างคนให้พอ แล้วจัดลงสถานีให้ทุกแท่ง Yamazumi ไม่เกินเส้นแดง</li>
       <li>ปล่อยรถเข้าไลน์ต้องซื้อวัตถุดิบ ${ECON.mat} ฿ ขายได้คันละ ${ECON.price.toLocaleString()} ฿ เมื่อส่งมอบ</li><li>คะแนน = กำไร ÷ 10 + LBE × 1,000 ทีมที่กำไรสูงและไลน์สมดุลที่สุดชนะ</li></ul>`,[["เริ่มกะ →",()=>{loop=api.loop(step);
         if(CAP.room&&CAP.room.join)CAP.room.join("lean-factory").then(r=>{if(ended){publish(true);return}room=r;publish(false)}).catch(()=>{})}]])};
-    KZ.single($("stArea"),GEMBA,(gs)=>{st.K.gemba=gs;STN.open($("stArea"),{onDone:res=>{STN_RES=res;st.assyCT=ASSY.other+res.ct;st.assyRisk=res.risk;sync(true);
+    KZ.single($("stArea"),GEMBA,(gs)=>{st.K.gemba=gs;STN.open($("stArea"),{onDone:res=>{STN_RES=res;st.bodyCT=res.ct;st.bodyRisk=res.risk;sync(true);
       if(acts.length)KZ.board($("kzArea"),acts,{title:"ก่อนเดินไลน์: TPM / Jidoka / SMED",start:"ไปที่ไลน์การผลิต →",onStart:go});else go()}})});
     return {stop(){loop.stop();if(room){try{room.leave()}catch(e){}}}};
   }
