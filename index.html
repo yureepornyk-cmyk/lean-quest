@@ -487,6 +487,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .net-bar small{color:var(--muted);font-size:13px;display:block;margin-top:4px}
 .net-url{font-family:var(--f-mono);word-break:break-all}
 .net-qr{background:#fff;padding:6px;border-radius:6px;line-height:0}
+@media (max-width:1000px){.tr-slot{grid-template-columns:64px minmax(0,1fr)}.tr-slot .actions{grid-column:2}}
+.tr-res{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:16px}
+.tr-res small{display:block;color:var(--muted);font-size:13px;max-width:62ch}
 
 </style>
 
@@ -999,7 +1002,7 @@ let LIVE=null,SECRET=null,PEERS=[],ROLE="player",liveView="",ME={name:lsGet("lq-
 const ptsFor=(ms,T)=>Math.round(1000*(1-0.5*Math.min(Math.max(+ms||0,0),T)/T));
 
 function board(){
-  if(!LIVE||!LIVE.gameId)return [];
+  if(!LIVE||!LIVE.gameId)return [];rememberPlayers();
   const T=(LIVE.T||20)*1000,keys=LIVE.keys||{},rows=[];
   PEERS.forEach(p=>{
     const pr=p.presence||{};if(pr.g!==LIVE.gameId||!pr.n)return;
@@ -1009,6 +1012,46 @@ function board(){
     rows.push({peer:p.peer,name:String(pr.n).slice(0,24),score:s,correct:c,last,me:p.isMe&&p.sameTab,answered:Array.isArray(cur),pick:Array.isArray(cur)?cur[0]:null});
   });
   return rows.sort((x,y)=>y.score-x.score||x.name.localeCompare(y.name));
+}
+// ---- keep every player's answers (even after they disconnect) for the Excel export ----
+let LIVE_SEEN={},LIVE_SEEN_G=null;
+function rememberPlayers(){if(!LIVE||!LIVE.gameId)return;if(LIVE_SEEN_G!==LIVE.gameId){LIVE_SEEN={};LIVE_SEEN_G=LIVE.gameId}
+  PEERS.forEach(p=>{const pr=p.presence||{};if(pr.g!==LIVE.gameId||!pr.n)return;const prev=LIVE_SEEN[p.peer]||{a:{}};LIVE_SEEN[p.peer]={name:String(pr.n).slice(0,24),a:Object.assign({},prev.a,(pr.a&&typeof pr.a==="object")?pr.a:{})}})}
+function loadXLSX(){return new Promise((ok,bad)=>{if(window.XLSX)return ok(window.XLSX);const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";sc.onload=()=>ok(window.XLSX);sc.onerror=()=>bad(new Error("load"));document.head.appendChild(sc)})}
+// results of every finished game are kept on the facilitator's computer for a whole-day Excel
+function saveDayResult(){if(!LIVE||!LIVE.qs||!LIVE.gameId)return;rememberPlayers();const T=(LIVE.T||20)*1000,keys=LIVE.keys||{};
+  const players=Object.values(LIVE_SEEN).map(pl=>{let score=0,right=0;LIVE.qs.forEach((q,i)=>{const x=pl.a[i];if(Array.isArray(x)&&keys[i]!=null&&x[0]===keys[i]){score+=ptsFor(x[1],T);right++}});return {name:pl.name,score,right}});
+  const day=lsGet("lq-day-results",[]).filter(g=>g.id!==LIVE.gameId);day.push({id:LIVE.gameId,title:LIVE.title||"Live Quiz",when:Date.now(),n:LIVE.qs.length,players});lsSet("lq-day-results",day)}
+async function exportDay(btn){const day=lsGet("lq-day-results",[]);if(!day.length){if(btn)btn.textContent="ยังไม่มีผลเกมที่จบแล้ว";return}
+  const old=btn?btn.textContent:"";try{const X=await loadXLSX();const names=[...new Set(day.flatMap(g=>g.players.map(p=>p.name.trim())))];
+    const head=["ชื่อผู้เล่น"].concat(day.map(g=>g.title)).concat(["คะแนนรวม","ตอบถูกรวม","จำนวนข้อรวม","% ถูก"]);
+    const rows=names.map(n=>{let tot=0,r=0,q=0;const cells=day.map(g=>{const p=g.players.find(x=>x.name.trim()===n);q+=g.n;if(!p)return "";tot+=p.score;r+=p.right;return p.score});return [n].concat(cells).concat([tot,r,q,q?Math.round(r/q*100):0])}).sort((a,b)=>b[b.length-4]-a[a.length-4]);
+    const wb=X.utils.book_new(),add=(r,name,w)=>{const ws=X.utils.aoa_to_sheet(r);ws["!cols"]=w.map(x=>({wch:x}));X.utils.book_append_sheet(wb,ws,name.slice(0,31))};
+    add([["อันดับ"].concat(head)].concat(rows.map((r,i)=>[i+1].concat(r))),"คะแนนรวมทั้งวัน",[8,24].concat(day.map(()=>18)).concat([12,12,14,8]));
+    day.forEach((g,k)=>add([["อันดับ","ชื่อผู้เล่น","คะแนน","ตอบถูก (ข้อ)","จำนวนข้อ","% ถูก"]].concat(g.players.slice().sort((a,b)=>b.score-a.score).map((p,i)=>[i+1,p.name,p.score,p.right,g.n,Math.round(p.right/g.n*100)])),`${k+1}. ${g.title}`.replace(/[\\/?*:\[\]]/g,""),[8,24,12,12,10,8]));
+    const buf=X.write(wb,{bookType:"xlsx",type:"array"}),fname=`คะแนนรวม_LeanQuest_${new Date().toISOString().slice(0,10)}.xlsx`,blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    let saved=false;if(window.claude&&window.claude.use&&!window.LQ_STANDALONE){try{const d=await window.claude.use("downloads");if(d){await d.save({filename:fname,data:blob});saved=true}}catch(e){}}
+    if(!saved){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+    if(btn){btn.textContent="ดาวน์โหลดแล้ว ✓";setTimeout(()=>btn.textContent=old,2500)}}catch(e){if(btn)btn.textContent="สร้างไฟล์ไม่สำเร็จ ลองอีกครั้ง"}}
+async function exportLive(btn){
+  rememberPlayers();if(!LIVE||!LIVE.qs){return}
+  const T=(LIVE.T||20)*1000,keys=LIVE.keys||{},n=LIVE.qs.length,old=btn?btn.textContent:"";if(btn){btn.disabled=true;btn.textContent="กำลังสร้างไฟล์…"}
+  try{const X=await loadXLSX();
+    const players=Object.values(LIVE_SEEN).map(pl=>{let score=0,right=0,tsum=0,tn=0;const det=LIVE.qs.map((q,i)=>{const x=pl.a[i],k=keys[i];const ans=Array.isArray(x)?x[0]:null,ms=Array.isArray(x)?+x[1]:null;const ok=ans!=null&&k!=null&&ans===k;const pts=ok?ptsFor(ms,T):0;score+=pts;if(ok)right++;if(ms!=null){tsum+=ms;tn++}return {i,q,ans,ok,ms,pts,k}});return {name:pl.name,score,right,avg:tn?tsum/tn/1000:null,det}}).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name));
+    const L=c=>c==null?"":"ABCDEFGH"[c],when=new Date(),dt=when.toLocaleDateString("th-TH"),tm=when.toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"});
+    const rank=[["อันดับ","ชื่อผู้เล่น","คะแนนรวม","ตอบถูก (ข้อ)","จำนวนข้อ","% ถูก","เวลาตอบเฉลี่ย (วินาที)"]].concat(players.map((p,i)=>[i+1,p.name,p.score,p.right,n,Math.round(p.right/n*100),p.avg==null?"":+p.avg.toFixed(1)]));
+    const det=[["ชื่อผู้เล่น","ข้อ","คำถาม","คำตอบที่เลือก","คำตอบที่ถูก","ผล","เวลาตอบ (วินาที)","คะแนน"]];
+    players.forEach(p=>p.det.forEach(d=>det.push([p.name,d.i+1,d.q.q,d.ans==null?"ไม่ได้ตอบ":L(d.ans)+". "+d.q.o[d.ans],d.k==null?"ยังไม่เฉลย":L(d.k)+". "+d.q.o[d.k],d.ans==null?"ไม่ได้ตอบ":d.ok?"ถูก":"ผิด",d.ms==null?"":+(d.ms/1000).toFixed(1),d.pts])));
+    const sum=[["ข้อ","คำถาม","คำตอบที่ถูก","ตอบถูก (คน)","ผู้เล่นทั้งหมด","% ถูก"]].concat(LIVE.qs.map((q,i)=>{const k=keys[i],c=players.filter(p=>p.det[i].ok).length;return [i+1,q.q,k==null?"ยังไม่เฉลย":L(k)+". "+q.o[k],c,players.length,players.length?Math.round(c/players.length*100):0]}));
+    const info=[["ชุดคำถาม",LIVE.title||""],["วันที่",dt],["เวลาส่งออก",tm],["จำนวนผู้เล่น",players.length],["จำนวนข้อ",n],["เวลาต่อข้อ (วินาที)",LIVE.T||20],["วิธีคิดคะแนน","ตอบถูกได้สูงสุด 1,000 คะแนน ยิ่งตอบเร็วยิ่งได้มาก ตอบตอนหมดเวลาได้ 500"]];
+    const wb=X.utils.book_new(),add=(rows,name,w)=>{const ws=X.utils.aoa_to_sheet(rows);ws["!cols"]=w.map(x=>({wch:x}));X.utils.book_append_sheet(wb,ws,name)};
+    add(rank,"อันดับ",[8,24,12,12,10,8,20]);add(det,"คำตอบรายคน",[22,6,60,40,40,10,14,10]);add(sum,"สรุปรายข้อ",[6,60,40,12,14,8]);add(info,"ข้อมูลเกม",[20,70]);
+    const buf=X.write(wb,{bookType:"xlsx",type:"array"}),fname=`คะแนน_${(LIVE.title||"LiveQuiz").replace(/[\\/:*?"<>|]/g,"").slice(0,40)}_${when.toISOString().slice(0,10)}.xlsx`;
+    const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    let saved=false;if(window.claude&&window.claude.use&&!window.LQ_STANDALONE){try{const d=await window.claude.use("downloads");if(d){await d.save({filename:fname,data:blob});saved=true}}catch(e){}}
+    if(!saved){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+    if(btn)btn.textContent="ดาวน์โหลดแล้ว ✓";setTimeout(()=>{if(btn){btn.textContent=old;btn.disabled=false}},2500);
+  }catch(e){if(btn){btn.textContent="สร้างไฟล์ไม่สำเร็จ ลองอีกครั้ง";btn.disabled=false}}
 }
 function boardHtml(rows,limit,showGain){
   if(!rows.length)return `<p class="label">ยังไม่มีผู้เล่น</p>`;
@@ -1076,10 +1119,10 @@ const SKEL={
       <div class="tiles" id="lvTiles"></div>
       ${(LIVE.ex||{})[LIVE.idx]?`<div class="feedback" style="margin-top:14px"><span>${esc(LIVE.ex[LIVE.idx])}</span></div>`:""}</div>
     <div class="card" style="display:grid;gap:12px"><h2 style="font-size:22px">อันดับตอนนี้</h2><div id="lvBoard"></div>
-      <button class="btn go" id="lvNext">${last?"ดูผลสุดท้าย →":"ข้อถัดไป →"}</button></div></div>`},
+      <button class="btn go" id="lvNext">${last?"ดูผลสุดท้าย →":"ข้อถัดไป →"}</button><button class="btn ghost small" id="lvXls">⬇ คะแนนถึงข้อนี้ (Excel)</button></div></div>`},
   "h-end":()=>`<div class="card" style="display:grid;gap:16px"><span class="label">${esc(LIVE.title)} · จบเกม</span><h2 style="font-size:30px">ผลการแข่งขัน</h2>
     <div id="lvPodium"></div><div id="lvBoard"></div>
-    <div class="actions"><button class="btn go" id="lvAgain">เล่นใหม่ (ชุดอื่น)</button><button class="btn ghost" id="lvClose">ปิดห้อง</button></div></div>`,
+    <div class="actions"><button class="btn go" id="lvXls">⬇ ดาวน์โหลดคะแนน (Excel)</button><button class="btn ghost" id="lvAgain">เล่นใหม่ (ชุดอื่น)</button><button class="btn ghost" id="lvClose">ปิดห้อง</button></div></div>`,
   "p-none":()=>`<div class="notice"><b>ยังไม่มีห้อง Live ที่เปิดอยู่</b><span>เมื่อผู้จัดเปิดห้อง หน้านี้จะเปลี่ยนให้ใส่ชื่อเข้าร่วมเองอัตโนมัติ ระหว่างรอ ลองเล่นแบบเดี่ยวที่แท็บ “เล่นเกม” ได้</span></div>`,
   "p-join":()=>`<div class="card" style="display:grid;gap:14px;max-width:480px">
     <span class="label">${esc(LIVE.title)}</span><h2 style="font-size:26px">เข้าร่วม Live Quiz</h2>
@@ -1101,8 +1144,8 @@ const BIND={
   "h-idle":()=>{$("lvOpen").onclick=hostOpen;if(window.TR_applyPreset)TR_applyPreset()},
   "h-lobby":()=>{$("lvStart").onclick=()=>hostStartQ(0);$("lvClose").onclick=hostClose},
   "h-q":()=>{$("lvReveal").onclick=hostReveal},
-  "h-r":()=>{$("lvNext").onclick=()=>LIVE.idx<LIVE.qs.length-1?hostStartQ(LIVE.idx+1):hostWrite({status:"end"})},
-  "h-end":()=>{$("lvAgain").onclick=hostClose;$("lvClose").onclick=hostClose},
+  "h-r":()=>{$("lvXls").onclick=e=>exportLive(e.currentTarget);$("lvNext").onclick=()=>LIVE.idx<LIVE.qs.length-1?hostStartQ(LIVE.idx+1):hostWrite({status:"end"})},
+  "h-end":()=>{$("lvAgain").onclick=hostClose;$("lvClose").onclick=hostClose;$("lvXls").onclick=e=>exportLive(e.currentTarget)},
   "p-join":()=>{$("lvJoin").onsubmit=e=>{e.preventDefault();const n=$("lvName").value.trim().slice(0,20);if(!n)return;ME.name=n;lsSet("lq-name",n);joinGame()}},
   "p-lobby":()=>{$("lvRename").onclick=()=>{ME.g=null;renderLive(true)}},
   "p-q":()=>{$("lvPick").querySelectorAll("button").forEach(b=>b.onclick=()=>playerPick(+b.dataset.k))}
@@ -1121,7 +1164,7 @@ const UPD={
   "h-lobby":()=>{const rows=board();$("lvCount").textContent=rows.length;$("lvPlayers").innerHTML=rows.length?rows.map(r=>`<span class="pchip">${esc(r.name)}</span>`).join(""):`<span class="label">ยังไม่มีผู้เล่น</span>`},
   "h-q":()=>{const rows=board();$("lvAns").textContent=`ตอบแล้ว ${rows.filter(r=>r.answered).length}/${rows.length}`},
   "h-r":()=>{const rows=board();$("lvTiles").innerHTML=tilesResult(true,rows,null);$("lvBoard").innerHTML=boardHtml(rows,8,true)},
-  "h-end":()=>{const rows=board();$("lvPodium").innerHTML=podiumHtml(rows);$("lvBoard").innerHTML=boardHtml(rows,50,false)},
+  "h-end":()=>{const rows=board();saveDayResult();$("lvPodium").innerHTML=podiumHtml(rows);$("lvBoard").innerHTML=boardHtml(rows,50,false)},
   "p-lobby":()=>{$("lvCount").textContent=board().length},
   "p-q":()=>{const a=ME.ans[LIVE.idx];const picked=Array.isArray(a)?a[0]:null;
     $("lvPick").querySelectorAll("button").forEach(b=>{const k=+b.dataset.k;b.disabled=picked!=null||liveRemain()<=0;b.classList.toggle("picked",k===picked);b.classList.toggle("dim",picked!=null&&k!==picked)});
@@ -1398,12 +1441,16 @@ const TRAIN=(()=>{
         ${["g1","g2"].map((k,i)=>{const g=TR_GAMES[k];return `<div class="tr-slot"><span class="tr-time">${g.time}</span><div><span class="tr-no">${i+1}</span><b>${g.title}</b><small>${g.sub} · ${g.rounds.length} ข้อ</small></div><div class="actions"><button class="btn go small" data-live="${k}">เปิดห้อง ผู้เรียนเล่นบนมือถือ</button><button class="btn ghost small" data-g="${k}" data-m="solo">เล่นเดี่ยวเครื่องนี้</button><button class="btn ghost small" data-g="${k}" data-m="team">สำรอง: แข่งกลุ่มบนจอ</button></div></div>`}).join("")}
         <div class="tr-slot"><span class="tr-time">11:45</span><div><span class="tr-no">3</span><b>Live Quiz รวม AL-01 + AL-02</b><small>${TR_LIVE.length} ข้อ · ทุกคนตอบบนมือถือ ตอบถูกและไวได้คะแนนมาก จัดอันดับรายคนแบบสด</small></div><div class="actions"><button class="btn go small" data-live="quiz">เปิดห้อง ผู้เรียนเล่นบนมือถือ</button><button class="btn ghost small" data-g="live" data-m="solo">เล่นเดี่ยวเครื่องนี้</button><button class="btn ghost small" data-g="live" data-m="team">สำรอง: แข่งกลุ่มบนจอ</button></div></div>
       </div>
+      <div class="tr-res"><div><b>คะแนนของวันนี้</b><small id="trResInfo"></small></div><div class="actions"><button class="btn go small" id="trDay">⬇ คะแนนรวมทั้งวัน (Excel)</button><span id="trClr"><button class="btn ghost small" id="trClear">ล้างผลของวันนี้</button></span></div></div>
       <div class="teams"><div class="row"><span class="label">สำหรับโหมดสำรองแข่งกลุ่ม · จำนวนกลุ่ม</span><div class="seg" id="trN">${[2,3,4,5,6].map(n=>`<button type="button" data-n="${n}" aria-pressed="${n===tN}">${n}</button>`).join("")}</div></div>
       <div class="team-names">${names.slice(0,tN).map((n,i)=>`<label><span><span class="dot" style="background:${LETTER_COL[i]}"></span>ชื่อกลุ่ม ${i+1}</span><input id="trn${i}" value="${esc(n)}" maxlength="18"></label>`).join("")}</div></div>`;
+    const day=lsGet("lq-day-results",[]);$("trResInfo").textContent=day.length?`เก็บผลไว้ในคอมเครื่องนี้แล้ว ${day.length} เกม: ${day.map(g=>g.title+" ("+g.players.length+" คน)").join(" · ")}`:"เมื่อจบแต่ละเกมในห้อง Live ผลจะถูกเก็บไว้ในคอมเครื่องนี้อัตโนมัติ แล้วดาวน์โหลดรวมเป็นไฟล์เดียวได้ที่นี่";
+    $("trDay").onclick=e=>exportDay(e.currentTarget);
+    $("trClear").onclick=()=>{$("trClr").innerHTML='<span class="label" style="text-transform:none;letter-spacing:0">ลบผลทั้งหมดของวันนี้?</span> <button class="btn small" id="trClrY">ลบ</button> <button class="btn ghost small" id="trClrN">ยกเลิก</button>';$("trClrY").onclick=()=>{lsSet("lq-day-results",[]);home()};$("trClrN").onclick=home};
     el.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{tN=+b.dataset.n;home()});
     for(let i=0;i<tN;i++)$("trn"+i).oninput=e=>names[i]=e.target.value||("กลุ่ม "+(i+1));
     el.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>start(b.dataset.g,b.dataset.m));
-    el.querySelectorAll("[data-live]").forEach(b=>b.onclick=()=>{const k=b.dataset.live;window.TR_PRESET={src:"train:"+k,t:k==="quiz"?"20":"30"};show("scrLive");renderLive(true);applyPreset();if(window.LQ_STANDALONE&&!CAP.db&&window.LQ_openHost)LQ_openHost()});
+    el.querySelectorAll("[data-live]").forEach(b=>b.onclick=()=>{const k=b.dataset.live;window.TR_PRESET={src:"train:"+k,t:k==="quiz"?"20":"30"};if(window.LQ_STANDALONE){location.hash="host-"+k;location.reload();return}show("scrLive");renderLive(true);applyPreset()});
   }
   function gameOf(k){if(k!=="live")return TR_GAMES[k];return {time:"11:45",title:"Live Quiz รวม AL-01 + AL-02 (แข่งกลุ่มบนจอ)",rounds:TR_LIVE.map(x=>({k:"choice",q:x.q,opts:x.o,a:x.c,why:x.e,shuffle:true}))}}
   function start(k,m){stop();mode=m;G0=gameOf(k);teams=names.slice(0,tN).map((n,i)=>({n,i,score:0,right:0}));
@@ -2934,13 +2981,13 @@ boot();
   }
   function netBar(){let b=$("netBar");if(!b){b=document.createElement("div");b.id="netBar";$("liveBox").before(b)}
     if(isHost){const url=location.origin+location.pathname+"#j"+code;
-      b.innerHTML=`<div class="net-bar"><div><span class="label">รหัสห้อง</span><b class="net-code">${code}</b><small>ผู้เรียนเปิด <span class="net-url">${esc(url)}</span> หรือสแกน QR</small></div><div id="netQR" class="net-qr"></div><span class="chip" id="netCount">เชื่อมต่อ 0 เครื่อง</span></div>`;
+      b.innerHTML=`<div class="net-bar"><div><span class="label">รหัสห้อง${window.TR_PRESET?" · "+esc(TR_liveSet(window.TR_PRESET.src.split(":")[1]).title):""}</span><b class="net-code">${code}</b><small>ผู้เรียนเปิด <span class="net-url">${esc(url)}</span> หรือสแกน QR</small></div><div id="netQR" class="net-qr"></div><span class="chip" id="netCount">เชื่อมต่อ 0 เครื่อง</span></div>`;
       try{new QRCode($("netQR"),{text:url,width:132,height:132,correctLevel:QRCode.CorrectLevel.M})}catch(e){$("netQR").textContent=""}}
     else b.innerHTML=`<div class="net-bar"><div><span class="label">เชื่อมต่อห้อง</span><b class="net-code">${code}</b></div><span class="chip" id="netCount">${hostConn&&hostConn.open?"เชื่อมต่อแล้ว":"กำลังเชื่อมต่อ…"}</span></div>`}
   function setCount(){const e=$("netCount");if(e)e.textContent=isHost?`เชื่อมต่อ ${conns.filter(c=>c.open).length} เครื่อง`:(hostConn&&hostConn.open?"เชื่อมต่อแล้ว":"หลุดการเชื่อมต่อ กำลังต่อใหม่…")}
   function msg(t){const m=$("netMsg");if(m)m.textContent=t}
   function openHost(){if(typeof Peer==="undefined")return msg("โหลดระบบเชื่อมต่อไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต");
-    code=String(Math.floor(1000+Math.random()*9000));msg("กำลังเปิดห้อง…");
+    let last="";try{last=sessionStorage.getItem("lq-last-code")||""}catch(e){}do{code=String(Math.floor(1000+Math.random()*9000))}while(code===last);try{sessionStorage.setItem("lq-last-code",code)}catch(e){}msg("กำลังเปิดห้อง…");
     peer=new Peer(PFX+code);
     peer.on("open",()=>{isHost=true;myId="host";attach(true)});
     peer.on("error",e=>{if(e.type==="unavailable-id"){peer.destroy();openHost()}else msg("เปิดห้องไม่สำเร็จ ("+e.type+")")});
@@ -2963,7 +3010,8 @@ boot();
     <p class="label" id="netMsg" style="text-transform:none;letter-spacing:0"></p></div>`;
   BIND.na=()=>{$("netHost").onclick=openHost;$("netJoin").onsubmit=e=>{e.preventDefault();joinRoom($("netCode").value)};if(PENDING){const p=PENDING;PENDING=null;joinRoom(p)}};
   let PENDING=null;const m=/^#j(\d{4})$/.exec(location.hash);if(m){PENDING=m[1];setTimeout(()=>{show("scrLive");renderLive(true)},50)}
-  if(location.hash==="#host")setTimeout(()=>{show("scrLive");renderLive(true);openHost()},50);
+  const hm=/^#host(?:-(g1|g2|quiz))?$/.exec(location.hash);
+  if(hm){if(hm[1])window.TR_PRESET={src:"train:"+hm[1],t:hm[1]==="quiz"?"20":"30"};setTimeout(()=>{show("scrLive");renderLive(true);openHost()},50)}
   window.LQ_openHost=()=>{if(!peer)openHost()};
   setInterval(setCount,2000);
   window.addEventListener("beforeunload",e=>{if(isHost&&conns.length){e.preventDefault();e.returnValue=""}});
