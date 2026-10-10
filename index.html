@@ -536,6 +536,64 @@ body.party .pod.p2 .blk{animation-delay:.3s}body.party .pod.p3 .blk{animation-de
 .mute-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:20px}
 @media (prefers-reduced-motion:reduce){body.party *{animation:none!important}}
 @media (max-width:640px){body.party .top,body.party .tape,body.party #scrLive .live-head,body.party .note{display:none}body.party .wrap{padding-block:10px 24px}body.party .tile{min-height:84px}}
+/* ---- pen factory ---- */
+.pf-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pf-steps span{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.pf-steps span.on{background:var(--ink);color:var(--bg)}
+.pf-steps span.done{background:var(--go-soft);color:var(--go)}
+.pf-goals{display:grid;gap:8px}
+.pf-goal{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;align-items:start;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg)}
+.pf-goal small{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+.pf-goal .seg{flex-wrap:wrap}
+.pf-goal .seg button{font-family:var(--f-body);font-size:13px;padding:6px 10px}
+.pf-goal .seg small{display:inline;color:inherit;opacity:.7;font-family:var(--f-mono);font-size:11px;margin:0}
+.pf-k{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;color:#fff;font-family:var(--f-display);font-weight:700;font-size:22px}
+.pf-smart{font-size:13px;margin-top:6px;color:var(--ink)}
+.pf-cands{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.pf-cand{display:grid;grid-template-columns:72px minmax(0,1fr);grid-template-rows:auto auto;gap:4px 10px;border:2px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);align-items:center}
+.pf-cand.on{border-color:var(--go);background:var(--go-soft)}
+.pf-cand canvas{grid-row:1/3;width:72px;height:auto;border-radius:6px}
+.pf-cand small{display:block;color:var(--muted);font-size:12px}
+.pf-cand .btn{justify-self:start}
+.pf-cands.small{grid-template-columns:1fr}
+.pf-sk{height:6px;background:var(--sunk);border-radius:3px;margin:3px 0;overflow:hidden}.pf-sk i{display:block;height:100%;background:var(--go)}
+.pf-split{display:flex;align-items:stretch;gap:2px;overflow-x:auto;padding:4px 0}
+.pf-task{min-width:58px;background:var(--blue-soft,#dbe6f7);border:1px solid var(--line);border-radius:6px;padding:6px 4px;text-align:center;font-size:12px;line-height:1.25}
+.pf-task small{display:block;font-family:var(--f-mono);color:var(--muted);font-size:11px}
+.pf-cut{flex:0 0 28px;border:1px dashed var(--line);background:var(--surface);border-radius:6px;font-size:14px;padding:0;min-height:44px}
+.pf-cut.on{background:var(--stop);border-color:var(--stop);color:#fff;border-style:solid}
+.pf-cut:disabled{opacity:.2}
+.pf-stsel{flex-wrap:wrap}.pf-stsel button{font-family:var(--f-body);font-size:13px}
+.pf-assign{display:grid;gap:6px}
+.pf-w{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--bg)}
+.pf-w.off{opacity:.5}.pf-w small{display:block;color:var(--muted);font-size:12px}
+.pf-w .seg{flex-wrap:wrap}.pf-w .seg button{padding:6px 10px;min-width:40px}
+.pf-alerts{display:grid;gap:6px}
+.pf-names{max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pEditor:not(:empty){margin-top:12px}
+/* ---- Kahoot-style live ranking ---- */
+.kb-wrap{display:grid;gap:14px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:900px){.kb-wrap{grid-template-columns:1fr}}
+.kb{background:#1d1340;color:#fff;border-radius:12px;padding:14px;display:grid;gap:10px;align-content:start}
+.kb.main{background:linear-gradient(160deg,#46178f,#2a0f63)}
+.kb h3{font-family:var(--f-display);font-size:20px}.kb h3 small{display:block;font-family:var(--f-body);font-weight:400;font-size:12px;opacity:.75}
+.kb-list{position:relative;transition:height .4s}
+.kb-row{position:absolute;left:0;right:0;height:40px;display:grid;grid-template-columns:34px minmax(0,1.2fr) minmax(0,1fr) auto 34px;gap:8px;align-items:center;background:rgba(255,255,255,.1);border-radius:8px;padding:0 8px;transition:top .7s cubic-bezier(.2,.8,.2,1)}
+.kb-row.p1{background:linear-gradient(90deg,#f2b705,#c98f00);color:#1b222a}.kb-row.p2{background:linear-gradient(90deg,#cfd6dc,#9aa3ab);color:#1b222a}.kb-row.p3{background:linear-gradient(90deg,#d08a4f,#9b5d2c)}
+.kb-row.me{outline:3px solid #7dffa8}.kb-row.off{opacity:.55}
+.kb-pos{font-family:var(--f-mono);font-weight:700;font-size:18px;text-align:center}
+.kb-nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kb-nm small{font-weight:400;opacity:.75;font-size:11px}
+.kb-bar{height:10px;background:rgba(0,0,0,.25);border-radius:5px;overflow:hidden}.kb-bar i{display:block;height:100%;border-radius:5px;transition:width .7s}
+.kb-bar i.c-s{background:#7dffa8}.kb-bar i.c-p{background:#38e070}.kb-bar i.c-l{background:#5ec8ff}.kb-bar i.neg{background:#ff6a5c}
+.kb-v{font-family:var(--f-mono);font-size:15px;text-align:right;white-space:nowrap}
+.kb-mv{font-family:var(--f-mono);font-size:12px;font-weight:700}.kb-mv.up{color:#7dffa8}.kb-mv.dn{color:#ff8a7a}
+.kb-row.p1 .kb-mv.up,.kb-row.p2 .kb-mv.up{color:#0f6b38}
+.kb-foot{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin:10px 0}
+.pf-rank ol{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.pf-rank li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 8px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:14px}
+.pf-rank li small{grid-column:1;color:var(--muted);font-size:12px}.pf-rank li b{grid-row:1/3;grid-column:2;align-self:center;font-family:var(--f-mono)}
+.pf-rank li.me{border-color:var(--go);background:var(--go-soft)}
+.pf-myrank{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.pf-myrank b{font-family:var(--f-display);font-size:34px;line-height:1;color:#46178f}.pf-myrank span{color:var(--muted)}
 
 </style>
 
@@ -1651,7 +1709,8 @@ const LVN=["ง่าย","ปานกลาง","ยาก"];
 
 const SIMHUB=(()=>{
   let cur=null,lbUnsub=null,cfgUnsub=null,ROWS=[],CFG={bg:{}},BGIMG={},lbKey="all",lbTab="solo";
-  let WHO=Object.assign({name:"",team:""},lsGet("lq-sim-who",{}));
+  let WHO=Object.assign({name:"",team:"",fcode:""},lsGet("lq-sim-who",{}));
+  {const fm=/^#f(\d{4})$/.exec(location.hash);if(fm){WHO.fcode=fm[1];lsSet("lq-sim-who",WHO)}}
   const key=(g,l)=>g+"-"+l;
   function bgImg(gid){const id=CFG.bg&&CFG.bg[gid];if(!id)return null;if(!BGIMG[id]){const im=new Image();im.src=imgSrc(id);BGIMG[id]=im}return BGIMG[id]}
   function subscribe(){
@@ -1664,7 +1723,7 @@ const SIMHUB=(()=>{
   function renderHub(){
     $("simPlay").hidden=true;$("simHub").hidden=false;
     $("simHub").innerHTML=`<div class="sim-intro"><div><span class="label">Lean Simulation · เรียนผ่านการลงมือ</span><h1>เกมจำลอง Lean</h1><p>เลือกเกมที่ชอบ แต่ละเกมซ่อนหลัก Lean ไว้ในกติกา เล่นจบรอบจะสรุปให้ว่าเจอความสูญเปล่าอะไรบ้าง และควรปรับปรุงอย่างไร</p></div>
-      <div class="who"><button class="btn ghost small" id="centerBtn" title="ฉายขึ้นจอให้เห็นทุกทีม">📺 จอกลาง</button><label class="field">ชื่อผู้เล่น<input id="whoName" maxlength="20" value="${esc(WHO.name)}" placeholder="ชื่อเล่น"></label><label class="field">ทีม (ไม่บังคับ)<input id="whoTeam" maxlength="20" value="${esc(WHO.team)}" placeholder="เช่น ไลน์ Trim"></label></div></div>
+      <div class="who"><button class="btn ghost small" id="centerBtn" title="ฉายขึ้นจอให้เห็นทุกทีม">📺 จอกลาง</button><label class="field">ชื่อผู้เล่น<input id="whoName" maxlength="20" value="${esc(WHO.name)}" placeholder="ชื่อเล่น"></label><label class="field">ทีม (ไม่บังคับ)<input id="whoTeam" maxlength="20" value="${esc(WHO.team)}" placeholder="เช่น ไลน์ Trim"></label>${window.LQ_STANDALONE?`<label class="field">รหัสจอกลาง<input id="whoF" inputmode="numeric" maxlength="4" value="${esc(WHO.fcode||"")}" placeholder="4 หลัก"></label>`:""}</div></div>
       <div class="games">${SIMS.map(g=>`<article class="gcard"><canvas width="640" height="360" data-thumb="${g.id}" aria-hidden="true"></canvas><div class="gb">
         <span class="genre">${esc(g.genre)}</span><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p>
         <div class="chips">${g.chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>
@@ -1675,6 +1734,7 @@ const SIMHUB=(()=>{
     $("centerBtn").onclick=center;
     $("whoName").oninput=e=>{WHO.name=e.target.value.trim();lsSet("lq-sim-who",WHO)};
     $("whoTeam").oninput=e=>{WHO.team=e.target.value.trim();lsSet("lq-sim-who",WHO)};
+    if($("whoF"))$("whoF").oninput=e=>{WHO.fcode=e.target.value.replace(/\D/g,"").slice(0,4);lsSet("lq-sim-who",WHO)};
     $("simHub").querySelectorAll(".lvls button").forEach(b=>b.onclick=()=>play(b.dataset.g,+b.dataset.l));
     $("simHub").querySelectorAll("canvas[data-thumb]").forEach(cv=>{const g=SIMS.find(x=>x.id===cv.dataset.thumb);const c=cv.getContext("2d");const draw=()=>{c.clearRect(0,0,640,360);try{g.thumb(c,640,360,bgImg(g.id))}catch(e){}};draw();const im=bgImg(g.id);if(im&&!im.complete)im.onload=draw;setTimeout(draw,600)});
     $("simHub").querySelectorAll("[data-bg]").forEach(inp=>inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;const gid=inp.dataset.bg,m=document.querySelector(`[data-bgmsg="${gid}"]`);m.textContent="กำลังอัปโหลด…";
@@ -1721,7 +1781,7 @@ const SIMHUB=(()=>{
     const api={root:$("simRoot"),level:l,bg:bgImg(gid),lv:g.levels[l],
       canvas(wrap,W,H){const cv=document.createElement("canvas");const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;cv.style.aspectRatio=W+"/"+H;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);wrap.appendChild(cv);
         const toLocal=e=>{const r=cv.getBoundingClientRect();const p=e.touches?e.touches[0]:e;return {x:(p.clientX-r.left)*W/r.width,y:(p.clientY-r.top)*H/r.height}};return {cv,c,toLocal}},
-      loop(fn){let last=performance.now(),run=true,paused=false;const f=t=>{if(!run)return;let dt=Math.min(.05,(t-last)/1000);last=t;if(!paused&&!document.hidden)fn(dt);requestAnimationFrame(f)};requestAnimationFrame(f);return {stop(){run=false},pause(v){paused=v}}},
+      loop(fn){let last=performance.now(),run=true,paused=false;const f=t=>{if(!run)return;let dt=Math.max(0,Math.min(.05,(t-last)/1000));last=t;if(!paused&&!document.hidden)fn(dt);requestAnimationFrame(f)};requestAnimationFrame(f);return {stop(){run=false},pause(v){paused=v}}},
       overlay(wrap,html,btns){const o=document.createElement("div");o.className="ovl";o.innerHTML=`<div class="box">${html}<div class="actions">${btns.map((b,i)=>`<button class="btn ${i===0?"go":"ghost"}" data-i="${i}">${b[0]}</button>`).join("")}</div></div>`;wrap.appendChild(o);o.querySelectorAll("button[data-i]").forEach(b=>b.onclick=()=>{o.remove();btns[+b.dataset.i][1]()});o.querySelector("button").focus({preventScroll:true});return o},
       toast(wrap,msg){let t=wrap.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";wrap.appendChild(t)}t.textContent=msg;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2200)},
       end(wrap,res){
@@ -1735,30 +1795,53 @@ const SIMHUB=(()=>{
       }};
     cur=g.create(api);
   }
-  // ---------- center screen: live view of every team playing Factory City ----------
+  // ---------- live ranking (Kahoot style) for the pen factory ----------
+  function rankRows(ps){return ps.map(p=>({id:p.id,n:String(p.n||"ผู้เล่น").slice(0,16),tm:String(p.tm||"").slice(0,16),profit:+p.profit||0,lbe:+p.lbe||0,now:+p.now||0,sc:+p.sc||0,gok:+p.gok||0,sh:p.sh||0,or:p.or||0,t:p.t||0,done:!!p.done,on:p.on!==false,me:!!p.me})).sort((a,b)=>b.sc-a.sc)}
+  function joinRoom(){
+    if(window.LQ_STANDALONE){const code=String(WHO.fcode||"").replace(/\D/g,"");if(code.length!==4||!window.LQ_SIMROOM)return Promise.reject("nocode");
+      return LQ_SIMROOM.join(code).then(r=>({presence:d=>r.presence(d),onRank:cb=>r.onRank(l=>cb(l.map(x=>Object.assign({},x,{me:x.id===r.id()})))),leave:()=>r.leave()}))}
+    if(CAP.room&&CAP.room.join)return CAP.room.join("lean-factory").then(r=>({presence:d=>r.presence(d),
+      onRank:cb=>r.onPeers(ch=>cb(rankRows(ch.peers.filter(p=>(p.presence||{}).g==="factory").map(p=>Object.assign({},p.presence,{id:p.peer,me:!!(p.sameTab||p.isMe)})))),()=>{}),leave:()=>r.leave()}));
+    return Promise.reject("noroom")}
+  // animated board: rows keep their DOM node and slide to the new rank
+  function kboard(el,list,val,fmt,cls){const RH=46;el.style.height=Math.max(1,list.length)*RH+"px";el._rows=el._rows||{};const seen=new Set(),mx=Math.max(1,...list.map(r=>Math.abs(val(r))));
+    list.forEach((r,i)=>{seen.add(r.id);let row=el._rows[r.id];if(!row){row=document.createElement("div");row.className="kb-row";row.style.top=list.length*RH+"px";row.innerHTML=`<span class="kb-pos"></span><span class="kb-nm"></span><span class="kb-bar"><i></i></span><b class="kb-v"></b><span class="kb-mv"></span>`;el.appendChild(row);el._rows[r.id]=row;row._rank=i}
+      const mv=row._rank-i;row._rank=i;row.style.top=i*RH+"px";row.className="kb-row"+(i<3?" p"+(i+1):"")+(r.me?" me":"")+(r.on?"":" off");
+      row.querySelector(".kb-pos").textContent=i+1;row.querySelector(".kb-nm").innerHTML=`${esc(r.n)}${r.tm?` <small>${esc(r.tm)}</small>`:""}${r.done?' <small>✓ จบ</small>':""}`;
+      const v=val(r),bar=row.querySelector(".kb-bar i");bar.style.width=Math.max(2,Math.abs(v)/mx*100)+"%";bar.className=cls+(v<0?" neg":"");row.querySelector(".kb-v").textContent=fmt(v);
+      const m=row.querySelector(".kb-mv");if(mv>0){m.textContent="↑"+mv;m.className="kb-mv up";clearTimeout(m._t);m._t=setTimeout(()=>m.textContent="",2500)}else if(mv<0){m.textContent="↓"+(-mv);m.className="kb-mv dn";clearTimeout(m._t);m._t=setTimeout(()=>m.textContent="",2500)}});
+    Object.keys(el._rows).forEach(id=>{if(!seen.has(id)){el._rows[id].remove();delete el._rows[id]}})}
   function center(){
     leave();$("simHub").hidden=true;const P=$("simPlay");P.hidden=false;window.scrollTo(0,0);
-    const seen={};let room=null,alive=true,tick;
-    P.innerHTML=`<div class="sim-top"><div><span class="label">Center Screen · ฉายขึ้นจอ</span><h2>จอกลาง Lean Factory City</h2></div><div class="actions"><button class="btn ghost small" id="cBack">← ออก</button></div></div><div id="cBody"><div class="notice"><b>กำลังเชื่อมต่อ…</b></div></div>`;
+    const seen={};let room=null,alive=true,tick,built=false;
+    P.innerHTML=`<div class="sim-top"><div><span class="label">Center Screen · อันดับสด</span><h2>จอกลาง โรงงานประกอบปากกา</h2></div><div class="actions"><button class="btn ghost small" id="cFull">⛶ เต็มจอ</button><button class="btn ghost small" id="cBack">← ออก</button></div></div><div id="cJoin"></div><div id="cBody"><div class="notice"><b>กำลังเปิดจอกลาง…</b></div></div>`;
     const stop=()=>{alive=false;clearInterval(tick);if(room){try{room.leave()}catch(e){}}};
-    $("cBack").onclick=()=>{stop();cur=null;renderHub()};
+    $("cBack").onclick=()=>{stop();cur=null;renderHub()};$("cFull").onclick=()=>{try{document.documentElement.requestFullscreen()}catch(e){}};
     cur={stop};
-    if(!(CAP.room&&CAP.room.join)){$("cBody").innerHTML=`<div class="notice"><b>จอกลางต้องเปิดผ่าน claude.ai โดยล็อกอิน</b><span>ผู้เล่นทุกคนต้องล็อกอินและเปิดลิงก์เดียวกันจึงจะเห็นกันแบบสด</span></div>`;return}
-    CAP.room.join("lean-factory").then(r=>{if(!alive){r.leave();return}room=r;r.onPeers(ch=>{ch.peers.forEach(p=>{const pr=p.presence||{};if(pr.g==="factory"&&!p.sameTab)seen[p.peer]=Object.assign({},pr,{on:true,at:Date.now()})});ch.left.forEach(p=>{if(seen[p.peer])seen[p.peer].on=false});draw()},()=>{})}).catch(()=>{$("cBody").innerHTML=`<div class="notice"><b>เชื่อมต่อห้องไม่ได้</b></div>`});
-    tick=setInterval(draw,2000);
-    function draw(){if(!alive)return;const ps=Object.values(seen);
-      if(!ps.length){$("cBody").innerHTML=`<div class="notice"><b>รอผู้เล่นเริ่มกะ…</b><span>ให้แต่ละทีมเปิดแท็บเกมจำลอง → Lean Factory City ใส่ชื่อทีมก่อนเล่น แล้วกดเริ่มกะ ข้อมูลจะขึ้นที่นี่ทันที</span></div>`;return}
-      const teams={};ps.forEach(p=>{const k=p.tm||p.n;teams[k]=teams[k]||{n:k,profit:0,lbe:0,c:0,sh:0};const t=teams[k];t.profit+=p.profit||0;t.lbe+=p.lbe||0;t.sh+=p.sh||0;t.c++});
-      const tl=Object.values(teams).map(t=>Object.assign(t,{lbe:t.lbe/t.c,score:Math.round(t.profit/10+t.lbe/t.c*10)})).sort((a,b)=>b.score-a.score);
-      $("cBody").innerHTML=`<div class="center-grid"><div class="lb"><div class="lb-h"><h2>อันดับทีม</h2><span class="note2">คะแนน = กำไร ÷ 10 + LBE × 1,000</span></div><div class="board">${tl.map((t,i)=>`<div class="brow ${i===0?"me":""}"><span class="pos">${i+1}</span><span class="nm">${esc(t.n)} <small class="note2">${t.c} คน</small></span><span class="gain zero">กำไร ${baht0(t.profit)} · LBE ${Math.round(t.lbe)}%</span><span class="sc">${t.score.toLocaleString()}</span></div>`).join("")}</div></div>
-        <div class="cards">${ps.sort((a,b)=>(b.sc||0)-(a.sc||0)).map(p=>{const mx=Math.max(p.tk*1.5,...(p.ct||[]));return `<div class="ccard ${p.on?"":"off"}"><div class="cc-h"><b>${esc(p.tm||"-")}</b><span>${esc(p.n)} · ${LVN[p.L]||""}</span></div>
-          <div class="cc-bar"><i style="width:${Math.min(100,(p.t||0)/36)}%"></i></div><span class="note2">${p.done?"จบกะแล้ว":p.on?"กำลังเล่น "+Math.floor((p.t||0)/60)+" นาที":"ออกจากเกม"}</span>
+    const onCh=ch=>{(ch.peers||[]).forEach(p=>{const pr=p.presence||{};if(pr.g==="factory"&&!p.sameTab)seen[p.peer]=Object.assign({},pr,{id:p.peer,on:true,at:Date.now()})});(ch.left||[]).forEach(p=>{if(seen[p.peer])seen[p.peer].on=false})};
+    if(window.LQ_STANDALONE&&window.LQ_SIMROOM){LQ_SIMROOM.host(onCh).then(h=>{if(!alive){h.leave();return}room=h;const url=location.origin+location.pathname+"#f"+h.code;
+        $("cJoin").innerHTML=`<div class="net-bar"><div><span class="label">รหัสจอกลาง</span><b class="net-code">${h.code}</b><small>ผู้เล่นสแกน QR หรือเปิด <span class="net-url">${esc(url)}</span> ใส่ชื่อ แล้วเล่น "เปิดโรงงานประกอบปากกา" เปิดหน้านี้ค้างไว้ตลอดเกม</small></div><div id="cQR" class="net-qr"></div></div>`;
+        try{new QRCode($("cQR"),{text:url,width:132,height:132})}catch(e){}draw()}).catch(e=>{$("cBody").innerHTML=`<div class="notice"><b>เปิดจอกลางไม่สำเร็จ</b><span>ตรวจสอบอินเทอร์เน็ต หรือ Wi-Fi ที่บล็อกการเชื่อมต่อ (${esc(String(e))})</span></div>`})}
+    else if(CAP.room&&CAP.room.join){CAP.room.join("lean-factory").then(r=>{if(!alive){r.leave();return}room=r;r.onPeers(ch=>{onCh(ch);draw()},()=>{})}).catch(()=>{$("cBody").innerHTML=`<div class="notice"><b>เชื่อมต่อห้องไม่ได้</b></div>`})}
+    else{$("cBody").innerHTML=`<div class="notice"><b>จอกลางต้องเปิดผ่าน claude.ai โดยล็อกอิน หรือผ่านลิงก์ GitHub</b></div>`;return}
+    tick=setInterval(()=>{draw();if(room&&room.broadcast)room.broadcast({t:"rank",l:rankRows(Object.values(seen))})},1200);
+    function draw(){if(!alive)return;const ps=rankRows(Object.values(seen));
+      if(!ps.length){built=false;$("cBody").innerHTML=`<div class="notice"><b>รอผู้เล่นเริ่มกะ…</b><span>ผู้เล่นเปิดแท็บเกมจำลอง ใส่ชื่อ${window.LQ_STANDALONE?" และรหัสจอกลาง":""} แล้วเล่น "เปิดโรงงานประกอบปากกา" เมื่อกดเริ่มกะ ชื่อจะขึ้นที่นี่ทันที</span></div>`;return}
+      if(!built){built=true;$("cBody").innerHTML=`<div class="kb-wrap"><section class="kb main"><h3>🏆 อันดับรวม <small>กำไร ÷ 2 + LBE × 1,000 + เป้า SQDCPME</small></h3><div class="kb-list" id="kbS"></div></section>
+        <section class="kb"><h3>💰 กำไรสูงสุด</h3><div class="kb-list" id="kbP"></div></section><section class="kb"><h3>⚖️ Line Balance สูงสุด <small>LBE เฉลี่ยถึงตอนนี้</small></h3><div class="kb-list" id="kbL"></div></section></div>
+        <div class="kb-foot" id="kbFoot"></div><div class="cards" id="kbCards"></div>`}
+      kboard($("kbS"),ps,r=>r.sc,v=>Math.round(v).toLocaleString(),"c-s");
+      kboard($("kbP"),ps.slice().sort((a,b)=>b.profit-a.profit),r=>r.profit,v=>(v<0?"-":"")+Math.abs(Math.round(v)).toLocaleString()+" ฿","c-p");
+      kboard($("kbL"),ps.slice().sort((a,b)=>b.lbe-a.lbe||b.profit-a.profit),r=>r.lbe,v=>Math.round(v)+"%","c-l");
+      const all=Object.values(seen),t=Math.max(0,...all.map(p=>p.t||0));$("kbFoot").innerHTML=`ผู้เล่น ${all.length} คน · กำลังเล่น ${all.filter(p=>p.on&&!p.done).length} · จบแล้ว ${all.filter(p=>p.done).length} · เวลาเกมล่าสุด ${Math.floor(t/360)}:${String(Math.floor(t/6)%60).padStart(2,"0")} / 10:00`;
+      $("kbCards").innerHTML=Object.values(seen).sort((a,b)=>(b.sc||0)-(a.sc||0)).map(p=>{const mx=Math.max(p.tk*1.5,...(p.ct||[]));return `<div class="ccard ${p.on?"":"off"}"><div class="cc-h"><b>${esc(p.n||"-")}</b><span>${esc(p.tm||"")} · ${LVN[p.L]||""}</span></div>
+          <div class="cc-bar"><i style="width:${Math.min(100,(p.t||0)/36)}%"></i></div>
           <div class="cc-kpi"><span>JPH<b>${p.jph}</b></span><span>กำไร<b>${baht0(p.profit)}</b></span><span>LBE<b>${p.now}%</b></span><span>ส่งมอบ<b>${p.sh}/${p.or}</b></span><span>คน<b>${p.hired}</b></span></div>
-          <div class="cc-yama">${(p.ct||[]).map((t,i)=>`<div><i style="height:${Math.min(100,t/mx*100)}%;background:${t&&t<=p.tk?"var(--go)":"var(--stop)"}"></i><em style="bottom:${p.tk/mx*100}%"></em><small>${(p.a||[])[i]||0}</small></div>`).join("")}</div></div>`}).join("")}</div></div>`}
+          <div class="cc-yama">${(p.ct||[]).map((t,i)=>`<div><i style="height:${Math.min(100,t/mx*100)}%;background:${t&&t<=p.tk?"var(--go)":"var(--stop)"}"></i><em style="bottom:${p.tk/mx*100}%"></em><small>${(p.a||[])[i]||0}</small></div>`).join("")}</div></div>`}).join("")}
     function baht0(v){return (v<0?"-":"")+Math.abs(Math.round(v||0)).toLocaleString()+" ฿"}
   }
   function leave(){if(cur){try{cur.stop()}catch(e){}cur=null}}
-  return {open,leave,play,renderHub};
+  return {open,leave,play,renderHub,center,joinRoom,rankRows};
 })();
 window.SIMHUB=SIMHUB;
 
@@ -1891,183 +1974,6 @@ const KZ=(()=>{
       $("kzDone").onclick=()=>{el.innerHTML="";done(s,val)};el.scrollIntoView({block:"start",behavior:"smooth"})});
     el.scrollIntoView({block:"start",behavior:"smooth"});}
   return {board,single,sc,val,pct,grade};
-})();
-
-// ---------------- Workstation designer (5S, part layout, labelling, work sequence) ----------------
-// ASSY: the real job used by the designer — OIS-CATH-BS-C857-FA-10B rev.1.1 (Front & Rear Door adjustment, Body In White)
-const ASSY={
-  name:"FA-10 ปรับตั้งประตูหน้าและหลัง (Body In White) · รุ่น C857",
-  ois:"OIS-CATH-BS-C857-FA-10B rev.1.1",takt:244,oisTotal:243,
-  // car work points on the plan (front of the car faces left)
-  points:{F:{x:428,y:178,n:"ประตูหน้า"},R:{x:528,y:178,n:"ประตูหลัง"}},home:{x:478,y:178},
-  parts:[
-    {id:"gauge",n:"Fitting gauge ประตูหน้า/หลัง",code:"FA-LG-PD-06-S01R / S03R",em:"📐",risk:.2,riskWhy:"เกจประตูหน้าและหลังหน้าตาคล้ายกัน ใส่สลับทำให้วัด Gap/Flush ผิด",labels:[{id:"name",n:"ป้ายชื่อ + รหัสเกจ"},{id:"sep",n:"แยกตำแหน่ง Front / Rear + สีต่างกัน"}]},
-    {id:"meas",n:"Taper gauge + Step gauge",em:"📏",tool:true,risk:0,labels:[{id:"name",n:"แผงเงา / ป้ายจุดวาง"}]},
-    {id:"wrench",n:"ประแจทอร์ค QL50N-MH (บล็อก No.13)",em:"🔧",tool:true,risk:.12,riskWhy:"หยิบประแจที่ตั้งค่าอื่น ค่าทอร์ค 33±3.5 N.m (CC) จะผิด",labels:[{id:"name",n:"แผงเงา + ป้ายรุ่นประแจ"},{id:"sep",n:"ป้ายค่าทอร์ค No.13 (33±3.5 N.m) สีเฉพาะ"}]}
-  ],
-  // t = OIS time in seconds; pick/store steps keep only handling time because walking is computed from the layout
-  tasks:[
-    {id:"t1",no:1,n:"หยิบ Fitting gauge",at:"gauge",t:1.5,oisT:10,pick:"gauge"},
-    {id:"t2",no:2,n:"ติดตั้ง Fitting gauge ที่ประตูหลังและหน้า",at:"RF",t:5,req:["t1"],why:"ต้องหยิบ Fitting gauge มาก่อน"},
-    {id:"t3",no:3,n:"วัดค่า Gap และ Flushness ตามจุดที่กำหนด",at:"RF",t:30,tool:"meas",req:["t2"],why:"ต้องติดตั้ง Fitting gauge ก่อนจึงวัดได้"},
-    {id:"t4",no:4,n:"ปรับตั้งประตูหลังและหน้า (เริ่มจากประตูหลังก่อน)",at:"RF",t:55,va:true,req:["t3"],why:"ต้องวัดค่าก่อนจึงรู้ว่าต้องปรับเท่าไร"},
-    {id:"t5",no:5,n:"ทำตามข้อ 3 และ 4 จนได้ค่ามาตรฐาน",at:"RF",t:50,tool:"meas",va:true,req:["t4"],why:"ต้องปรับตั้งรอบแรกก่อน"},
-    {id:"t6",no:6,n:"หยิบประแจทอร์ค",at:"wrench",t:1,oisT:3,pick:"wrench"},
-    {id:"t7",no:7,n:"ขันทอร์คโบลท์ M8 จำนวน 8 ตัว (33±3.5 N.m) · CC",at:"RF",t:60,va:true,cc:true,req:["t5","t6"],why:"ต้องปรับได้ค่ามาตรฐานและมีประแจทอร์คในมือ"},
-    {id:"t8",no:8,n:"ถอด Fitting gauge ที่ประตูหลังและหน้า",at:"RF",t:10,req:["t7"],why:"ต้องขันทอร์คให้เสร็จก่อน ประตูจึงไม่เคลื่อน"},
-    {id:"t9",no:9,n:"จัดเก็บ Fitting gauge",at:"gauge",t:1.5,oisT:10,store:"gauge",req:["t8"],why:"ต้องถอดเกจออกก่อน"},
-    {id:"t10",no:10,n:"ตรวจสอบคุณภาพชิ้นงานก่อนไปกระบวนการถัดไป",at:"RF",t:10,req:["t8"],why:"ตรวจได้หลังถอดเกจแล้ว"}
-  ]
-};
-const STN=(()=>{
-  const W=960,H=420,PX=100;// 100px = 1 m
-  const WP=ASSY.home;
-  const SLOTS=[
-    {id:"s1",x:330,y:258,lbl:"ข้างประตูหน้า"},{id:"s2",x:630,y:258,lbl:"ข้างประตูหลัง"},{id:"bal",x:478,y:112,lbl:"จุดแขวนเครื่องมือ",toolOnly:true},
-    {id:"s3",x:150,y:340,lbl:""},{id:"s4",x:330,y:350,lbl:"ชั้นล่าง (ต้องก้ม)",low:true},{id:"s5",x:500,y:340,lbl:""},
-    {id:"s6",x:670,y:340,lbl:""},{id:"s7",x:830,y:340,lbl:""},{id:"s8",x:70,y:250,lbl:""}
-  ];
-  const CLUTTER=[
-    {id:"box",n:"กล่องเปล่า",em:"📦",slot:"s1",need:false,why:"กินพื้นที่ตำแหน่งที่ดีที่สุด"},
-    {id:"cart",n:"รถเข็นเสีย",em:"🛒",slot:"s2",need:false,why:"ใช้งานไม่ได้ ยึดพื้นที่ข้างตัวถัง"},
-    {id:"pallet",n:"พาเลทเปล่าขวางทางเดิน",em:"🪵",path:{x:478,y:300},need:false,why:"ทำให้ต้องเดินอ้อมทุกรอบ"},
-    {id:"cup",n:"แก้วกาแฟส่วนตัว",em:"☕",slot:"s5",need:false,why:"ของส่วนตัวไม่ควรอยู่ในพื้นที่ทำงาน"},
-    {id:"ext",n:"ถังดับเพลิง",em:"🧯",slot:"s8",need:true,why:"อุปกรณ์ความปลอดภัยต้องอยู่ประจำที่"}
-  ];
-  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)/PX;
-  const nearPt=s=>{const P=Object.values(ASSY.points);return Math.min(...P.map(p=>dist(p,s)))};
-  function newDesign(){return {clutter:Object.fromEntries(CLUTTER.map(c=>[c.id,null])),pos:{gauge:"s7",meas:"s3",wrench:"s4"},labels:{},seq:[]}}
-  function occupied(d,slot,except){if(CLUTTER.some(c=>c.slot===slot&&d.clutter[c.id]!=="red"))return "clutter";return Object.entries(d.pos).find(([p,s])=>s===slot&&p!==except)?.[0]||null}
-  function lab(d,pid,lid){return !!(d.labels[pid]&&d.labels[pid][lid])}
-  // simulate one cycle → time breakdown + waypoints
-  function evaluate(d){
-    const errs=[],done=new Set(),pts=[],segs=[],held={};let cur=null,walkM=0,first=null;
-    const T={va:0,walk:0,search:0,nva:0,err:0},pathBlock=d.clutter.pallet!=="red",messy=CLUTTER.filter(c=>!c.need&&d.clutter[c.id]!=="red").length;
-    const posOf=pid=>{const s=SLOTS.find(x=>x.id===d.pos[pid]);return s?{x:s.x,y:s.y,low:s.low,slot:s.id}:null};
-    const walk=(to,why)=>{if(!cur){cur={x:to.x,y:to.y};first=first||{x:to.x,y:to.y};pts.push({x:to.x,y:to.y});return}let m=dist(cur,to);if(pathBlock&&((cur.y<300&&to.y>=300)||(cur.y>=300&&to.y<300)))m+=1.2;if(m<.05)return;const t=m/1.0;T.walk+=t;walkM+=m;segs.push({k:"walk",t,why});cur={x:to.x,y:to.y};pts.push({x:to.x,y:to.y})};
-    const work=(tk,t)=>{if(tk.va){T.va+=t;segs.push({k:"va",t,why:tk.n})}else{T.nva+=t;segs.push({k:"nva",t,why:tk.n})}};
-    if(!d.seq.length)return {ok:false,errs:["ยังไม่ได้จัดลำดับงาน"],T,ct:0,walkM:0,pts:[WP],segs,risk:0,messy};
-    const missing=ASSY.tasks.filter(t=>!d.seq.includes(t.id));if(missing.length)errs.push("ยังขาดขั้นตอน: "+missing.map(t=>t.no+". "+t.n).join(", "));
-    d.seq.forEach((tid,i)=>{const tk=ASSY.tasks.find(t=>t.id===tid);
-      (tk.req||[]).forEach(r=>{if(!done.has(r))errs.push(`ลำดับที่ ${i+1} "${tk.n}" ทำไม่ได้: ${tk.why}`)});
-      if(ASSY.points[tk.at[0]]){
-        if(tk.tool&&!held[tk.tool]){const tp=posOf(tk.tool);if(tp&&tp.slot==="bal"){T.nva+=.6;segs.push({k:"nva",t:.6,why:"ดึงเครื่องมือจากจุดแขวน"})}else if(tp){walk(tp,"ไปหยิบเครื่องมือ");const s=lab(d,tk.tool,"name")?.3:1.5;T.search+=s+messy*.3;T.nva+=1;segs.push({k:"search",t:s+messy*.3})}held[tk.tool]=true}
-        const sides=tk.at.split("");sides.forEach(sd=>{walk(ASSY.points[sd],"ไปจุดทำงาน"+ASSY.points[sd].n);work(tk,tk.t/sides.length)});
-        if(tk.tool&&tk.id==="t5"){const tp=posOf(tk.tool);if(tp&&tp.slot!=="bal"){walk(tp,"คืนเครื่องมือวัด");T.nva+=.5}held[tk.tool]=false}}
-      else{const p=posOf(tk.at);if(!p){errs.push(`ยังไม่ได้วาง ${tk.at}`);return}walk(p);
-        const s=(tk.store?.3:(lab(d,tk.at,"name")?.3:2))+messy*.3;T.search+=s;segs.push({k:"search",t:s,why:lab(d,tk.at,"name")?"":"หาของ ไม่มีป้ายบ่งชี้"});
-        T.nva+=tk.t+(p.low?.9:0);segs.push({k:"nva",t:tk.t+(p.low?.9:0),why:p.low?"ก้มหยิบ":tk.n});
-        if(tk.pick)held[tk.pick]=true;if(tk.store)held[tk.store]=false}
-      done.add(tid)});
-    if(first)walk(first,"กลับจุดเริ่มรอบถัดไป");
-    let risk=0;ASSY.parts.forEach(p=>{if(!p.risk)return;let r=p.risk;if(lab(d,p.id,"sep"))r*=.05;else if(lab(d,p.id,"name"))r*=.6;risk=1-(1-risk)*(1-r)});
-    T.err=risk*30;// expected rework seconds (re-adjust / re-torque)
-    const ct=T.va+T.walk+T.search+T.nva+T.err;
-    return {ok:!errs.length,errs,T,ct,walkM,pts:pts.length?pts:[WP],segs,risk,messy}
-  }
-  let IDEAL_CACHE=null;
-  function ideal(){if(IDEAL_CACHE)return IDEAL_CACHE;const d=newDesign();CLUTTER.forEach(c=>d.clutter[c.id]=c.need?"keep":"red");ASSY.parts.forEach(p=>{d.labels[p.id]={};p.labels.forEach(l=>d.labels[p.id][l.id]=true)});
-    const cand=SLOTS.filter(x=>!CLUTTER.some(c=>c.need&&c.slot===x.id)).sort((a,b)=>nearPt(a)-nearPt(b)).slice(0,5).map(x=>x.id),parts=ASSY.parts.map(p=>p.id);
-    let best=Infinity;const orders=[];
-    (function dfs(seq,done){if(orders.length>6000)return;if(seq.length===ASSY.tasks.length){orders.push(seq.slice());return}ASSY.tasks.forEach(t=>{if(done.has(t.id)||(t.req||[]).some(r=>!done.has(r)))return;done.add(t.id);seq.push(t.id);dfs(seq,done);seq.pop();done.delete(t.id)})})([],new Set());
-    (function perm(i,used){if(i===parts.length){orders.forEach(o=>{d.seq=o;const r=evaluate(d);if(r.ok&&r.ct<best)best=r.ct});return}
-      const part=ASSY.parts[i];cand.forEach(sl=>{const S=SLOTS.find(x=>x.id===sl);if(used.has(sl)||(S.toolOnly&&!part.tool))return;used.add(sl);d.pos[parts[i]]=sl;perm(i+1,used);used.delete(sl)})})(0,new Set());
-    return (IDEAL_CACHE=best)}
-  // ---------- drawing ----------
-  function draw(c,d,R,anim){
-    // polished plant floor with light reflections
-    let g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,"#aeb4b9");g.addColorStop(1,"#8a9197");c.fillStyle=g;c.fillRect(0,0,W,H);
-    for(let k=0;k<7;k++){const x=60+k*150;g=c.createRadialGradient(x,H*.6,4,x,H*.6,90);g.addColorStop(0,"rgba(255,255,255,.18)");g.addColorStop(1,"rgba(255,255,255,0)");c.fillStyle=g;c.fillRect(x-90,H*.6-90,180,180)}
-    c.strokeStyle="rgba(0,0,0,.06)";for(let x=0;x<W;x+=120){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
-    // overhead conveyor footprint + yellow hanger frame around the body (top view)
-    c.fillStyle="rgba(60,66,72,.35)";c.fillRect(0,38,W,96);
-    c.strokeStyle="#e8b10a";c.lineWidth=6;G.rr(c,236,40,588,104,10);c.stroke();c.lineWidth=4;[300,520,760].forEach(x=>{c.beginPath();c.moveTo(x,40);c.lineTo(x,144);c.stroke()});
-    // Body In White top view (bare steel), front to the left
-    g=c.createLinearGradient(0,46,0,138);g.addColorStop(0,"#e4e8eb");g.addColorStop(.5,"#c3c9ce");g.addColorStop(1,"#959da4");c.fillStyle=g;G.rr(c,250,48,560,88,38);c.fill();
-    c.strokeStyle="rgba(60,66,72,.45)";c.lineWidth=2;[[335,465],[470,640]].forEach(([a,b])=>{c.strokeRect(a,50,b-a,10);c.strokeRect(a,124,b-a,10)});
-    c.fillStyle="rgba(40,46,52,.55)";G.rr(c,380,62,190,60,14);c.fill();G.rr(c,610,64,90,56,12);c.fill();
-    c.fillStyle="rgba(255,255,255,.25)";for(let k=0;k<14;k++)c.fillRect(300+k*34,92,10,3);
-    Object.values(ASSY.points).forEach(p=>{c.fillStyle="#1d9152";c.beginPath();c.arc(p.x,p.y,7,0,7);c.fill();G.pill(c,p.n.replace("ประตู",""),p.x,p.y-24,"#1d9152")});
-    c.fillStyle="rgba(242,183,5,.85)";c.fillRect(0,196,W,4);c.fillRect(0,292,W,3);
-    G.text(c,"ทางเดินคนงาน",900,246,12,"rgba(255,255,255,.8)");
-    SLOTS.forEach(s=>{const occ=occupied(d,s.id);c.strokeStyle=STN._sel&&!occ?"#f2b705":"rgba(255,255,255,.55)";c.setLineDash([5,4]);c.lineWidth=2;G.rr(c,s.x-34,s.y-26,68,52,6);c.stroke();c.setLineDash([]);
-      G.text(c,`${nearPt(s).toFixed(1)} ม.`,s.x,s.y+38,11,"#fff","center",500);if(s.lbl)G.text(c,s.lbl,s.x,s.y-36,11,"#ffe9a8","center",500)});
-    CLUTTER.forEach(cl=>{if(d.clutter[cl.id]==="red")return;const p=cl.slot?SLOTS.find(s=>s.id===cl.slot):cl.path;
-      if(cl.id==="box"){G.box(c,p.x-28,p.y-16,56,34,12,"#b88a5a");c.strokeStyle="rgba(240,230,200,.8)";c.lineWidth=4;c.beginPath();c.moveTo(p.x-28,p.y-22);c.lineTo(p.x+28,p.y-22);c.stroke()}
-      else if(cl.id==="pallet"){c.fillStyle="#b0875a";for(let k=0;k<5;k++)c.fillRect(p.x-44,p.y-22+k*10,88,6);c.fillStyle="#7d5c3a";c.fillRect(p.x-44,p.y-24,8,48);c.fillRect(p.x-4,p.y-24,8,48);c.fillRect(p.x+36,p.y-24,8,48)}
-      else if(cl.id==="cart"){c.strokeStyle="#2353b3";c.lineWidth=4;c.strokeRect(p.x-28,p.y-20,56,40);c.beginPath();c.moveTo(p.x-28,p.y-20);c.lineTo(p.x+28,p.y+20);c.stroke();G.emoji(c,"⚠️",p.x,p.y,16,false)}
-      else G.emoji(c,cl.em,p.x,p.y-4,30);
-      if(d.clutter[cl.id]==="keep")G.pill(c,"เก็บไว้",p.x,p.y+22,"#1d9152")});
-    ASSY.parts.forEach(p=>{const s=SLOTS.find(x=>x.id===d.pos[p.id]);if(!s)return;
-      if(s.id==="bal"){c.strokeStyle="#888";c.beginPath();c.moveTo(s.x,30);c.lineTo(s.x,s.y-10);c.stroke()}
-      if(p.tool){G.box(c,s.x-24,s.y-12,48,30,8,"#5d666e")}else{c.strokeStyle="#2353b3";c.lineWidth=4;G.shadow(c,s.x,s.y+22,34,6,.3);c.strokeRect(s.x-30,s.y-18,60,40);c.fillStyle="rgba(30,36,42,.55)";c.fillRect(s.x-28,s.y-16,56,36);for(let k=0;k<3;k++){c.fillStyle="#d7dce0";G.rr(c,s.x-24+k*17,s.y-12,14,14,3);c.fill()}}
-      G.emoji(c,p.em,s.x,s.y-4,22,false);
-      const L=d.labels[p.id]||{};if(L.name){c.fillStyle="#fff";G.rr(c,s.x-26,s.y+8,52,12,2);c.fill();c.fillStyle="#1b222a";c.font="600 9px system-ui";c.textAlign="center";c.fillText(p.n.slice(0,12),s.x,s.y+15)}
-      if(L.sep){c.fillStyle="#cf3a2e";c.fillRect(s.x-30,s.y-14,30,4);c.fillStyle="#2356a3";c.fillRect(s.x,s.y-14,30,4)}
-      if(STN._selPart===p.id){c.strokeStyle="#f2b705";c.lineWidth=3;G.rr(c,s.x-36,s.y-30,72,56,8);c.stroke()}});
-    // spaghetti
-    if(R&&R.pts.length>1){c.strokeStyle="rgba(255,90,60,.75)";c.lineWidth=3;c.beginPath();R.pts.forEach((p,i)=>i?c.lineTo(p.x,p.y+6):c.moveTo(p.x,p.y+6));c.stroke()}
-    const op=anim?anim.p:WP;G.person(c,op.x,op.y-4,22,"#2f5d8a",{helmet:true});
-    if(anim&&anim.msg)G.pill(c,anim.msg,op.x,op.y-42,"#c98f00","#1b222a");
-  }
-  // ---------- UI ----------
-  function open(el,opt){
-    const d=newDesign(),IDEAL=ideal();let step=0,R=evaluate(d),anim=null,animH=0;STN._sel=null;STN._selPart=null;
-    const steps=["1 · 5ส สะสาง","2 · จัดวาง Part","3 · บ่งชี้","4 · ลำดับงาน","5 · ทดลองเดินงาน"];
-    el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">Standard Work · ออกแบบสถานีจริง</span><h3>${ASSY.name}</h3><p>ข้อมูลจาก ${ASSY.ois} · จัดพื้นที่ วางเกจและเครื่องมือ บ่งชี้ และเรียงลำดับงานเอง Cycle time ที่ได้จะใช้เป็นเวลาของสถานี FA-10 ในไลน์</p></div><div class="kz-total"><span class="label">Cycle time งานนี้</span><b id="stCT">-</b></div></div>
-      <div class="seg st-tabs" id="stTabs">${steps.map((s,i)=>`<button type="button" data-s="${i}">${s}</button>`).join("")}</div>
-      <div class="sim-wrap" id="stWrap"></div><div class="st-tl" id="stTL"></div><div class="st-kpi" id="stKPI"></div><div id="stPanel"></div>
-      <div class="actions"><button class="btn go" id="stUse">ใช้มาตรฐานนี้กับไลน์ →</button></div></div>`;
-    const cv=document.createElement("canvas"),dpr=Math.min(2,window.devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;cv.style.aspectRatio=W+"/"+H;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);$("stWrap").appendChild(cv);
-    const redraw=()=>draw(c,d,step>=3?R:null,anim);
-    cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;
-      if(step===0){const cl=CLUTTER.find(q=>{const p=q.slot?SLOTS.find(s=>s.id===q.slot):q.path;return Math.hypot(p.x-x,p.y-y)<36});if(cl){d.clutter[cl.id]=d.clutter[cl.id]==="red"?"keep":d.clutter[cl.id]==="keep"?"red":"keep";upd()}return}
-      if(step===1){const s=SLOTS.find(q=>Math.abs(q.x-x)<36&&Math.abs(q.y-y)<30);if(!s)return;const here=Object.entries(d.pos).find(([p,sl])=>sl===s.id);
-        if(!STN._selPart){if(here){STN._selPart=here[0];upd()}return}
-        const pid=STN._selPart,part=ASSY.parts.find(p=>p.id===pid);
-        if(s.toolOnly&&!part.tool){toast("จุดแขวนใช้ได้เฉพาะเครื่องมือ");return}
-        if(occupied(d,s.id,pid)==="clutter"){toast("ตำแหน่งนี้มีของวางอยู่ ทำ 5ส สะสางก่อน");return}
-        if(here&&here[0]!==pid){d.pos[here[0]]=d.pos[pid]}d.pos[pid]=s.id;STN._selPart=null;upd()}});
-    function toast(m){const w=$("stWrap");let t=w.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";w.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2000)}
-    function panel(){const P=$("stPanel");
-      if(step===0)P.innerHTML=`<p class="kz-q">แตะของในพื้นที่ (หรือปุ่มด้านล่าง) เพื่อตัดสินใจ: เก็บไว้ หรือ ติดป้ายแดงนำออก</p><div class="kz-grid">${CLUTTER.map(cl=>`<button type="button" class="kz-card s${d.clutter[cl.id]==="keep"?1:d.clutter[cl.id]==="red"?2:0}" data-cl="${cl.id}"><span class="em">${cl.em}</span><span>${cl.n}</span><small>${d.clutter[cl.id]==="keep"?"✓ เก็บไว้":d.clutter[cl.id]==="red"?"🏷️ ป้ายแดง นำออก":"แตะเพื่อเลือก"}</small></button>`).join("")}</div>`;
-      if(step===1)P.innerHTML=`<p class="kz-q">เลือกเกจหรือเครื่องมือ แล้วแตะช่องบนแผนผังเพื่อย้าย ของที่ใช้บ่อยควรอยู่ใกล้ประตูที่ต้องทำงาน</p><div class="acts">${ASSY.parts.map(p=>`<button type="button" class="act ${STN._selPart===p.id?"":"alt"}" data-p="${p.id}"><span class="em">${p.em}</span>${p.n}<small>${nearPt(SLOTS.find(s=>s.id===d.pos[p.id])).toFixed(1)} ม. จากจุดทำงาน</small></button>`).join("")}</div>`;
-      if(step===2)P.innerHTML=`<p class="kz-q">เลือกวิธีบ่งชี้ให้แต่ละชิ้นส่วน เพื่อหาง่ายและป้องกันหยิบผิด</p><div class="kz-rows">${ASSY.parts.map(p=>`<div class="kz-row"><span class="kz-it"><span class="em">${p.em}</span>${p.n}${p.risk?`<small>เสี่ยง: ${p.riskWhy}</small>`:""}</span><div class="seg">${p.labels.map(l=>`<button type="button" data-lp="${p.id}" data-l="${l.id}" aria-pressed="${lab(d,p.id,l.id)}">${l.n}</button>`).join("")}</div></div>`).join("")}</div>`;
-      if(step===3){const pool=ASSY.tasks.filter(t=>!d.seq.includes(t.id));P.innerHTML=`<p class="kz-q">แตะขั้นตอนเพื่อเรียงลำดับ ลองสลับลำดับดูว่า Cycle time เปลี่ยนไปอย่างไร เทียบกับ OIS จริงได้ที่ปุ่มด้านล่าง</p><details class="bulk" style="margin-bottom:10px"><summary>ดู ${ASSY.ois} (ลำดับและเวลาจริง)</summary><ol class="ois-list">${ASSY.tasks.map(t=>`<li>${t.n} <b>${t.oisT||t.t}s</b>${t.cc?" <span class=\"kz-tag\">CC</span>":""}</li>`).join("")}</ol><p class="label" style="text-transform:none;letter-spacing:0">เวลารวม ${ASSY.oisTotal} วินาที · Takt C857 = ${ASSY.takt} วินาที</p></details><div class="kz-seq"><div><span class="label">ขั้นตอนที่ยังไม่ได้ใส่</span><div class="kz-list">${pool.map(t=>`<button type="button" data-a="${t.id}">${t.n} <small>(${t.va?"เพิ่มคุณค่า":"ไม่เพิ่มคุณค่า"} · OIS ${t.oisT||t.t}s)</small></button>`).join("")||`<span class="label">ใส่ครบแล้ว</span>`}</div></div>
-        <div><span class="label">ลำดับงานมาตรฐานของคุณ</span><ol class="kz-list mine">${d.seq.map((id,i)=>`<li><button type="button" data-r="${id}">${ASSY.tasks.find(t=>t.id===id).n}</button><span class="ypm"><button type="button" data-up="${i}" ${i?"":"disabled"} aria-label="เลื่อนขึ้น">↑</button><button type="button" data-dn="${i}" ${i<d.seq.length-1?"":"disabled"} aria-label="เลื่อนลง">↓</button></span></li>`).join("")||`<span class="label">ยังว่าง</span>`}</ol></div></div>
-        ${R.errs.length?`<div class="errs">${R.errs.map(e=>`<div class="lesson" style="border-color:var(--stop)">${e}</div>`).join("")}</div>`:""}`}
-      if(step===4)P.innerHTML=R.ok?`<div class="actions"><button type="button" class="btn" id="stPlay">▶ ดูคนงานเดินงาน 1 รอบ</button></div>${R.segs.filter(s=>s.why).slice(0,0).join("")}<div class="lesson">Takt รุ่น C857 = <b>${ASSY.takt} วินาที</b> · OIS จริง ${ASSY.oisTotal} วินาที · แบบที่ดีที่สุดที่ระบบหาได้ ${IDEAL.toFixed(0)} วินาที · <b>ของคุณ ${R.ct.toFixed(0)} วินาที</b> ${R.ct>ASSY.takt?"เกิน Takt ไลน์จะผลิตไม่ทัน":"ทัน Takt"}</div>${tips().map(t=>`<div class="lesson">${t}</div>`).join("")}`:`<div class="lesson" style="border-color:var(--stop)">ลำดับงานยังไม่ถูกต้อง กลับไปแก้ที่ขั้นที่ 4</div>`;
-      P.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{const k=b.dataset.cl;d.clutter[k]=d.clutter[k]==="keep"?"red":"keep";upd()});
-      P.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{STN._selPart=STN._selPart===b.dataset.p?null:b.dataset.p;upd()});
-      P.querySelectorAll("[data-lp]").forEach(b=>b.onclick=()=>{const p=b.dataset.lp,l=b.dataset.l;d.labels[p]=d.labels[p]||{};d.labels[p][l]=!d.labels[p][l];upd()});
-      P.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{d.seq.push(b.dataset.a);upd()});
-      P.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{d.seq.splice(d.seq.indexOf(b.dataset.r),1);upd()});
-      P.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=+b.dataset.up;[d.seq[i-1],d.seq[i]]=[d.seq[i],d.seq[i-1]];upd()});
-      P.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;[d.seq[i+1],d.seq[i]]=[d.seq[i],d.seq[i+1]];upd()});
-      if($("stPlay"))$("stPlay").onclick=play;}
-    function tips(){const t=[],T=R.T;
-      if(R.messy)t.push(`<b>5ส:</b> ยังมีของไม่จำเป็น ${R.messy} ชิ้นในพื้นที่ ทำให้ค้นหานานขึ้นทุกครั้งที่หยิบ`);
-      if(d.clutter.ext==="red")t.push(`<b>ความปลอดภัย:</b> ถังดับเพลิงถูกนำออก ต้องเก็บไว้ประจำที่`);
-      if(T.walk>8)t.push(`<b>Motion:</b> เดิน ${R.walkM.toFixed(1)} เมตรต่อคัน ย้ายเกจและเครื่องมือมาไว้ใกล้ประตูที่ใช้งาน`);
-      if(d.pos.meas!=="bal"&&d.pos.wrench!=="bal")t.push(`<b>เครื่องมือ:</b> แขวนเครื่องมือที่ใช้หลายครั้งไว้ที่จุดแขวนเหนือสถานี จะไม่ต้องเดินไปหยิบ`);
-      if(R.ct>ASSY.takt)t.push(`<b>Takt:</b> Cycle time ${R.ct.toFixed(0)} วินาที เกิน Takt ${ASSY.takt} วินาที ต้องลดการเดินและการค้นหา`);
-      if(R.risk>.02)t.push(`<b>บ่งชี้:</b> โอกาสหยิบผิด ${(R.risk*100).toFixed(1)}% ต่อคัน ของที่หน้าตาคล้ายกันต้องแยกช่องและใช้สีต่างกัน`);
-      if(T.search>3)t.push(`<b>ค้นหา:</b> เสียเวลาหาของ ${T.search.toFixed(1)} วินาทีต่อคัน`);
-      return t}
-    function upd(){R=evaluate(d);const T=R.T,tot=Math.max(1,T.va+T.walk+T.search+T.nva+T.err);
-      $("stCT").textContent=R.ok?R.ct.toFixed(1)+"s":"-";
-      $("stTL").innerHTML=R.ok?[["va","งานเพิ่มคุณค่า",T.va],["walk","เดิน",T.walk],["search","ค้นหา",T.search],["nva","ไม่เพิ่มคุณค่าแต่จำเป็น",T.nva],["err","เผื่อหยิบผิด",T.err]].map(([k,n,v])=>v>.05?`<i class="st-${k}" style="flex:${v}" title="${n} ${v.toFixed(1)}s"><span>${n} ${v.toFixed(1)}s</span></i>`:"").join(""):"";
-      $("stKPI").innerHTML=[["ระยะเดิน/คัน",R.walkM.toFixed(1)+" ม."],["สัดส่วนงานเพิ่มคุณค่า",R.ok?Math.round(T.va/tot*100)+"%":"-"],["โอกาสหยิบผิด",(R.risk*100).toFixed(1)+"%"],["ของรกในพื้นที่",R.messy+" ชิ้น"]].map(h=>`<div class="hudi"><span>${h[0]}</span><b>${h[1]}</b></div>`).join("");
-      $("stTabs").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.s===step));
-      $("stUse").disabled=!R.ok;panel();redraw()}
-    function play(){if(!R.ok)return;cancelAnimationFrame(animH);const pts=R.pts,segs=[];let t=0;for(let i=1;i<pts.length;i++){const m=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y)/PX;segs.push({a:pts[i-1],b:pts[i],t0:t,t1:t+m*.5+.35});t+=m*.5+.35}
-      const st=performance.now();const f=()=>{const e=(performance.now()-st)/1000;const s=segs.find(q=>e<q.t1)||segs[segs.length-1];const k=Math.min(1,Math.max(0,(e-s.t0)/(s.t1-s.t0-.35)));anim={p:{x:s.a.x+(s.b.x-s.a.x)*k,y:s.a.y+(s.b.y-s.a.y)*k},msg:k>=1?"หยิบ/ทำงาน":""};redraw();if(e<t)animH=requestAnimationFrame(f);else{anim=null;redraw()}};f()}
-    $("stTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{step=+b.dataset.s;STN._selPart=null;upd()});
-    $("stUse").onclick=()=>{if(!R.ok)return;cancelAnimationFrame(animH);const sortOk=CLUTTER.filter(cl=>(d.clutter[cl.id]==="red")===!cl.need).length/CLUTTER.length;
-      const res={ct:R.ct,risk:R.risk,walkM:R.walkM,va:R.T.va/R.ct,ideal:IDEAL,eff:Math.min(1,IDEAL/R.ct),sort:sortOk,tips:tips()};el.innerHTML=`<div class="kz-sum"><span class="chip-s">FA-10: CT ${R.ct.toFixed(0)}s / Takt ${ASSY.takt}s (${Math.round(res.eff*100)}% ของที่ดีที่สุด)</span><span class="chip-s">เดิน ${R.walkM.toFixed(1)} ม./คัน</span><span class="chip-s ${R.risk>.02?"off":""}">หยิบผิด ${(R.risk*100).toFixed(1)}%</span></div>`;opt.onDone(res)};
-    upd();el.scrollIntoView({block:"start",behavior:"smooth"});
-  }
-  return {open,evaluate,ideal,newDesign};
 })();
 
 // ---------------- GAME 1: Lean Kitchen (restaurant) ----------------
@@ -2473,248 +2379,594 @@ SIMS.push({id:"farm",name:"Lean Farm ฟาร์มผักตามสั่�
 });
 })();
 
-// ---------------- GAME 3: Lean Factory City (economics, JPH, hiring, station design) ----------------
+// =====================================================================
+// GAME: เปิดโรงงานประกอบปากกา (Lean Pen Factory)
+// Flow follows the AL-01/AL-02 class: SQDCPME goals → hire new staff → 6 KUP → line layout & balance → run 10 min
+// =====================================================================
 (()=>{
-const W=960,H=540,SPEED=20,SHIFT=3600;// 1 play second = 20 shift seconds; a shift is 1 hour
-const ECON={price:3600,mat:2100,wage:1000,hire:300,fire:200,hold:20,late:900,cash:30000};
-const ST_ALL={body:{n:"ปรับตั้งประตู",code:"FA-10",wc:243},weld:{n:"เชื่อม",wc:200},assy:{n:"ประกอบ",wc:300},paint:{n:"พ่นสี",wc:280},qc:{n:"ตรวจสอบ",wc:160}};
+const W=960,H=540,SPEED=6,SHIFT=3600,ROUND=720,NR=5;// 10 real minutes = 60 shift minutes; demand rises every 2 real minutes
+const ECON={price:45,mat:15,scrap:5,hire:150,fire:100,rent:600,late:10,complaint:60,cash:4000};
 const LEVELS=[
-  {st:["body","assy","paint","qc"],hired:4,init:[1,1,1,1],jph:12,cap:15,defect:0,brk:0,colors:1,acts:[]},
-  {st:["body","weld","assy","paint","qc"],hired:5,init:[1,1,1,1,1],jph:13,cap:17,defect:.08,brk:.00012,colors:1,acts:["shine","jidoka"]},
-  {st:["body","weld","assy","paint","qc"],hired:6,init:[1,1,2,1,1],jph:15,cap:20,defect:.1,brk:.00015,colors:3,chg:60,mura:true,acts:["shine","jidoka","smed"]}
+  {jph:[60,90,120,150,180],colorsFrom:2,pcFrom:2,brkFrom:3,absent:-1,goalC:[500,1000,1600]},
+  {jph:[90,120,150,180,240],colorsFrom:1,pcFrom:1,brkFrom:2,absent:3,goalC:[800,1600,2400]},
+  {jph:[120,150,180,240,300],colorsFrom:0,pcFrom:1,brkFrom:1,absent:2,goalC:[1200,2200,3200]}
 ];
-const ACTS={
-  shine:{lean:"TPM · ทำความสะอาดคือตรวจสอบ",title:"ทำความสะอาดเครื่องจักร",desc:"เช็ดเครื่องและหาจุดผิดปกติก่อนเครื่องเสีย",kind:"shine",data:{q:"แตะคราบน้ำมันให้หมด สังเกตจุดรั่วซึมหรือน็อตหลวม",dirt:12,abn:3,time:15,abnEm:"🛢️",abnName:"จุดน้ำมันรั่ว/น็อตหลวม",abnWhy:"สิ่งผิดปกติที่ไม่ถูกพบจะทำให้เครื่องเสียกลางกะ"},effect:s=>`เครื่องจักรเสียน้อยลง ${Math.round(s*70)}%`},
-  jidoka:{lean:"Jidoka",title:"เมื่อพบสีพ่นไม่สม่ำเสมอ",desc:"เลือกกติกาที่หยุดปัญหาที่ต้นเหตุ",kind:"choice",data:{q:"สถานีพ่นสีพบว่าบางคันสีไม่สม่ำเสมอ ควรทำอย่างไร",opts:[
-    {t:"ปล่อยต่อไป ให้สถานีตรวจสอบท้ายไลน์คัดออกเอง",s:.1,why:"ของเสียไปถึงท้ายไลน์ ต้องย้อนกลับมาทำใหม่ เสียกำลังการผลิต"},{t:"ติดเซ็นเซอร์ความหนาสี หยุดอัตโนมัติและแก้ทันทีที่สถานีพ่นสี",s:1,why:"ถูกต้อง: Jidoka หยุดที่ต้นเหตุ ไม่ส่งของเสียต่อ"},{t:"เพิ่มคนตรวจท้ายไลน์อีก 2 คน",s:.3,why:"เพิ่มต้นทุน ไม่ลดการเกิดของเสีย"}]},effect:s=>s>=1?"ของเสียสีถูกแก้ทันทีที่สถานีพ่นสี":"ของเสียยังหลุดไปท้ายไลน์"},
-  smed:{lean:"SMED",title:"เปลี่ยนสีพ่นให้เร็ว",desc:"แยกงานที่ต้องหยุดพ่นกับงานที่เตรียมล่วงหน้าได้",kind:"classify",data:{q:"งานตอนเปลี่ยนสีพ่น",cats:["ภายใน (หยุดพ่น)","ภายนอก (เตรียมล่วงหน้า)"],items:[
-    {t:"ล้างหัวพ่นสีเดิม",cat:0,why:"ทำได้เมื่อหัวพ่นว่าง"},{t:"ผสมสีใหม่ให้พร้อม",cat:1,why:"เตรียมได้ระหว่างพ่นคันก่อน"},{t:"นำถังสีใหม่มาวางรอข้างบูธ",cat:1,why:"เตรียมล่วงหน้าได้"},{t:"เปลี่ยนท่อส่งสี",cat:0,why:"ต้องหยุดพ่น"},{t:"หาเอกสารค่าความหนาสี",cat:1,why:"ควรเตรียมไว้ก่อน"},{t:"ทดสอบพ่นแผ่นตัวอย่าง",cat:0,why:"ต้องใช้หัวพ่นจริง"}]},effect:s=>`เวลาเปลี่ยนสีลดลง ${Math.round(s*80)}%`}
-};
-const GEMBA={lean:"5ส · เดิน Gemba (ภาพจริง)",title:"หาความผิดปกติข้างไลน์ประกอบ",desc:"ภาพจริงจากพื้นที่ข้างไลน์ แตะจุดที่ควรปรับปรุงให้ครบ ระวังแตะจุดที่ทำได้ดีอยู่แล้ว",kind:"gemba",doneLabel:"ไปออกแบบสถานี →",
-  data:{q:"แตะจุดที่เป็นปัญหาในภาพ (สลับภาพได้ด้านบน)",photos:[
-    {name:"ภาพที่ 1",src:"gemba1.jpg",w:1400,h:1050,spots:[
-      {x:100,y:420,w:180,h:270,n:"Part ยังอยู่ในกล่องกระดาษผู้ผลิต ซ้อนสูง",cat:"สะดวก",fix:"เปลี่ยนเป็นกล่องหมุนเวียนขนาดพอดี วางบนชั้น FIFO ระดับเอว หยิบได้ทันทีไม่ต้องแกะ"},
-      {x:285,y:510,w:340,h:220,n:"กล่องเปิดค้าง มีโฟมและพลาสติกห่อ",cat:"สะสาง",fix:"แกะบรรจุภัณฑ์ที่จุดเตรียมชิ้นส่วนก่อนส่งเข้าไลน์ ไม่ให้ขยะมาอยู่ข้างไลน์"},
-      {x:40,y:500,w:95,h:170,n:"ถุงพลาสติกใหญ่วางข้างกอง",cat:"สะสาง",fix:"ขยะบรรจุภัณฑ์ต้องมีถังและจุดทิ้งที่กำหนด"},
-      {x:1075,y:455,w:325,h:295,n:"พาเลทเต็มห่อฟิล์มวางข้างไลน์",cat:"Inventory",fix:"ส่งเฉพาะจำนวนที่ใช้ตามรอบ Kanban ไม่วางสต็อกทั้งพาเลทที่ไลน์"},
-      {x:620,y:350,w:410,h:420,ok:true,n:"รถเข็นเฉพาะชิ้นส่วน",fix:"จุดนี้ทำได้ดี: รถเข็นเฉพาะรุ่น หยิบง่าย มีป้ายบ่งชี้"}]},
-    {name:"ภาพที่ 2",src:"gemba2.jpg",w:1400,h:1050,spots:[
-      {x:865,y:500,w:120,h:180,n:"ถุงพลาสติกวางพิงกองกล่อง",cat:"สะสาง",fix:"นำออกจากพื้นที่ทันที กำหนดจุดทิ้งบรรจุภัณฑ์"},
-      {x:840,y:645,w:140,h:70,n:"กล่องกระดาษพับวางบนพื้น",cat:"สะสาง",fix:"ลังเปล่าต้องส่งกลับหรือทิ้งตามรอบ ไม่วางบนพื้น"},
-      {x:690,y:415,w:80,h:55,n:"กล่องวางบนรถเข็นชิ้นส่วน",cat:"สุขลักษณะ",fix:"รถเข็นเฉพาะชิ้นส่วนห้ามวางของอื่น ติดป้ายห้ามวาง"},
-      {x:915,y:725,w:80,h:45,n:"เศษเทปบนพื้นทางเดิน",cat:"สะอาด",fix:"ทำความสะอาดทันที และหาสาเหตุว่าเศษมาจากไหน"},
-      {x:955,y:430,w:215,h:250,n:"กล่องซ้อนสูง ไม่มีพื้นที่และป้ายกำหนด",cat:"บ่งชี้",fix:"ตีเส้นพื้นที่ ติดป้ายชื่อ Part และเส้น Max/Min"},
-      {x:0,y:495,w:235,h:145,n:"กล่อง Part วางพื้นนอกพื้นที่กำหนด",cat:"สะดวก",fix:"วางบนชั้นหรือรถเข็นในพื้นที่ที่ตีเส้นไว้"},
-      {x:1170,y:530,w:230,h:170,n:"กล่องใหญ่เปิดค้าง หยิบจากกล่องผู้ผลิตโดยตรง",cat:"สะดวก",fix:"ย้ายชิ้นส่วนลงกล่องหมุนเวียนตามจำนวนที่ใช้"},
-      {x:270,y:300,w:250,h:390,ok:true,n:"แร็คเฉพาะชิ้นส่วนมีผ้าคลุมกันฝุ่น",fix:"จุดนี้ทำได้ดี: แร็คเฉพาะ ป้องกันฝุ่นและความเสียหาย"}]}]},
-  effect:s=>`คุณหาความผิดปกติได้ ${Math.round(s*100)}% ในพื้นที่จริง`};
-const COLORS=["#2f6fd0","#c7392d","#3a4048"];
-const rand=(a,b)=>a+Math.random()*(b-a);
+const INKS=["#2356c9","#d23a2e","#1d2228"],INKN=["น้ำเงิน","แดง","ดำ"];
+const setH=(el,h)=>{if(el&&el._h!==h){el._h=h;el.innerHTML=h;return true}return false};
+const rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
 const fmtT=s=>{s=Math.max(0,Math.floor(s));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`};
 const baht=v=>(v<0?"-":"")+Math.abs(Math.round(v)).toLocaleString()+" ฿";
+const pct=v=>Math.round(v*100)+"%";
 
-function newState(lv){const n=lv.st.length;return {t:0,cash:ECON.cash,hired:lv.hired,alloc:lv.init.slice(),jph:lv.jph,mode:"pull",pushInt:3600/lv.jph,limit:2,relT:0,
-  buf:[...Array(n+1)].map(()=>[]),cur:[...Array(n)].map(()=>null),blocked:[...Array(n)].fill(false),down:[...Array(n)].fill(0),lastColor:[...Array(n)].fill(null),setup:[...Array(n)].fill(0),
-  orders:0,backlog:0,shipped:0,rework:0,wrong:0,caught:0,breaks:0,changes:0,wipSum:0,lbeSum:0,lead:[],K:{},nextOrd:300,uid:0,fx:[],truck:0,rev:0,matCost:0,wages:0,hires:0,holdCost:0,idleSum:0,bodyCT:ASSY.oisTotal,bodyRisk:0}}
-function preload(st,lv){lv.st.forEach((k,i)=>{const w=i===0?st.bodyCT:ST_ALL[k].wc;st.cur[i]={id:++st.uid,born:-w*(i+1),color:COLORS[Math.floor(Math.random()*lv.colors)],rem:w*Math.random(),max:w,chk:1,pchk:1}});st.nextOrd=3600/st.jph}
-function wcOf(st,lv,i){const k=lv.st[i];return k==="body"?st.bodyCT:ST_ALL[k].wc}
-function ctOf(st,lv,i){const w=st.alloc[i];return w?wcOf(st,lv,i)/w:Infinity}
-function taktOf(st,lv){const base=3600/st.jph;return lv.mura?base:base}
-function marketRate(st,lv){const cap=lv.mura?lv.cap*(1+.25*Math.sin(st.t/600)):lv.cap;return Math.min(st.jph,cap)}
-function lbe(st,lv){const sum=lv.st.reduce((a,_,i)=>a+wcOf(st,lv,i),0),mx=Math.max(...lv.st.map((_,i)=>ctOf(st,lv,i)));return isFinite(mx)&&st.hired?Math.min(1,sum/(st.hired*mx)):0}
-function stX(lv,i){const n=lv.st.length;return 150+i*(660/(n-1))}
-function carShape(c,x,y,col,s){s=s||1;G.shadow(c,x,y+10*s,26*s,6*s,.35);let g=c.createLinearGradient(0,y-12*s,0,y+8*s);g.addColorStop(0,G.shade(col,.25));g.addColorStop(1,G.shade(col,-.3));c.fillStyle=g;G.rr(c,x-24*s,y-6*s,48*s,14*s,5*s);c.fill();
-  c.fillStyle=G.shade(col,-.1);G.rr(c,x-14*s,y-14*s,26*s,10*s,4*s);c.fill();c.fillStyle="rgba(160,200,230,.85)";G.rr(c,x-11*s,y-12*s,9*s,6*s,2);c.fill();G.rr(c,x+1*s,y-12*s,9*s,6*s,2);c.fill();
-  c.fillStyle="#15181b";[-14,14].forEach(o=>{c.beginPath();c.arc(x+o*s,y+8*s,5*s,0,7);c.fill()})}
+// ---------------- SQDCPME goals (Policy Deployment) ----------------
+const GOALS=[
+  {k:"S",th:"Safety ความปลอดภัย",m:"ท่าทางเสี่ยง (เอื้อมนอกระยะ) ต่อการประกอบ 1 ด้าม",u:" ครั้ง",dir:-1,tiers:[2,1,0],col:"#1d9152"},
+  {k:"Q",th:"Quality คุณภาพ",m:"First Pass Yield (ด้ามที่ผ่านทดสอบครั้งแรก)",u:"%",dir:1,tiers:[90,95,98],col:"#2356a3"},
+  {k:"D",th:"Delivery ส่งมอบ",m:"ส่งมอบตามออเดอร์ลูกค้า",u:"%",dir:1,tiers:[80,90,95],col:"#d97706"},
+  {k:"C",th:"Cost ต้นทุน/กำไร",m:"กำไรสุทธิทั้งกะ",u:" ฿",dir:1,tiers:null,col:"#7e22ce"},
+  {k:"P",th:"People บุคลากร",m:"Line Balance Efficiency เฉลี่ย (ใช้คนคุ้มค่า)",u:"%",dir:1,tiers:[70,80,90],col:"#0f8b8d"},
+  {k:"M",th:"Maintenance บำรุงรักษา",m:"เวลาเครื่องอัดด้ามหยุด (Downtime)",u:" นาที",dir:-1,tiers:[8,4,2],col:"#5d666e"},
+  {k:"E",th:"Environment สิ่งแวดล้อม",m:"เศษของเสียที่ต้องทิ้ง (ไส้/ด้าม)",u:" ชิ้น",dir:-1,tiers:[10,5,2],col:"#3f7d20"}
+];
+const TIERN=["พื้นฐาน","ท้าทาย","สูงมาก"];
+const tiersOf=(g,lv)=>g.tiers||lv.goalC;
+const smart=(g,v)=>`${g.m} ${g.dir<0?"ไม่เกิน":"อย่างน้อย"} ${v.toLocaleString()}${g.u} ภายในกะนี้ (60 นาที) วัดจากข้อมูลจริงของไลน์`;
+const hit=(g,v,act)=>g.dir<0?act<=v:act>=v;
 
-const VP={x:480,y:236};
-function bodyShape(c,x,y,s,acc,opts){opts=opts||{};// side view of a painted EV body shell (front to the right)
-  const w=150*s,h=46*s,x0=x-w/2,y0=y-h;
-  G.shadow(c,x,y+6*s,w*.45,6*s,.25);
-  c.save();c.beginPath();c.moveTo(x0,y-10*s);c.lineTo(x0+4*s,y0+18*s);c.quadraticCurveTo(x0+20*s,y0+16*s,x0+38*s,y0+2*s);c.lineTo(x0+92*s,y0);c.quadraticCurveTo(x0+112*s,y0+2*s,x0+124*s,y0+18*s);c.lineTo(x0+w-2*s,y0+24*s);c.lineTo(x0+w,y-10*s);c.quadraticCurveTo(x0+w-2*s,y,x0+w-10*s,y);c.lineTo(x0+8*s,y);c.closePath();
-  let g=c.createLinearGradient(0,y0,0,y);g.addColorStop(0,"#ffffff");g.addColorStop(.55,"#e9edf0");g.addColorStop(1,"#b9c1c8");c.fillStyle=g;c.fill();c.clip();
-  // accent lower panel and door blades (like the plant's two-tone bodies)
-  g=c.createLinearGradient(0,y-18*s,0,y);g.addColorStop(0,G.shade(acc,.15));g.addColorStop(1,G.shade(acc,-.35));c.fillStyle=g;c.fillRect(x0,y-17*s,w,17*s);
-  c.fillStyle=G.shade(acc,-.05);c.beginPath();c.moveTo(x0+30*s,y0+22*s);c.lineTo(x0+60*s,y0+20*s);c.lineTo(x0+52*s,y-17*s);c.lineTo(x0+26*s,y-17*s);c.fill();
-  c.restore();
-  // windows / open door holes
-  c.fillStyle="rgba(28,36,44,.85)";c.beginPath();c.moveTo(x0+42*s,y0+6*s);c.lineTo(x0+70*s,y0+4*s);c.lineTo(x0+70*s,y0+20*s);c.lineTo(x0+36*s,y0+20*s);c.closePath();c.fill();
-  c.beginPath();c.moveTo(x0+76*s,y0+4*s);c.lineTo(x0+92*s,y0+4*s);c.quadraticCurveTo(x0+108*s,y0+6*s,x0+116*s,y0+20*s);c.lineTo(x0+76*s,y0+20*s);c.closePath();c.fill();
-  if(opts.open){c.fillStyle="rgba(20,26,32,.9)";c.fillRect(x0+40*s,y0+22*s,32*s,14*s);c.fillRect(x0+76*s,y0+22*s,30*s,14*s)}
-  c.strokeStyle="rgba(0,0,0,.18)";c.lineWidth=1;c.beginPath();c.moveTo(x0+73*s,y0+3*s);c.lineTo(x0+73*s,y-6*s);c.stroke();
-  // wheel arches (no wheels on trim line)
-  c.fillStyle="#2a3036";[24,124].forEach(o=>{c.beginPath();c.arc(x0+o*s,y,12*s,Math.PI,0);c.fill()});
-  if(opts.wheels){c.fillStyle="#15181b";[24,124].forEach(o=>{c.beginPath();c.arc(x0+o*s,y,11*s,0,7);c.fill();c.fillStyle="#9aa0a6";c.beginPath();c.arc(x0+o*s,y,5*s,0,7);c.fill();c.fillStyle="#15181b"})}
+// ---------------- workbench (Standardized Work) ----------------
+const BW=960,BH=470,PXCM=5,SH={x:480,y:458},WP={x:480,y:375},RN=185,RM=285;
+const SLOTS=[{id:"n1",x:400,y:325},{id:"n2",x:560,y:325},{id:"n3",x:310,y:385},{id:"n4",x:650,y:385},{id:"m1",x:260,y:290},{id:"m2",x:700,y:290},{id:"m3",x:415,y:230},{id:"m4",x:545,y:230},
+  {id:"o1",x:178,y:370},{id:"o2",x:782,y:370},{id:"o3",x:290,y:160},{id:"o4",x:670,y:160},{id:"o5",x:480,y:150}];
+const zoneOf=s=>{const r=Math.hypot(s.x-SH.x,s.y-SH.y);return r<=RN?0:r<=RM?1:2};
+const ZN=["ระยะเอื้อมปกติ","ระยะเอื้อมสุดแขน","นอกระยะ ต้องเอี้ยว/ลุก"];
+const PARTS=[
+  {id:"refill",short:"ไส้ปากกา 3 สี",risk:.16,riskWhy:"ไส้สีน้ำเงิน แดง ดำ หน้าตาเหมือนกัน หยิบผิดสี ลูกค้าไม่รับ",labels:[{id:"name",n:"ป้ายชื่อ"},{id:"sep",n:"แยกช่องตามสี + ป้ายสี"}]},
+  {id:"spring",short:"สปริง",small:true,labels:[{id:"name",n:"ป้ายชื่อ"},{id:"tray",n:"ถาดก้นลาด หยิบง่าย"}]},
+  {id:"lower",short:"ด้ามล่าง (มีหัวปากกา)",labels:[{id:"name",n:"ป้ายชื่อ"}]},
+  {id:"upper",short:"ด้ามบน + คลิป",risk:.06,riskWhy:"ด้ามบนรุ่นใสกับรุ่นทึบคล้ายกัน ใส่ผิดรุ่นต้องรื้อ",labels:[{id:"name",n:"ป้ายชื่อ + รุ่น"},{id:"sep",n:"แยกช่องรุ่น + สีป้าย"}]},
+  {id:"button",short:"กลไกกด",small:true,labels:[{id:"name",n:"ป้ายชื่อ"},{id:"tray",n:"ถาดก้นลาด หยิบง่าย"}]},
+  {id:"paper",short:"แผ่นทดสอบเขียน",labels:[{id:"name",n:"ป้ายจุดวาง"}]},
+  {id:"box",short:"กล่องบรรจุ 12 ด้าม",labels:[{id:"name",n:"ป้ายจุดวาง + ช่องนับ"}]}
+];
+const CLUTTER=[
+  {id:"phone",n:"โทรศัพท์มือถือ",em:"📱",slot:"n1",need:false,why:"ของส่วนตัวทำให้เสียสมาธิ และกินตำแหน่งที่หยิบง่ายที่สุด"},
+  {id:"cup",n:"แก้วน้ำหวาน",em:"🧋",slot:"n2",need:false,why:"เสี่ยงหกใส่ชิ้นงาน ไม่ควรอยู่บนโต๊ะประกอบ"},
+  {id:"rej",n:"ปากกาเสียค้างจากเมื่อวาน",em:"🗑️",slot:"n3",need:false,why:"ของเสียต้องแยกไปกล่องแดงทันที อาจปนกับของดี"},
+  {id:"oldwi",n:"WI ฉบับเก่า (rev.0)",em:"📄",slot:"m3",need:false,why:"เอกสารหมดอายุ ทำให้ทำงานผิดมาตรฐาน"},
+  {id:"wi",n:"OIS ฉบับปัจจุบัน",em:"📋",slot:"o5",need:true,why:"มาตรฐานการทำงานต้องอยู่ที่หน้างานเสมอ"}
+];
+const TASKS=[
+  {id:"t1",n:"หยิบไส้ปากกา",s:"หยิบไส้",pick:"refill",h:.5},
+  {id:"t2",n:"หยิบสปริง",s:"หยิบสปริง",pick:"spring",h:.6},
+  {id:"t3",n:"สวมสปริงเข้ากับไส้ปากกา",s:"สวมสปริง",at:"wp",h:2.5,va:true,use:["refill","spring"],req:["t1","t2"],why:"ต้องหยิบไส้และสปริงก่อน"},
+  {id:"t4",n:"หยิบด้ามล่าง",s:"หยิบด้ามล่าง",pick:"lower",h:.5},
+  {id:"t5",n:"ใส่ไส้ลงด้ามล่าง",s:"ใส่ไส้",at:"wp",h:2,va:true,use:["lower"],req:["t3","t4"],why:"ต้องมีไส้ที่สวมสปริงแล้วและด้ามล่าง"},
+  {id:"t6",n:"หยิบกลไกกด",s:"หยิบกลไก",pick:"button",h:.5},
+  {id:"t7",n:"หยิบด้ามบน",s:"หยิบด้ามบน",pick:"upper",h:.5},
+  {id:"t8",n:"ใส่กลไกกดเข้าด้ามบน",s:"ใส่กลไก",at:"wp",h:3,va:true,use:["button","upper"],req:["t6","t7"],why:"ต้องหยิบกลไกกดและด้ามบนก่อน"},
+  {id:"t9",n:"อัดด้ามบนเข้ากับด้ามล่าง (เครื่องอัด)",s:"อัดด้าม",at:"wp",h:3.5,va:true,req:["t5","t8"],why:"ต้องประกอบด้ามล่างและด้ามบนให้เสร็จก่อน",pen:true},
+  {id:"t10",n:"ทดสอบกดและเขียนบนแผ่นทดสอบ",s:"ทดสอบเขียน",at:"paper",h:3,req:["t9"],why:"ต้องอัดด้ามเป็นปากกาก่อน"},
+  {id:"t11",n:"ใส่กล่องบรรจุ",s:"แพ็คกล่อง",at:"box",h:1.5,req:["t10"],why:"ต้องทดสอบก่อนแพ็ค ไม่งั้นพบของเสียต้องแกะกล่อง"}
+];
+const TK=id=>TASKS.find(t=>t.id===id);
+const OIS_ORDER=["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11"];
+const IDEAL_CT=25.5;// best bench found by offline search (all 5S, labels, best layout and order)
+function newBench(){return {clutter:Object.fromEntries(CLUTTER.map(c=>[c.id,null])),pos:{refill:"o1",spring:"m1",lower:"o3",upper:"o4",button:"m2",paper:"o2",box:"m4"},labels:{},seq:[]}}
+const lab=(d,p,l)=>!!(d.labels[p]&&d.labels[p][l]);
+const slotOf=(d,pid)=>SLOTS.find(s=>s.id===d.pos[pid]);
+const blockedBy=(d,sid)=>CLUTTER.find(c=>c.slot===sid&&d.clutter[c.id]!=="red");
+function evalBench(d){
+  const errs=[],done=new Set(),held=[],per={},pts=[{x:WP.x,y:WP.y}],T={va:0,nva:0,move:0,search:0},cuts=[];let cur={x:WP.x,y:WP.y},risky=0;
+  const messy=CLUTTER.filter(c=>!c.need&&d.clutter[c.id]!=="red").length;
+  const base={T,per,pts,risky:0,messy,cuts,riskRefill:0,riskUpper:0,wiOk:d.clutter.wi!=="red"};
+  if(!d.seq.length)return Object.assign(base,{ok:false,errs:["ยังไม่ได้จัดลำดับงาน"],ct:0});
+  const missing=TASKS.filter(t=>!d.seq.includes(t.id));if(missing.length)errs.push("ยังขาดขั้นตอน: "+missing.map(t=>t.s).join(", "));
+  const mv=to=>{const cm=Math.hypot(to.x-cur.x,to.y-cur.y)/PXCM;if(cm<1)return 0;cur={x:to.x,y:to.y};pts.push(cur);return .12+cm/80};
+  const zpen=s=>{const z=zoneOf(s);if(z===2)risky++;return z===1?.25:z===2?1:0};
+  d.seq.forEach((id,i)=>{const tk=TK(id),p={mv:0,h:tk.h,sr:0};
+    (tk.req||[]).forEach(r=>{if(!done.has(r))errs.push(`ลำดับ ${i+1} "${tk.s}" ทำไม่ได้: ${tk.why}`)});
+    if(tk.pick){const s=slotOf(d,tk.pick),part=PARTS.find(x=>x.id===tk.pick);
+      if(s){p.mv=mv(s)+zpen(s);p.sr=(lab(d,part.id,"name")||lab(d,part.id,"sep")?.2:.9)+messy*.2+(part.small&&!lab(d,part.id,"tray")?.5:0)}
+      held.push(tk.pick);if(held.filter(x=>x!=="pen").length>2)errs.push(`ลำดับ ${i+1} "${tk.s}": มือมีแค่ 2 ข้าง ต้องประกอบชิ้นที่ถืออยู่ก่อนหยิบเพิ่ม`)}
+    else{const to=tk.at==="wp"?WP:slotOf(d,tk.at);if(to){p.mv=mv(to);if(tk.at!=="wp"){p.mv+=zpen(to);p.sr=lab(d,tk.at,"name")?0:.4}}
+      (tk.use||[]).forEach(u=>{const k=held.indexOf(u);if(k>=0)held.splice(k,1)});if(tk.pen)held.push("pen");if(id==="t11"){const k=held.indexOf("pen");if(k>=0)held.splice(k,1)}}
+    if(i===d.seq.length-1)p.mv+=mv(WP);
+    per[id]=p;T[tk.va?"va":"nva"]+=p.h;T.move+=p.mv;T.search+=p.sr;done.add(id);cuts.push(held.filter(x=>x!=="pen").length===0)});
+  const rk=pid=>{const p=PARTS.find(x=>x.id===pid);let r=p.risk;if(lab(d,pid,"sep"))r*=.06;else if(lab(d,pid,"name"))r*=.6;return r};
+  const ct=T.va+T.nva+T.move+T.search;
+  return Object.assign(base,{ok:!errs.length,errs,ct,risky,riskRefill:rk("refill"),riskUpper:rk("upper")});
 }
-function hanger(c,x,yRail,yBody,s){c.strokeStyle="#e8b10a";c.lineWidth=5*s;c.lineCap="round";c.beginPath();c.moveTo(x-46*s,yRail);c.lineTo(x-46*s,yBody-50*s);c.lineTo(x-58*s,yBody-50*s);c.moveTo(x+46*s,yRail);c.lineTo(x+46*s,yBody-50*s);c.lineTo(x+58*s,yBody-50*s);c.moveTo(x-46*s,yRail+4);c.lineTo(x+46*s,yRail+4);c.stroke();
-  c.strokeStyle="#b78a06";c.lineWidth=2*s;c.beginPath();c.moveTo(x-58*s,yBody-50*s);c.lineTo(x-62*s,yBody-30*s);c.moveTo(x+58*s,yBody-50*s);c.lineTo(x+62*s,yBody-30*s);c.stroke();c.lineCap="butt"}
-function worker(c,x,y,s,vest){G.person(c,x,y,s,"#2b3a4f",{helmet:false,hair:"#1d1a17",skin:"#c99a74"});
-  // hi-vis vest with reflective stripes
-  c.fillStyle=vest||"#d7e22a";G.rr(c,x-s*.42,y+s*.2,s*.84,s*.62,s*.18);c.fill();c.fillStyle="rgba(230,235,240,.9)";c.fillRect(x-s*.42,y+s*.48,s*.84,s*.08);c.fillStyle="#2b3a4f";c.fillRect(x-s*.08,y+s*.2,s*.16,s*.62);
-  // cap
-  c.fillStyle="#1f2d42";c.beginPath();c.arc(x,y-s*.24,s*.36,Math.PI,0);c.fill();c.fillRect(x,y-s*.28,s*.5,s*.08)}
-function trolley(c,x,y,s,col,parts){const w=70*s,h=58*s;G.shadow(c,x+w/2,y+4,w*.6,6,.3);
-  c.strokeStyle=col;c.lineWidth=4*s;c.strokeRect(x,y-h,w,h);c.beginPath();c.moveTo(x,y-h*.5);c.lineTo(x+w,y-h*.5);c.moveTo(x,y-h);c.lineTo(x+w*.8,y-h-26*s);c.stroke();
-  c.fillStyle=col;c.fillRect(x,y-6*s,w,6*s);c.fillStyle="#222";[x+6*s,x+w-6*s].forEach(px=>{c.beginPath();c.arc(px,y+2,4*s,0,7);c.fill()});
-  for(let i=0;i<(parts||4);i++){c.fillStyle=i%2?"#2a2f35":"#e9ecef";G.rr(c,x+6*s+i*15*s,y-h*.5-14*s,12*s,12*s,3);c.fill()}
-  c.fillStyle="#fff";c.fillRect(x+w-24*s,y-h+4*s,18*s,10*s)}
-function cartonStack(c,x,y,s,n,wrap){for(let i=0;i<n;i++){const bx=x+(i%2)*34*s,by=y-Math.floor(i/2)*26*s;G.box(c,bx,by-24*s,34*s,24*s,8*s,"#b88a5a");c.fillStyle="rgba(255,255,255,.8)";c.fillRect(bx+6*s,by-18*s,10*s,7*s);c.fillStyle="#7ac143";c.fillRect(bx+20*s,by-18*s,6*s,6*s)}
-  c.fillStyle="#2b4fa8";c.fillRect(x-2,y,72*s,6*s);if(wrap){c.fillStyle="rgba(255,255,255,.18)";c.fillRect(x-2,y-Math.ceil(n/2)*26*s-8,72*s,Math.ceil(n/2)*26*s+8)}}
-function plantBackground(c,t){
-  // high-bay ceiling with steel trusses and LED strips converging to the vanishing point
-  let g=c.createLinearGradient(0,0,0,250);g.addColorStop(0,"#f3f5f6");g.addColorStop(1,"#d5dbe0");c.fillStyle=g;c.fillRect(0,0,W,250);
-  c.strokeStyle="rgba(150,160,170,.55)";c.lineWidth=1.2;for(let k=-14;k<=14;k++){c.beginPath();c.moveTo(VP.x+k*90,0);c.lineTo(VP.x+k*8,VP.y-30);c.stroke()}
-  [[6,20],[52,14],[92,10],[124,7],[150,5],[170,3.5],[186,2.5]].forEach(([y,th],i)=>{c.fillStyle="#b9c2ca";c.fillRect(0,y,W,th);c.fillStyle="rgba(255,255,255,.95)";const ly=y+th+3;c.fillRect(0,ly,W,Math.max(1.5,th*.3));
-    if(i<4){c.strokeStyle="rgba(170,180,190,.8)";c.lineWidth=Math.max(1,th*.18);const step=60-i*10;c.beginPath();for(let x=0;x<W;x+=step){c.moveTo(x,y+th);c.lineTo(x+step/2,y+th+(i?22-i*4:30));c.lineTo(x+step,y+th)}c.stroke()}});
-  for(let k=0;k<6;k++){const x=40+k*180;g=c.createLinearGradient(x,0,x,240);g.addColorStop(0,"rgba(255,255,255,.0)");g.addColorStop(.5,"rgba(255,255,255,.35)");g.addColorStop(1,"rgba(255,255,255,0)");c.fillStyle=g;c.fillRect(x-30,0,60,240)}
-  // far line: tiny bodies on yellow hangers in haze
-  for(let k=0;k<9;k++){const x=40+k*110+((t*.4)%110);c.globalAlpha=.55;hanger(c,x,196,238,.32);bodyShape(c,x,238,.32,k%3?"#2f6fd0":"#2f6fd0");c.globalAlpha=1}
-  g=c.createLinearGradient(0,190,0,260);g.addColorStop(0,"rgba(235,240,244,.0)");g.addColorStop(1,"rgba(235,240,244,.55)");c.fillStyle=g;c.fillRect(0,190,W,70);
-  // floor: polished concrete with reflections
-  g=c.createLinearGradient(0,250,0,H);g.addColorStop(0,"#b4b9bd");g.addColorStop(1,"#80878d");c.fillStyle=g;c.fillRect(0,250,W,H-250);
-  for(let k=0;k<6;k++){const x=40+k*180;g=c.createLinearGradient(0,330,0,H);g.addColorStop(0,"rgba(255,255,255,.18)");g.addColorStop(1,"rgba(255,255,255,0)");c.fillStyle=g;c.fillRect(x-18,330,36,H-330)}
-  c.strokeStyle="rgba(0,0,0,.07)";c.lineWidth=1;for(let k=-10;k<=10;k++){c.beginPath();c.moveTo(VP.x+k*30,250);c.lineTo(VP.x+k*160,H);c.stroke()}
-  // aisle line & hazard tape
-  c.fillStyle="#f2b705";c.beginPath();c.moveTo(0,486);c.lineTo(W,474);c.lineTo(W,484);c.lineTo(0,497);c.fill();
-  for(let x=0;x<W;x+=28){c.fillStyle=(x/28)%2?"#111":"#f2b705";c.fillRect(x,446,14,5)}
-  // pillars, fans, andon board
-  [70,890].forEach(x=>{g=c.createLinearGradient(x-12,0,x+12,0);g.addColorStop(0,"#d9dee2");g.addColorStop(1,"#a9b1b8");c.fillStyle=g;c.fillRect(x-12,120,24,320)});
-  c.strokeStyle="#333";c.lineWidth=2;c.beginPath();c.arc(70,250,22,0,7);c.stroke();for(let k=0;k<6;k++){const a=t*.1+k;c.beginPath();c.moveTo(70,250);c.lineTo(70+Math.cos(a)*20,250+Math.sin(a)*20);c.stroke()}
-  c.fillStyle="#0f1214";c.fillRect(110,128,120,40);c.fillStyle="#38e070";c.font="600 10px ui-monospace,monospace";c.textAlign="left";c.fillText("PLAN  JPH  ACT",118,144);
+// offline helper: search the best bench (used to set IDEAL_CT)
+function idealSearch(){const d=newBench();CLUTTER.forEach(c=>d.clutter[c.id]=c.need?"keep":"red");PARTS.forEach(p=>{d.labels[p.id]={};p.labels.forEach(l=>d.labels[p.id][l.id]=true)});
+  const orders=[];(function dfs(seq,done){if(seq.length===TASKS.length){orders.push(seq.slice());return}TASKS.forEach(t=>{if(done.has(t.id)||(t.req||[]).some(r=>!done.has(r)))return;done.add(t.id);seq.push(t.id);dfs(seq,done);seq.pop();done.delete(t.id)})})([],new Set());
+  const valid=orders.filter(o=>{d.seq=o;return evalBench(d).ok});
+  const free=SLOTS.filter(s=>!CLUTTER.some(c=>c.need&&c.slot===s.id)).map(s=>s.id);let best=Infinity,bestPos=null;
+  const score=()=>{let b=Infinity;valid.forEach(o=>{d.seq=o;const r=evalBench(d);if(r.ct<b)b=r.ct});return b};
+  for(let rep=0;rep<6;rep++){const sh=free.slice().sort(()=>Math.random()-.5);PARTS.forEach((p,i)=>d.pos[p.id]=sh[i]);let cur=score(),imp=true;
+    while(imp){imp=false;for(const p of PARTS)for(const s of free){const old=d.pos[p.id],other=PARTS.find(q=>d.pos[q.id]===s);if(old===s)continue;d.pos[p.id]=s;if(other)d.pos[other.id]=old;const v=score();if(v<cur-1e-6){cur=v;imp=true}else{d.pos[p.id]=old;if(other)d.pos[other.id]=s}}}
+    if(cur<best){best=cur;bestPos=Object.assign({},d.pos)}}
+  return {best,bestPos,valid:valid.length}}
+
+// ---------------- line (stations, layout, transfer) ----------------
+const GC=6,GR=3,RACK={c:-1,r:1},SHIP={c:GC,r:1};
+const cellD=(a,b)=>Math.hypot(a.c-b.c,a.r-b.r);
+function groups(seq,cuts){const g=[];let cur=[];seq.forEach((id,i)=>{cur.push(id);if(cuts.has(i)&&i<seq.length-1){g.push(cur);cur=[]}});if(cur.length)g.push(cur);return g}
+function transferT(i,cells,n){const prev=i===0?RACK:cells[i-1];const d=cellD(prev,cells[i]);let t=i===0?.3+.25*d:.5+.9*Math.max(0,d-1);if(i===n-1)t+=.3+.25*cellD(cells[i],SHIP);return t}
+function lineWalk(cells){let m=0;cells.forEach((c,i)=>{m+=cellD(i?cells[i-1]:RACK,c)*1.5});if(cells.length)m+=cellD(cells[cells.length-1],SHIP)*1.5;return m}
+function stationList(B,R,line,ci){const g=groups(B.seq,line.cuts),n=g.length;
+  while(line.cells.length<n){const used=new Set(line.cells.map(c=>c.c+","+c.r));let p=null;for(let r of [1,0,2])for(let c=0;c<GC&&!p;c++)if(!used.has(c+","+r))p={c,r};line.cells.push(p||{c:0,r:0})}
+  line.cells.length=n;
+  return g.map((tasks,i)=>{let wc=0;tasks.forEach(id=>{const p=R.per[id];wc+=p.mv+p.sr+p.h*(1-.12*(ci||0))});const tr=transferT(i,line.cells,n);
+    return {i,tasks,wc:wc+tr,tr,cell:line.cells[i],start:B.seq.indexOf(tasks[0]),end:B.seq.indexOf(tasks[tasks.length-1])+1,has:Object.fromEntries(tasks.map(t=>[t,1])),name:tasks.map(t=>TK(t).s).filter((x,k,a)=>!/^หยิบ/.test(x)||a.length===1).slice(0,2).join(" + ")||TK(tasks[0]).s}})}
+
+// ---------------- people ----------------
+const NAMES=[["สมชาย","m"],["สุดารัตน์","f"],["ณัฐพล","m"],["กมลชนก","f"],["ธนากร","m"],["พิมพ์ชนก","f"],["อนุชา","m"],["ศิริพร","f"],["วรวุฒิ","m"],["จิราพร","f"],["ปิยะพงษ์","m"],["รัตนา","f"],["เกียรติศักดิ์","m"],["นภัสสร","f"],["ชยพล","m"],["อรอุมา","f"],["ธีรวัฒน์","m"],["มณีรัตน์","f"]];
+const PROF=[{exp:"ไลน์ประกอบ 3 ปี",sk:.98,cap:1.1,wage:380},{exp:"เคยทำโรงงาน 1 ปี",sk:.86,cap:1.04,wage:330},{exp:"จบใหม่ ไฟแรง เรียนเร็ว",sk:.7,cap:1.02,wage:280},{exp:"พนักงานรับเหมาช่วง",sk:.8,cap:.95,wage:300}];
+const SKINS=["#e6b993","#d6a27a","#c48a62","#a87150","#edc6a3"],HAIRS=["#1b1612","#2b1f17","#3b2a1f","#151515"];
+let UID=0;
+function candidates(n,used){const pool=NAMES.filter(x=>!used.has(x[0]));const out=[];for(let i=0;i<n&&pool.length;i++){const k=Math.floor(Math.random()*pool.length),nm=pool.splice(k,1)[0],pr=i<PROF.length?PROF[i%PROF.length]:pick(PROF);
+  out.push({id:++UID,n:nm[0],exp:pr.exp,sk:+(pr.sk+rand(-.03,.03)).toFixed(2),cap:pr.cap,wage:pr.wage,look:{g:nm[1],skin:pick(SKINS),hair:pick(HAIRS)}})}return out.sort(()=>Math.random()-.5)}
+const mkWorker=c=>({id:c.id,n:c.n,exp:c.exp,sk:c.sk,cap:c.cap,wage:c.wage,look:c.look,st:-1,job:null,absent:false,done:0,ph:Math.random()*6});
+
+// ---------------- drawing helpers ----------------
+function staffBody(c,x,y,s,w){// y = table-top level; the person stands behind the bench facing the camera
+  const L=w.look,sh="#6aa6dc",shD="#3d7cb8",hy=y-60*s,isNew=w.sk<.85;
+  if(L.g==="f"){c.fillStyle=L.hair;c.beginPath();c.ellipse(x,hy+9*s,11*s,13*s,0,0,7);c.fill()}
+  let g=c.createLinearGradient(x-25*s,0,x+25*s,0);g.addColorStop(0,shD);g.addColorStop(.4,sh);g.addColorStop(1,shD);c.fillStyle=g;
+  c.beginPath();c.moveTo(x-23*s,y+6*s);c.lineTo(x-25*s,y-30*s);c.quadraticCurveTo(x-23*s,y-43*s,x-8*s,y-45*s);c.lineTo(x+8*s,y-45*s);c.quadraticCurveTo(x+23*s,y-43*s,x+25*s,y-30*s);c.lineTo(x+23*s,y+6*s);c.closePath();c.fill();
+  c.fillStyle="#f4f6f8";c.beginPath();c.moveTo(x-9*s,y-45*s);c.lineTo(x,y-34*s);c.lineTo(x+9*s,y-45*s);c.lineTo(x+4*s,y-46*s);c.lineTo(x,y-40*s);c.lineTo(x-4*s,y-46*s);c.closePath();c.fill();
+  c.strokeStyle="rgba(0,0,0,.18)";c.lineWidth=1;c.beginPath();c.moveTo(x,y-34*s);c.lineTo(x,y+4*s);c.stroke();
+  c.fillStyle="#e8722a";G.rr(c,x-17*s,y-33*s,8*s,5*s,1.5*s);c.fill();// company logo patch
+  c.strokeStyle="#1f3f8f";c.lineWidth=1.3*s;c.beginPath();c.moveTo(x+5*s,y-44*s);c.lineTo(x+12*s,y-27*s);c.lineTo(x+18*s,y-43*s);c.stroke();
+  c.fillStyle="#fff";c.fillRect(x+8*s,y-27*s,8.5*s,11*s);c.fillStyle="#1f3f8f";c.fillRect(x+8*s,y-27*s,8.5*s,2.6*s);c.fillStyle="#9aa3ab";c.fillRect(x+9.5*s,y-22*s,3.5*s,4*s);
+  if(isNew){c.fillStyle="#2fbf6b";c.fillRect(x-25*s,y-26*s,6*s,7*s)}// green armband = new hire
+  c.fillStyle=G.shade(L.skin,-.12);c.fillRect(x-4.5*s,hy+10*s,9*s,8*s);
+  g=c.createRadialGradient(x-4*s,hy-3*s,2*s,x,hy,15*s);g.addColorStop(0,G.shade(L.skin,.16));g.addColorStop(1,G.shade(L.skin,-.16));c.fillStyle=g;c.beginPath();c.ellipse(x,hy,11*s,13*s,0,0,7);c.fill();
+  c.fillStyle=G.shade(L.skin,-.08);[-1,1].forEach(k=>{c.beginPath();c.ellipse(x+k*11*s,hy+1*s,2.3*s,3.6*s,0,0,7);c.fill()});
+  c.fillStyle=L.hair;c.beginPath();c.ellipse(x,hy-5*s,11.6*s,8*s,0,Math.PI,0);c.fill();if(L.g==="f"){c.fillRect(x-11.6*s,hy-5*s,3.2*s,13*s);c.fillRect(x+8.4*s,hy-5*s,3.2*s,13*s)}
+  const capC=isNew?"#f2b705":"#1f3a68";g=c.createLinearGradient(0,hy-17*s,0,hy-6*s);g.addColorStop(0,G.shade(capC,.2));g.addColorStop(1,capC);c.fillStyle=g;c.beginPath();c.ellipse(x,hy-7*s,12*s,9.5*s,0,Math.PI,0);c.fill();
+  c.fillStyle=G.shade(capC,-.3);c.beginPath();c.ellipse(x,hy-6.5*s,13.5*s,3.4*s,0,0,Math.PI);c.fill();
+  c.fillStyle=isNew?"#1b222a":"#fff";c.font=`700 ${4.6*s}px system-ui,sans-serif`;c.textAlign="center";c.textBaseline="middle";c.fillText(isNew?"NEW":"LQ",x,hy-11*s);
+  c.fillStyle="#fff";[-4.2,4.2].forEach(k=>{c.beginPath();c.ellipse(x+k*s,hy+1*s,2.2*s,1.7*s,0,0,7);c.fill()});
+  c.fillStyle="#22180f";[-4.2,4.2].forEach(k=>{c.beginPath();c.arc(x+k*s,hy+1.2*s,1.25*s,0,7);c.fill()});
+  c.strokeStyle="rgba(40,25,15,.75)";c.lineWidth=1.1*s;[-4.2,4.2].forEach(k=>{c.beginPath();c.moveTo(x+k*s-2.3*s,hy-2.4*s);c.lineTo(x+k*s+2.3*s,hy-2.8*s);c.stroke()});
+  c.strokeStyle=G.shade(L.skin,-.35);c.lineWidth=1*s;c.beginPath();c.moveTo(x+.3*s,hy+2*s);c.lineTo(x-1*s,hy+5.5*s);c.lineTo(x+1*s,hy+5.8*s);c.stroke();
+  c.strokeStyle="#9a4637";c.lineWidth=1.2*s;c.beginPath();c.arc(x,hy+6.5*s,3*s,.18*Math.PI,.82*Math.PI);c.stroke();
+  if(w.glasses){c.strokeStyle="rgba(30,40,50,.8)";c.lineWidth=.9*s;c.strokeRect(x-7.2*s,hy-1*s,5.8*s,4*s);c.strokeRect(x+1.4*s,hy-1*s,5.8*s,4*s);c.beginPath();c.moveTo(x-1.4*s,hy+.5*s);c.lineTo(x+1.4*s,hy+.5*s);c.stroke()}
 }
-function render(c,st,lv,bg,s){
-  s=s||1;c.save();c.scale(s,s);
-  if(!G.photo(c,bg,W,H,1))plantBackground(c,st.t);else{c.fillStyle="rgba(10,12,15,.25)";c.fillRect(0,0,W,H)}
-  const yRail=214,yBody=352,n=lv.st.length,tk=3600/st.jph;
-  // overhead rail
-  let g=c.createLinearGradient(0,yRail-8,0,yRail+6);g.addColorStop(0,"#8f989f");g.addColorStop(1,"#545c63");c.fillStyle=g;c.fillRect(0,yRail-8,W,14);
-  // raw material: pallets pile up with what has been released but not started
-  cartonStack(c,8,430,.9,Math.min(8,2+st.buf[0].length),true);
-  lv.st.forEach((k,i)=>{const x=stX(lv,i),t=ctOf(st,lv,i);
-    // station sign plate
-    c.fillStyle="#555";c.fillRect(x-1,yRail+6,2,18);c.fillStyle="#1f3f8f";G.rr(c,x-34,yRail+22,68,20,3);c.fill();G.text(c,`${ST_ALL[k].code||"TA1-"+String(i+1).padStart(2,"0")}  ${ST_ALL[k].n}`,x,yRail+32,11,"#fff","center",600);
-    // stack light
-    const col=st.down[i]>0?"#ff3b2f":st.blocked[i]?"#f0b429":st.cur[i]?"#2fbf6b":"#8a949c";c.fillStyle="#333";c.fillRect(x+70,yBody-96,4,80);["#ff3b2f","#f0b429","#2fbf6b"].forEach((cc,j)=>{c.fillStyle=cc===col?cc:"rgba(80,80,80,.9)";c.fillRect(x+66,yBody-120+j*9,12,8)});if(col!=="#8a949c")G.light(c,x+72,yBody-112,26,col==="#ff3b2f"?"rgb(255,60,40)":col==="#f0b429"?"rgb(240,180,41)":"rgb(47,191,107)",.5);
-    // line-side racks behind workers
-    if(k==="assy"){trolley(c,x-110,446,.9,"#2353b3",5);trolley(c,x+46,446,.8,"#2f8a3a",3)}else if(i%2)trolley(c,x+40,446,.75,"#2f8a3a",3);else cartonStack(c,x+36,446,.7,3,false);
-    const u=st.cur[i];if(u){hanger(c,x,yRail,yBody,.85);bodyShape(c,x,yBody,.85,u.color,{open:k!=="body"});G.ring(c,x,yBody-70,10,1-u.rem/u.max,"#f0b429")}
-    else{c.strokeStyle="rgba(232,177,10,.5)";c.lineWidth=3;c.beginPath();c.moveTo(x-46,yRail);c.lineTo(x-46,yRail+40);c.moveTo(x+46,yRail);c.lineTo(x+46,yRail+40);c.stroke()}
-    for(let w=0;w<st.alloc[i];w++){const wx=x-40+(w%3)*36,wy=410+Math.floor(w/3)*18;worker(c,wx,wy,22)}
-    G.pill(c,isFinite(t)?`CT ${Math.round(t)}s`:"ไม่มีคน",x,yBody+14,isFinite(t)&&t<=tk?"rgba(29,145,82,.9)":"rgba(207,58,46,.9)");
-    if(st.down[i]>0)G.pill(c,"เครื่องเสีย! รอซ่อม",x,yBody-112,"#cf3a2e");else if(st.setup[i]>0)G.pill(c,"เปลี่ยนสี",x,yBody-112,"#c98f00","#1b222a");
-    // WIP queued between stations: small bodies on the rail
-    const b=st.buf[i];if(i>0&&b.length){const bx=(stX(lv,i-1)+x)/2;b.slice(0,3).forEach((u2,k2)=>{hanger(c,bx-16+k2*16,yRail,yBody-56,.42);bodyShape(c,bx-16+k2*16,yBody-56,.42,u2.color)});G.pill(c,`WIP ${b.length}`,bx,yBody-28,b.length>3?"#cf3a2e":"rgba(0,0,0,.6)")}
-  });
-  // finished cars (with wheels) waiting to ship
-  st.buf[n].slice(0,4).forEach((u,k)=>bodyShape(c,880+(k%2)*28-14,470+Math.floor(k/2)*26,.45,u.color,{wheels:true}));
-  if(st.truck>0)G.emoji(c,"🚚",900-(1-st.truck)*120,515,36);
-  G.pill(c,`ลูกค้ารอ ${st.backlog} คัน`,880,250,st.backlog>3?"#cf3a2e":"rgba(0,0,0,.6)");
-  const idle=st.hired-st.alloc.reduce((a,b)=>a+b,0);for(let w=0;w<idle;w++)worker(c,40+w*22,520,16,"#9aa3ab");if(idle)G.pill(c,`ว่างงาน ${idle} คน (ยังรับค่าแรง)`,90,500,"#c98f00","#1b222a");
-  st.fx.forEach(f=>G.text(c,f.t,f.x,f.y,16,f.col));
-  G.vignette(c,W,H,.28);c.restore();
+function staffHands(c,x,y,s,w,ph,busy,ink){const a=busy?Math.sin(ph)*5*s:0,b=busy?Math.cos(ph*1.3)*4*s:0,L=w.look;
+  c.lineCap="round";c.strokeStyle="#3d7cb8";c.lineWidth=8.5*s;
+  c.beginPath();c.moveTo(x-21*s,y-34*s);c.quadraticCurveTo(x-29*s,y-12*s,x-13*s+a,y+1*s);c.stroke();
+  c.beginPath();c.moveTo(x+21*s,y-34*s);c.quadraticCurveTo(x+29*s,y-12*s,x+13*s+b,y+1*s);c.stroke();
+  c.lineCap="butt";c.fillStyle=L.skin;[[x-13*s+a,y+1*s],[x+13*s+b,y+1*s]].forEach(([hx,hy])=>{c.beginPath();c.ellipse(hx,hy,4*s,3.4*s,0,0,7);c.fill()});
+  if(busy)penIcon(c,x+(a+b)/2,y+2*s,22*s,-.25+Math.sin(ph*.7)*.08,ink)}
+function penIcon(c,x,y,len,ang,ink){c.save();c.translate(x,y);c.rotate(ang);c.lineCap="round";
+  c.strokeStyle="#e9eef3";c.lineWidth=len*.16;c.beginPath();c.moveTo(-len/2,0);c.lineTo(len/2,0);c.stroke();
+  c.strokeStyle=ink||INKS[0];c.lineWidth=len*.18;c.beginPath();c.moveTo(-len/2,0);c.lineTo(-len/2+len*.16,0);c.stroke();
+  c.strokeStyle="#9aa3ab";c.lineWidth=len*.06;c.beginPath();c.moveTo(len/2,0);c.lineTo(len/2+len*.08,0);c.stroke();
+  c.strokeStyle=ink||INKS[0];c.lineWidth=len*.05;c.beginPath();c.moveTo(-len*.36,-len*.1);c.lineTo(-len*.05,-len*.1);c.stroke();c.lineCap="butt";c.restore()}
+function benchTable(c,x,y,s,wd,parts){const w=wd*s;
+  G.shadow(c,x,y+58*s,w*.55,9*s,.28);
+  c.fillStyle="#6f7a84";[-w/2+5*s,w/2-9*s].forEach(o=>c.fillRect(x+o,y+12*s,4*s,46*s));
+  c.fillStyle="#8d969e";c.fillRect(x-w/2+4*s,y+42*s,w-8*s,4*s);
+  // bins on the lower shelf
+  for(let k=0;k<4;k++){c.fillStyle=["#2356c9","#2f8a3a","#d97706","#2356c9"][k];G.rr(c,x-w/2+10*s+k*(w-20*s)/4,y+30*s,(w-20*s)/4-4*s,12*s,2*s);c.fill()}
+  c.fillStyle="#c3cad0";c.beginPath();c.moveTo(x-w/2+10*s,y-14*s);c.lineTo(x+w/2-10*s,y-14*s);c.lineTo(x+w/2,y+12*s);c.lineTo(x-w/2,y+12*s);c.closePath();c.fill();
+  let g=c.createLinearGradient(0,y-12*s,0,y+10*s);g.addColorStop(0,"#3c9a74");g.addColorStop(1,"#2a7a59");c.fillStyle=g;c.beginPath();c.moveTo(x-w/2+14*s,y-11*s);c.lineTo(x+w/2-14*s,y-11*s);c.lineTo(x+w/2-5*s,y+9*s);c.lineTo(x-w/2+5*s,y+9*s);c.closePath();c.fill();
+  c.fillStyle="#8c959d";c.fillRect(x-w/2,y+12*s,w,6*s);c.fillStyle="rgba(255,255,255,.35)";c.fillRect(x-w/2,y+12*s,w,1.2*s);
+  // small part bins on the bench (front corners)
+  (parts||[]).slice(0,4).forEach((p,k)=>{const bx=x+w/2-34*s-k*19*s,by=y-8*s;c.fillStyle="#2356c9";G.rr(c,bx,by,17*s,12*s,2*s);c.fill();c.fillStyle="rgba(255,255,255,.25)";c.fillRect(bx+1*s,by+1*s,15*s,3*s);
+    c.fillStyle=p==="refill"?"#d23a2e":p==="spring"?"#c9d0d6":p==="button"?"#f0b429":p==="box"?"#b88a5a":p==="paper"?"#fff":"#e9eef3";c.fillRect(bx+3*s,by+4*s,11*s,5*s)})}
+function benchFrame(c,x,y,s,wd,st,label,lit){const w=wd*s;c.fillStyle="#a6afb7";[-w/2+12*s,w/2-14*s].forEach(o=>c.fillRect(x+o,y-118*s,3*s,106*s));
+  c.fillStyle="#d7dde2";G.rr(c,x-w/2+8*s,y-122*s,w-16*s,7*s,3*s);c.fill();if(lit)G.light(c,x,y-110*s,60*s,"rgb(255,250,225)",.35);c.fillStyle="#fffbe6";c.fillRect(x-w/2+16*s,y-116*s,w-32*s,2*s);
+  c.font=`700 ${Math.max(9,11*s)}px "IBM Plex Sans Thai",system-ui,sans-serif`;const lw=Math.max(68*s,c.measureText(label).width+16);c.fillStyle="#1f3f8f";G.rr(c,x-lw/2,y-144*s,lw,18*s,3*s);c.fill();c.strokeStyle="#9aa3ab";c.lineWidth=1;c.beginPath();c.moveTo(x-20*s,y-126*s);c.lineTo(x-20*s,y-122*s);c.moveTo(x+20*s,y-126*s);c.lineTo(x+20*s,y-122*s);c.stroke();
+  G.text(c,label,x,y-135*s,Math.max(9,11*s),"#fff","center",700)}
+function andon(c,x,y,s,state,t){const cols=["#ff3b2f","#f0b429","#2fbf6b"],on=state==="red"?0:state==="yellow"?1:2,blink=state==="red"?(Math.floor(t*2)%2===0):true;
+  c.fillStyle="#3a4048";c.fillRect(x-1.5*s,y-84*s,3*s,72*s);cols.forEach((cc,j)=>{c.fillStyle=j===on&&blink?cc:"rgba(70,75,80,.95)";G.rr(c,x-5*s,y-110*s+j*9*s,10*s,8*s,2*s);c.fill()});
+  if(blink)G.light(c,x,y-106*s+on*9*s,30*s,on===0?"rgb(255,60,40)":on===1?"rgb(240,180,41)":"rgb(47,191,107)",on===2?.25:.6)}
+function tray(c,x,y,s,n,inks){c.fillStyle="#2b3138";G.rr(c,x-18*s,y-5*s,36*s,10*s,2*s);c.fill();for(let k=0;k<Math.min(n,6);k++)penIcon(c,x-10*s+k*4*s,y-1*s-k*.6*s,26*s,-1.25,inks[k]||INKS[0])}
+const ROWY=[300,390,474],ROWS=[.82,.92,1.02];
+const cellXY=cell=>{const r=Math.max(0,Math.min(GR-1,cell.r)),s=ROWS[r];return {x:480+(cell.c-2.5)*142*s,y:ROWY[r],s}};
+function factoryBg(c,t,st){
+  let g=c.createLinearGradient(0,0,0,232);g.addColorStop(0,"#eef1f3");g.addColorStop(1,"#dde3e7");c.fillStyle=g;c.fillRect(0,0,W,232);
+  c.fillStyle="#c9d1d8";c.fillRect(0,0,W,16);for(let x=30;x<W;x+=150){c.fillStyle="#fffef4";c.fillRect(x,18,90,5);G.light(c,x+45,24,70,"rgb(255,252,235)",.35)}
+  for(let x=20;x<W;x+=190){g=c.createLinearGradient(0,24,0,56);g.addColorStop(0,"#bcd7ec");g.addColorStop(1,"#e9f3fa");c.fillStyle=g;c.fillRect(x,24,150,32);c.strokeStyle="#9fb0bd";c.lineWidth=3;c.strokeRect(x,24,150,32);c.beginPath();c.moveTo(x+75,24);c.lineTo(x+75,56);c.stroke()}
+  c.fillStyle="#d3dae0";c.fillRect(0,214,W,18);c.fillStyle="#f2b705";c.fillRect(0,228,W,4);
+  // boards: SQDCPME, hourly production, demand
+  const bd=(x,y,w,h,title)=>{c.fillStyle="#fff";G.rr(c,x,y,w,h,6);c.fill();c.strokeStyle="#9aa3ab";c.lineWidth=2;G.rr(c,x,y,w,h,6);c.stroke();c.fillStyle="#1f3f8f";G.rr(c,x,y,w,20,6);c.fill();c.fillRect(x,y+12,w,8);G.text(c,title,x+w/2,y+11,11,"#fff","center",700)};
+  bd(18,64,300,104,"บอร์ดเป้าหมาย SQDCPME ของไลน์");
+  (st&&st.goalRows||GOALS.map(g0=>({k:g0.k,col:g0.col,txt:"-",ok:null}))).forEach((r,i)=>{const x=30+i*41,y=90;c.fillStyle=r.col;G.rr(c,x,y,36,30,4);c.fill();G.text(c,r.k,x+18,y+15,17,"#fff","center",700);
+    c.fillStyle=r.ok==null?"#c3cad0":r.ok?"#2fbf6b":"#ff3b2f";c.beginPath();c.arc(x+18,y+44,7,0,7);c.fill();G.text(c,r.txt,x+18,y+64,9,"#1b222a","center",600)});
+  bd(332,64,300,104,"Hourly Board · แผน / ผลิตได้ ทุก 2 นาที");
+  c.fillStyle="#0f1214";G.rr(c,342,88,280,74,4);c.fill();c.font="600 11px ui-monospace,monospace";c.textAlign="left";c.textBaseline="middle";
+  for(let r=0;r<NR;r++){const y=99+r*13.5,p=st?st.hourly[r]:null,cur=st&&st.round===r;c.fillStyle=cur?"#ffd84d":"#7fd8a0";c.fillText(`R${r+1} ${String(st?st.lv.jph[r]:"-").padStart(3," ")}JPH`,350,y);
+    if(p&&(p.act>0||st.round>=r)){c.fillStyle="#9fb0bd";c.fillText(`แผน ${String(Math.round(p.plan)).padStart(3)}`,452,y);c.fillStyle=p.act>=p.plan*(cur?Math.min(1,((st.t%ROUND)/ROUND)):1)-.5?"#38e070":"#ff6a5c";c.fillText(`ทำได้ ${String(p.act).padStart(3)}`,532,y)}}
+  bd(646,64,296,104,"ความต้องการลูกค้า");
+  if(st){const tk=3600/st.jph;G.text(c,`${st.jph} ด้าม/ชม.`,794,106,26,"#1b222a","center",700);G.text(c,`Takt ${tk.toFixed(1)} วินาที · รอบ ${st.round+1}/${NR}`,794,133,13,"#5d666e","center",600);
+    c.fillStyle="#e4e8eb";G.rr(c,660,148,268,12,6);c.fill();c.fillStyle="#2356a3";G.rr(c,660,148,268*Math.min(1,st.t/SHIFT),12,6);c.fill();G.text(c,fmtT(st.t/SPEED)+" / 10:00",794,154,9,"#fff","center",700)}
+  // epoxy floor in perspective
+  g=c.createLinearGradient(0,232,0,H);g.addColorStop(0,"#7fae94");g.addColorStop(1,"#4f8a6c");c.fillStyle=g;c.fillRect(0,232,W,H-232);
+  for(let k=0;k<6;k++){const x=60+k*170;g=c.createLinearGradient(0,240,0,H);g.addColorStop(0,"rgba(255,255,255,.16)");g.addColorStop(1,"rgba(255,255,255,0)");c.fillStyle=g;c.fillRect(x-14,240,28,H-240)}
+  c.strokeStyle="rgba(255,255,255,.08)";c.lineWidth=1;for(let k=-8;k<=8;k++){c.beginPath();c.moveTo(480+k*60,232);c.lineTo(480+k*150,H);c.stroke()}
+  c.fillStyle="#f2d03b";[250,340,430,520].forEach((y,i)=>{c.fillRect(0,y+(i?0:0),W,i===0?3:2.5)});
+}
+function rack(c,x,y,s,flash){c.fillStyle="#5c6670";c.fillRect(x-30*s,y-110*s,4*s,170*s);c.fillRect(x+26*s,y-110*s,4*s,170*s);
+  for(let k=0;k<4;k++){const yy=y-100*s+k*38*s;c.fillStyle="#8a949c";c.fillRect(x-32*s,yy+24*s,64*s,4*s);for(let j=0;j<3;j++){c.fillStyle=["#2356c9","#d23a2e","#1d2228","#2f8a3a"][(k+j)%4];G.rr(c,x-28*s+j*19*s,yy+8*s,17*s,16*s,2*s);c.fill();c.fillStyle="rgba(255,255,255,.85)";c.fillRect(x-25*s+j*19*s,yy+11*s,9*s,4*s)}}
+  G.pill(c,"คลังชิ้นส่วน",x,y-122*s,flash?"#cf3a2e":"rgba(0,0,0,.65)")}
+function shipping(c,x,y,s,n,truck){c.fillStyle="#9b7b52";c.fillRect(x-36*s,y+30*s,72*s,8*s);for(let k=0;k<Math.min(12,n);k++){const bx=x-34*s+(k%3)*23*s,by=y+30*s-Math.floor(k/3)*18*s;G.box(c,bx,by-16*s,21*s,16*s,5*s,"#c49a66");c.fillStyle="#1f3f8f";c.fillRect(bx+4*s,by-12*s,8*s,3*s)}
+  G.pill(c,"ส่งลูกค้า",x,y-60*s,"rgba(0,0,0,.65)");if(truck>0)G.emoji(c,"🚚",x+20-(1-truck)*70,y-30*s,30*s)}
+
+function render(c,st,sc){sc=sc||1;c.save();c.scale(sc,sc);factoryBg(c,st.t,st);
+  const S=st.S,n=S.length,pos=S.map(x=>cellXY(x.cell)),rk=cellXY(RACK),sp=cellXY(SHIP);
+  // material flow on the floor
+  c.setLineDash([8,7]);c.strokeStyle="rgba(255,255,255,.75)";c.lineWidth=3;c.beginPath();c.moveTo(rk.x,rk.y+30);pos.forEach(p=>c.lineTo(p.x,p.y+30));c.lineTo(sp.x,sp.y+30);c.stroke();c.setLineDash([]);
+  rack(c,rk.x,rk.y,rk.s,st.noMat);shipping(c,sp.x,sp.y,sp.s,st.buf[n]?st.buf[n].length+Math.min(9,Math.floor(st.shipped/12)):0,st.truck);
+  const order=S.map((x,i)=>i).sort((a,b)=>pos[a].y-pos[b].y);
+  order.forEach(i=>{const p=pos[i],s=p.s,stn=S[i],ws=st.workers.filter(w=>w.st===i&&!w.absent),wd=Math.max(126,ws.length*58+24),PS=1.2;
+    const ct=stCT(st,i),tk=3600/st.jph,state=stn.broken||stn.dev?"red":(stn.repair>0?"yellow":(ws.length?"green":"off"));
+    benchFrame(c,p.x,p.y,s,wd,stn,`S${i+1} · ${stn.name}`,ws.length>0);
+    ws.forEach((w,k)=>staffBody(c,p.x+(k-(ws.length-1)/2)*56*s,p.y,s*PS,w));
+    benchTable(c,p.x,p.y,s,wd,stn.tasks.filter(t=>TK(t).pick).map(t=>TK(t).pick));
+    ws.forEach((w,k)=>staffHands(c,p.x+(k-(ws.length-1)/2)*56*s,p.y,s*PS,w,w.ph,!!w.job&&!(stn.broken||stn.repair>0),w.job?w.job.u.ink:null));
+    andon(c,p.x+wd*s/2-4*s,p.y,s,state==="off"?"yellow":state,st.t/SPEED);
+    tray(c,p.x-wd*s/2+30*s,p.y+2*s,s,st.buf[i].length,st.buf[i].map(u=>u.ink));
+    if(stn.broken)G.pill(c,"🔧 เครื่องอัดเสีย! แตะเพื่อเรียกซ่อม",p.x,p.y-166*s,"#cf3a2e");
+    else if(stn.repair>0)G.pill(c,`กำลังซ่อม ${Math.ceil(stn.repair/60)} นาที`,p.x,p.y-166*s,"#c98f00","#1b222a");
+    else if(stn.dev&&st.t>=stn.devSeen)G.pill(c,"⚠️ ไม่ทำตาม OIS · แตะเพื่อยืนยันกระบวนการ",p.x,p.y-166*s,"#c98f00","#1b222a");
+    else if(!ws.length)G.pill(c,"ไม่มีคน",p.x,p.y-40*s,"#5d666e");
+    G.pill(c,(st.buf[i].length?`WIP ${st.buf[i].length} · `:"")+(isFinite(ct)?`CT ${ct.toFixed(1)}s`:"CT -"),p.x,p.y+50*s,isFinite(ct)&&ct<=tk?"rgba(29,145,82,.92)":"rgba(207,58,46,.92)")});
+  const idle=st.workers.filter(w=>w.st<0&&!w.absent);idle.slice(0,6).forEach((w,k)=>{G.person(c,40+k*26,520,11,"#6aa6dc",{skin:w.look.skin,hair:w.look.hair})});if(idle.length)G.pill(c,`ว่าง ${idle.length} คน`,80,494,"#c98f00","#1b222a");
+  st.fx.forEach(f=>G.text(c,f.t,f.x,f.y,15,f.col));
+  if(st.banner&&st.banner.life>0){c.globalAlpha=Math.min(1,st.banner.life);c.fillStyle="rgba(15,18,22,.78)";G.rr(c,180,250,600,84,12);c.fill();G.text(c,st.banner.t,480,278,24,"#ffd84d","center",700);G.text(c,st.banner.s,480,310,14,"#fff","center",500);c.globalAlpha=1}
+  G.vignette(c,W,H,.18);c.restore()}
+function stCT(st,i){const ws=st.workers.filter(w=>w.st===i&&!w.absent),sk=ws.reduce((a,w)=>a+w.sk,0);return sk?st.S[i].wc/sk:Infinity}
+function lbeOf(st){const pres=st.workers.filter(w=>!w.absent).length;if(!pres)return 0;const sum=st.S.reduce((a,x)=>a+x.wc,0),cts=st.S.map((_,i)=>stCT(st,i));const mx=Math.max(...cts);return isFinite(mx)&&mx>0?Math.min(1,sum/(pres*mx)):0}
+
+// ---------------- bench designer UI ----------------
+function drawBench(c,d,R,selPart,anim){
+  let g=c.createLinearGradient(0,0,0,BH);g.addColorStop(0,"#8f989f");g.addColorStop(1,"#727b83");c.fillStyle=g;c.fillRect(0,0,BW,BH);
+  c.fillStyle="#b9c1c8";G.rr(c,124,100,712,318,10);c.fill();g=c.createLinearGradient(0,108,0,410);g.addColorStop(0,"#3c9a74");g.addColorStop(1,"#2d7f5e");c.fillStyle=g;G.rr(c,134,108,692,302,8);c.fill();
+  c.save();c.beginPath();c.rect(134,108,692,302);c.clip();
+  [[RM,"rgba(255,216,77,.22)"],[RN,"rgba(140,255,170,.25)"]].forEach(([r,col])=>{c.fillStyle=col;c.beginPath();c.arc(SH.x,SH.y,r,Math.PI,0);c.fill()});
+  c.strokeStyle="rgba(255,255,255,.55)";c.setLineDash([6,5]);[RN,RM].forEach(r=>{c.beginPath();c.arc(SH.x,SH.y,r,Math.PI,0);c.stroke()});c.setLineDash([]);c.restore();
+  G.text(c,"ระยะเอื้อมปกติ",SH.x,SH.y-RN+14,11,"#eaffef","center",600);G.text(c,"ระยะสุดแขน",SH.x,SH.y-RM+14,11,"#fff3c2","center",600);G.text(c,"นอกระยะ = เอี้ยวตัว/ลุก (ท่าทางเสี่ยง)",250,124,11,"#ffd2cc","center",600);
+  // fixture at work point
+  c.fillStyle="#2b3138";G.rr(c,WP.x-30,WP.y-12,60,24,5);c.fill();c.fillStyle="#9aa3ab";c.fillRect(WP.x-22,WP.y-3,44,6);G.text(c,"จิ๊กประกอบ",WP.x,WP.y+22,10,"#fff","center",600);
+  SLOTS.forEach(s=>{const z=zoneOf(s),occ=Object.values(d.pos).includes(s.id)||blockedBy(d,s.id);c.strokeStyle=selPart&&!occ?"#ffd84d":"rgba(255,255,255,.5)";c.setLineDash([5,4]);c.lineWidth=2;G.rr(c,s.x-38,s.y-28,76,56,6);c.stroke();c.setLineDash([]);
+    c.fillStyle=["#2fbf6b","#f0b429","#ff6a5c"][z];c.beginPath();c.arc(s.x+33,s.y-23,4,0,7);c.fill()});
+  CLUTTER.forEach(cl=>{if(d.clutter[cl.id]==="red")return;const s=SLOTS.find(x=>x.id===cl.slot);G.emoji(c,cl.em,s.x,s.y-4,30);if(d.clutter[cl.id]==="keep")G.pill(c,"เก็บไว้",s.x,s.y+20,"#1d9152")});
+  PARTS.forEach(p=>{const s=slotOf(d,p.id);if(!s)return;binTop(c,s.x,s.y,p.id,d);
+    const L=d.labels[p.id]||{};if(L.name||L.sep){c.fillStyle="#fff";G.rr(c,s.x-34,s.y+16,68,13,2);c.fill();c.fillStyle="#1b222a";c.font="600 9px system-ui";c.textAlign="center";c.textBaseline="middle";c.fillText(p.short.slice(0,14),s.x,s.y+23)}
+    if(selPart===p.id){c.strokeStyle="#ffd84d";c.lineWidth=3;G.rr(c,s.x-41,s.y-31,82,62,8);c.stroke()}});
+  if(R&&R.pts.length>1){c.strokeStyle="rgba(255,120,80,.85)";c.lineWidth=2.5;c.beginPath();R.pts.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.stroke()}
+  // operator (top view)
+  c.fillStyle="#3d7cb8";c.beginPath();c.ellipse(SH.x,SH.y+6,58,20,0,Math.PI,0);c.fill();c.fillStyle="#1f3a68";c.beginPath();c.arc(SH.x,SH.y-4,16,0,7);c.fill();c.fillStyle="#f2b705";c.fillRect(SH.x-6,SH.y-18,12,6);
+  const hp=anim||WP;c.fillStyle="#e6b993";c.beginPath();c.arc(hp.x,hp.y,8,0,7);c.fill();c.strokeStyle="#3d7cb8";c.lineWidth=8;c.beginPath();c.moveTo(SH.x+(hp.x<SH.x?-40:40),SH.y);c.lineTo(hp.x,hp.y+6);c.stroke();
+}
+function binTop(c,x,y,pid,d){c.fillStyle="#2356c9";G.rr(c,x-32,y-22,64,40,5);c.fill();c.fillStyle="#1b46a8";G.rr(c,x-28,y-18,56,32,4);c.fill();
+  if(pid==="refill"){const sep=lab(d,"refill","sep");for(let k=0;k<9;k++){const col=sep?INKS[Math.floor(k/3)]:INKS[(k*7)%3];c.strokeStyle="#e9eef3";c.lineWidth=2.5;c.beginPath();c.moveTo(x-24+k*6,y-14);c.lineTo(x-24+k*6,y+10);c.stroke();c.strokeStyle=col;c.beginPath();c.moveTo(x-24+k*6,y-14);c.lineTo(x-24+k*6,y-8);c.stroke()}if(sep){c.fillStyle="#fff";c.fillRect(x-9,y-18,2,32);c.fillRect(x+9,y-18,2,32)}}
+  else if(pid==="spring"||pid==="button"){for(let k=0;k<14;k++){const px=x-22+(k*13)%46,py=y-12+((k*7)%22);if(pid==="spring"){c.strokeStyle="#c9d0d6";c.lineWidth=1.5;c.beginPath();for(let j=0;j<5;j++)c.arc(px+j*2,py,2,0,Math.PI*2);c.stroke()}else{c.fillStyle="#f0b429";G.rr(c,px,py,6,4,1);c.fill()}}if(lab(d,pid,"tray")){c.strokeStyle="#fff";c.lineWidth=1;c.beginPath();c.moveTo(x-28,y+14);c.lineTo(x+28,y+6);c.stroke()}}
+  else if(pid==="lower"||pid==="upper"){for(let k=0;k<6;k++){c.fillStyle=pid==="upper"?(k%2&&!lab(d,"upper","sep")?"rgba(230,240,250,.55)":"#cfd8e3"):"#e9eef3";G.rr(c,x-24,y-14+k*5,48,4,2);c.fill()}if(pid==="upper"&&lab(d,"upper","sep")){c.fillStyle="#d97706";c.fillRect(x-28,y-18,6,32)}}
+  else if(pid==="paper"){c.fillStyle="#fff";c.fillRect(x-26,y-17,52,30);c.strokeStyle="#2356c9";c.lineWidth=1.2;for(let k=0;k<4;k++){c.beginPath();c.moveTo(x-20,y-10+k*6);for(let j=0;j<8;j++)c.lineTo(x-20+j*5,y-10+k*6+(j%2?2:-2));c.stroke()}}
+  else if(pid==="box"){G.box(c,x-24,y-14,48,26,6,"#c49a66");c.fillStyle="#1f3f8f";c.fillRect(x-10,y-6,20,4)}}
+
+function openBench(el,B,ci,onDone){
+  const d=B;let step=0,R=evalBench(d),sel=null,animH=0,anim=null;
+  const steps=["1 · 5ส สะสาง","2 · จัดวาง Part","3 · บ่งชี้ กันหยิบผิด","4 · ลำดับงาน (OIS)","5 · ทดลองประกอบ"];
+  el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">KUP 3 · Standardized Work · โต๊ะประกอบปากกา</span><h3>ออกแบบโต๊ะและมาตรฐานการประกอบ 1 ด้าม</h3><p>สะสางของไม่จำเป็น วางกล่องชิ้นส่วนให้อยู่ในระยะเอื้อม บ่งชี้กันหยิบผิด แล้วเรียงลำดับงานเอง มือมี 2 ข้าง ถือได้ครั้งละ 2 ชิ้น เวลาที่ได้จะเป็นเวลางานจริงในไลน์</p></div><div class="kz-total"><span class="label">เวลาประกอบ 1 ด้าม</span><b id="bnCT">-</b></div></div>
+    <div class="seg st-tabs" id="bnTabs">${steps.map((s,i)=>`<button type="button" data-s="${i}">${s}</button>`).join("")}</div>
+    <div class="sim-wrap" id="bnWrap"></div><div class="st-tl" id="bnTL"></div><div class="st-kpi" id="bnKPI"></div><div id="bnPanel"></div>
+    <div class="actions"><button class="btn ghost" id="bnPrev">← ก่อนหน้า</button><button class="btn" id="bnNext">ถัดไป →</button><button class="btn go" id="bnUse">บันทึกเป็นมาตรฐาน →</button></div></div>`;
+  const cv=document.createElement("canvas"),dpr=Math.min(2,window.devicePixelRatio||1);cv.width=BW*dpr;cv.height=BH*dpr;cv.style.aspectRatio=BW+"/"+BH;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);$("bnWrap").appendChild(cv);
+  const toast=m=>{const w=$("bnWrap");let t=w.querySelector(".toast");if(!t){t=document.createElement("div");t.className="toast";w.appendChild(t)}t.textContent=m;t.style.opacity=1;clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity=0,2200)};
+  const redraw=()=>drawBench(c,d,step>=3?R:null,step===1?sel:null,anim);
+  cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*BW/r.width,y=(e.clientY-r.top)*BH/r.height;const s=SLOTS.find(q=>Math.abs(q.x-x)<40&&Math.abs(q.y-y)<30);if(!s)return;
+    if(step===0){const cl=CLUTTER.find(q=>q.slot===s.id);if(cl){d.clutter[cl.id]=d.clutter[cl.id]==="keep"?"red":"keep";upd()}return}
+    if(step===1){const here=PARTS.find(p=>d.pos[p.id]===s.id);if(!sel){if(here){sel=here.id;upd()}return}
+      if(blockedBy(d,s.id)){toast("ช่องนี้มีของวางอยู่ ทำ 5ส สะสางก่อน");return}if(here&&here.id!==sel)d.pos[here.id]=d.pos[sel];d.pos[sel]=s.id;sel=null;upd()}});
+  function panel(){const P=$("bnPanel");
+    if(step===0)P.innerHTML=`<p class="kz-q">แตะของบนโต๊ะ (หรือปุ่มด้านล่าง) ตัดสินใจว่าจะเก็บไว้ หรือติดป้ายแดงนำออก</p><div class="kz-grid">${CLUTTER.map(cl=>`<button type="button" class="kz-card s${d.clutter[cl.id]==="keep"?1:d.clutter[cl.id]==="red"?2:0}" data-cl="${cl.id}"><span class="em">${cl.em}</span><span>${cl.n}</span><small>${d.clutter[cl.id]==="keep"?"✓ เก็บไว้":d.clutter[cl.id]==="red"?"🏷️ ป้ายแดง นำออก":"แตะเพื่อเลือก"}</small></button>`).join("")}</div>`;
+    if(step===1)P.innerHTML=`<p class="kz-q">เลือกกล่องชิ้นส่วน แล้วแตะช่องบนโต๊ะเพื่อย้าย จุดสีบนช่องบอกระยะ: <span style="color:var(--go)">●</span> ปกติ <span style="color:var(--warn)">●</span> สุดแขน <span style="color:var(--stop)">●</span> นอกระยะ (เสี่ยงปวดหลัง ไหล่)</p><div class="acts">${PARTS.map(p=>{const s=slotOf(d,p.id);return `<button type="button" class="act ${sel===p.id?"":"alt"}" data-p="${p.id}">${p.short}<small>${ZN[zoneOf(s)]}</small></button>`}).join("")}</div>`;
+    if(step===2)P.innerHTML=`<p class="kz-q">เลือกวิธีบ่งชี้ให้แต่ละกล่อง (Visual + Poka-yoke) เพื่อหาเร็วและไม่หยิบผิด</p><div class="kz-rows">${PARTS.map(p=>`<div class="kz-row"><span class="kz-it">${p.short}${p.risk?`<small>เสี่ยง: ${p.riskWhy}</small>`:p.small?"<small>ชิ้นเล็ก หยิบยาก ถ้าไม่มีถาดเอียงจะเสียเวลาเขี่ย</small>":""}</span><div class="seg">${p.labels.map(l=>`<button type="button" data-lp="${p.id}" data-l="${l.id}" aria-pressed="${lab(d,p.id,l.id)}">${l.n}</button>`).join("")}</div></div>`).join("")}</div>`;
+    if(step===3){const pool=TASKS.filter(t=>!d.seq.includes(t.id));P.innerHTML=`<p class="kz-q">แตะขั้นตอนเพื่อเรียงลำดับ ลองสลับลำดับแล้วดูเวลาและเส้นทางมือที่เปลี่ยนไป</p><div class="kz-seq"><div><span class="label">ขั้นตอนที่ยังไม่ได้ใส่</span><div class="kz-list">${pool.map(t=>`<button type="button" data-a="${t.id}">${t.n} <small>(${t.va?"เพิ่มคุณค่า":"ไม่เพิ่มคุณค่า"} ${t.h}s)</small></button>`).join("")||`<span class="label">ใส่ครบแล้ว</span>`}</div></div>
+      <div><span class="label">ลำดับมาตรฐาน (OIS) ของคุณ</span><ol class="kz-list mine">${d.seq.map((id,i)=>`<li><button type="button" data-r="${id}">${TK(id).n}</button><span class="ypm"><button type="button" data-up="${i}" ${i?"":"disabled"} aria-label="เลื่อนขึ้น">↑</button><button type="button" data-dn="${i}" ${i<d.seq.length-1?"":"disabled"} aria-label="เลื่อนลง">↓</button></span></li>`).join("")||`<span class="label">ยังว่าง</span>`}</ol></div></div>
+      ${R.errs.length?`<div class="errs">${R.errs.map(e=>`<div class="lesson" style="border-color:var(--stop)">${e}</div>`).join("")}</div>`:""}`}
+    if(step===4)P.innerHTML=R.ok?`<div class="actions"><button type="button" class="btn" id="bnPlay">▶ ดูมือประกอบ 1 ด้าม</button></div><div class="lesson">ของคุณ <b>${R.ct.toFixed(1)} วินาที/ด้าม</b> · แบบที่ดีที่สุดที่ระบบหาได้ ${IDEAL_CT} วินาที (${pct(Math.min(1,IDEAL_CT/R.ct))})</div>${tips().map(t=>`<div class="lesson">${t}</div>`).join("")}`:`<div class="lesson" style="border-color:var(--stop)">ลำดับงานยังไม่ถูกต้อง กลับไปแก้ที่ขั้นที่ 4</div>`;
+    P.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{const k=b.dataset.cl;d.clutter[k]=d.clutter[k]==="keep"?"red":"keep";upd()});
+    P.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{sel=sel===b.dataset.p?null:b.dataset.p;upd()});
+    P.querySelectorAll("[data-lp]").forEach(b=>b.onclick=()=>{const p=b.dataset.lp,l=b.dataset.l;d.labels[p]=d.labels[p]||{};d.labels[p][l]=!d.labels[p][l];upd()});
+    P.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{d.seq.push(b.dataset.a);upd()});
+    P.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{d.seq.splice(d.seq.indexOf(b.dataset.r),1);upd()});
+    P.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=+b.dataset.up;[d.seq[i-1],d.seq[i]]=[d.seq[i],d.seq[i-1]];upd()});
+    P.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;[d.seq[i+1],d.seq[i]]=[d.seq[i],d.seq[i+1]];upd()});
+    if($("bnPlay"))$("bnPlay").onclick=play}
+  function tips(){const t=[],T=R.T;
+    if(R.messy)t.push(`<b>5ส:</b> ยังมีของไม่จำเป็น ${R.messy} ชิ้นบนโต๊ะ ทุกครั้งที่หยิบต้องมองหานานขึ้น`);
+    if(!R.wiOk)t.push(`<b>มาตรฐาน:</b> นำ OIS ฉบับปัจจุบันออกจากหน้างาน พนักงานใหม่จะทำผิดลำดับบ่อยขึ้น`);
+    if(R.risky)t.push(`<b>Safety:</b> เอื้อมนอกระยะ ${R.risky} ครั้งต่อด้าม ถ้าวันละ 1,000 ด้ามคือเอี้ยวตัว ${(R.risky*1000).toLocaleString()} ครั้ง`);
+    if(T.move>7)t.push(`<b>Motion:</b> มือเคลื่อนที่ ${T.move.toFixed(1)} วินาที/ด้าม ย้ายกล่องที่หยิบต่อเนื่องกันให้อยู่ใกล้กันและใกล้จิ๊ก`);
+    if(T.search>3)t.push(`<b>ค้นหา:</b> เสียเวลาหาและเขี่ยของ ${T.search.toFixed(1)} วินาที/ด้าม`);
+    if(R.riskRefill>.02)t.push(`<b>Poka-yoke:</b> โอกาสหยิบไส้ผิดสี ${(R.riskRefill*100).toFixed(1)}% แยกช่องตามสีจะเหลือต่ำกว่า 1%`);
+    return t}
+  function upd(){R=evalBench(d);const T=R.T,tot=Math.max(1,R.ct);$("bnCT").textContent=R.ok?R.ct.toFixed(1)+"s":"-";
+    $("bnTL").innerHTML=R.ok?[["va","ประกอบ (เพิ่มคุณค่า)",T.va],["walk","มือเคลื่อนที่/เอื้อม",T.move],["search","ค้นหา/เขี่ย",T.search],["nva","หยิบ ทดสอบ แพ็ค",T.nva]].map(([k,n,v])=>v>.05?`<i class="st-${k}" style="flex:${v}" title="${n} ${v.toFixed(1)}s"><span>${n} ${v.toFixed(1)}s</span></i>`:"").join(""):"";
+    $("bnKPI").innerHTML=[["งานเพิ่มคุณค่า",R.ok?Math.round(T.va/tot*100)+"%":"-"],["ท่าทางเสี่ยง/ด้าม",R.risky],["หยิบไส้ผิดสี",(R.riskRefill*100).toFixed(1)+"%"],["ของรกบนโต๊ะ",R.messy+" ชิ้น"]].map(h=>`<div class="hudi ${h[0]==="ท่าทางเสี่ยง/ด้าม"&&h[1]?"alert":""}"><span>${h[0]}</span><b>${h[1]}</b></div>`).join("");
+    $("bnTabs").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.s===step));$("bnPrev").disabled=step===0;$("bnNext").style.display=step===4?"none":"";
+    $("bnUse").disabled=!R.ok;panel();redraw()}
+  function play(){if(!R.ok)return;cancelAnimationFrame(animH);const pts=R.pts,seg=[];let t=0;for(let i=1;i<pts.length;i++){const m=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y)/PXCM/80+.35;seg.push({a:pts[i-1],b:pts[i],t0:t,t1:t+m});t+=m}
+    const st=performance.now(),f=()=>{const e=(performance.now()-st)/1000,s=seg.find(q=>e<q.t1)||seg[seg.length-1],k=Math.min(1,Math.max(0,(e-s.t0)/Math.max(.01,s.t1-s.t0-.3)));anim={x:s.a.x+(s.b.x-s.a.x)*k,y:s.a.y+(s.b.y-s.a.y)*k};redraw();if(e<t)animH=requestAnimationFrame(f);else{anim=null;redraw()}};f()}
+  $("bnTabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{step=+b.dataset.s;sel=null;upd()});
+  $("bnPrev").onclick=()=>{step=Math.max(0,step-1);sel=null;upd()};$("bnNext").onclick=()=>{step=Math.min(4,step+1);sel=null;upd()};
+  $("bnUse").onclick=()=>{if(!R.ok)return;cancelAnimationFrame(animH);onDone(R,Math.min(1,IDEAL_CT/R.ct))};
+  upd();el.scrollIntoView({block:"start",behavior:"smooth"});
 }
 
-SIMS.push({id:"factory",name:"Lean Factory ไลน์ประกอบรถยนต์",genre:"สร้างโรงงาน/เมือง · บริหารกำไร",desc:"ออกแบบสถานีประกอบเอง กำหนด JPH จ้างคน จัดสมดุลไลน์ บริหารเงินสด ทีมที่กำไรสูงและไลน์สมดุลที่สุดชนะ",
-  chips:["ออกแบบสถานี","5ส + บ่งชี้","ลำดับงาน","JPH / Takt","จ้างคน","Line balance","กำไร"],levels:LEVELS,
-  thumb(c,w,h,bg){const lv=LEVELS[1],st=newState(lv);st.hired=9;st.cash=ECON.cash+13000;st.cur=[{color:"#c7392d",rem:3,max:6},null,{color:"#2356a3",rem:5,max:10},{color:"#e8e8e3",rem:2,max:7},null];st.buf[2]=[{color:"#c7392d"},{color:"#2356a3"}];st.buf[3]=[{color:"#c7392d"},{color:"#2356a3"},{color:"#e8e8e3"}];st.buf[5]=[{color:"#2356a3"},{color:"#c7392d"}];st.down[4]=2;st.backlog=2;render(c,st,lv,bg,w/W)},
+// ---------------- other KUP activities ----------------
+const GEMBA={lean:"KUP 4 · Visual Management",title:"เดิน Gemba หาจุดที่มองไม่เห็นความผิดปกติ (ภาพจริง)",desc:"ภาพจริงจากข้างไลน์ แตะจุดที่ควรบ่งชี้หรือจัดให้เห็นด้วยตา ระวังแตะจุดที่ทำได้ดีอยู่แล้ว",kind:"gemba",doneLabel:"กลับไปที่บอร์ด 6 KUP",
+  data:{q:"แตะจุดที่เป็นปัญหาในภาพ (สลับภาพได้ด้านบน)",photos:[
+    {name:"ภาพที่ 1",src:"gemba1.jpg",w:1400,h:1050,spots:[
+      {x:100,y:420,w:180,h:270,n:"Part ยังอยู่ในกล่องผู้ผลิต ซ้อนสูง",cat:"สะดวก",fix:"เปลี่ยนเป็นกล่องหมุนเวียน วางบนชั้น FIFO ระดับเอว"},
+      {x:285,y:510,w:340,h:220,n:"กล่องเปิดค้าง มีโฟมและพลาสติก",cat:"สะสาง",fix:"แกะบรรจุภัณฑ์ที่จุดเตรียมชิ้นส่วนก่อนส่งเข้าไลน์"},
+      {x:40,y:500,w:95,h:170,n:"ถุงพลาสติกใหญ่วางข้างกอง",cat:"สะสาง",fix:"กำหนดถังและจุดทิ้งบรรจุภัณฑ์"},
+      {x:1075,y:455,w:325,h:295,n:"พาเลทเต็มวางข้างไลน์",cat:"Inventory",fix:"ส่งเฉพาะจำนวนที่ใช้ตามรอบ Kanban"},
+      {x:620,y:350,w:410,h:420,ok:true,n:"รถเข็นเฉพาะชิ้นส่วน",fix:"จุดนี้ทำได้ดี: เฉพาะรุ่น มีป้ายบ่งชี้"}]},
+    {name:"ภาพที่ 2",src:"gemba2.jpg",w:1400,h:1050,spots:[
+      {x:865,y:500,w:120,h:180,n:"ถุงพลาสติกวางพิงกองกล่อง",cat:"สะสาง",fix:"นำออกทันที กำหนดจุดทิ้ง"},
+      {x:840,y:645,w:140,h:70,n:"กล่องกระดาษพับวางบนพื้น",cat:"สะสาง",fix:"ลังเปล่าต้องส่งกลับหรือทิ้งตามรอบ"},
+      {x:690,y:415,w:80,h:55,n:"กล่องวางบนรถเข็นชิ้นส่วน",cat:"สุขลักษณะ",fix:"ติดป้ายห้ามวางของอื่น"},
+      {x:915,y:725,w:80,h:45,n:"เศษเทปบนพื้นทางเดิน",cat:"สะอาด",fix:"ทำความสะอาดและหาต้นเหตุ"},
+      {x:955,y:430,w:215,h:250,n:"กล่องซ้อนสูง ไม่มีป้ายและเส้น Max/Min",cat:"บ่งชี้",fix:"ตีเส้นพื้นที่ ติดป้ายชื่อ Part และ Max/Min"},
+      {x:0,y:495,w:235,h:145,n:"กล่อง Part วางพื้นนอกพื้นที่กำหนด",cat:"สะดวก",fix:"วางบนชั้นในพื้นที่ที่ตีเส้นไว้"},
+      {x:1170,y:530,w:230,h:170,n:"หยิบจากกล่องผู้ผลิตโดยตรง",cat:"สะดวก",fix:"ย้ายลงกล่องหมุนเวียนตามจำนวนที่ใช้"},
+      {x:270,y:300,w:250,h:390,ok:true,n:"แร็คเฉพาะชิ้นส่วนมีผ้าคลุม",fix:"จุดนี้ทำได้ดี"}]}]},
+  effect:s=>`ไลน์ของคุณจะเห็นปัญหาเร็วขึ้น: ไฟ Andon และการแจ้งเตือนเร็วขึ้น ${Math.round(s*100)}%`};
+function kupActs(lv){return [
+  {id:"tdm",lean:"KUP 2 · Time & Data Management",title:"ตั้งบอร์ดผลิตรายชั่วโมง",desc:"คำนวณ Takt time เพื่อใช้วางแผนและติดตามทุก 2 นาที",kind:"number",
+    data:{q:"ช่วงแรกลูกค้าต้องการ "+lv.jph[0]+" ด้าม/ชั่วโมง Takt time คือกี่วินาทีต่อด้าม",facts:[`ลูกค้าต้องการ ${lv.jph[0]} ด้าม/ชม.`,"1 ชั่วโมง = 3,600 วินาที","Takt = เวลาที่มี ÷ ความต้องการ"],label:"Takt (วินาที/ด้าม)",answer:Math.round(3600/lv.jph[0]),unit:"วินาที",explain:`3,600 ÷ ${lv.jph[0]} = ${Math.round(3600/lv.jph[0])} วินาที ทุกสถานีต้องเสร็จงานภายในเวลานี้ และเมื่อความต้องการเพิ่ม Takt จะสั้นลง`},
+    effect:s=>s>=.9?"บอร์ดรายชั่วโมงจะเตือนล่วงหน้าเมื่อทำได้ต่ำกว่าแผน":"บอร์ดยังไม่เตือนล่วงหน้า ต้องคอยดูเอง"},
+  Object.assign({id:"vm"},GEMBA),
+  {id:"pc",lean:"KUP 5 · Process Confirmation",title:"ยืนยันว่าทุกคนทำตาม OIS",desc:"หัวหน้างานควรตรวจสอบกระบวนการอย่างไร",kind:"choice",
+    data:{q:"หัวหน้างานควรยืนยันว่าพนักงานทำตามมาตรฐาน (OIS) อย่างไร",opts:[
+      {t:"รอดูยอดของเสียตอนสิ้นเดือนแล้วค่อยเรียกประชุม",s:.1,why:"ช้าเกินไป ของเสียหลุดไปถึงลูกค้าแล้ว"},
+      {t:"เดินตรวจหน้างานตามรอบด้วย Checklist เทียบกับ OIS พบจุดต่างให้แก้ทันทีและหาสาเหตุ",s:1,why:"ถูกต้อง: Process Confirmation คือไปดูของจริงที่หน้างานตามรอบ เทียบกับมาตรฐาน แล้วแก้ทันที"},
+      {t:"ให้พนักงานกรอกแบบฟอร์มรับรองตัวเองทุกวัน",s:.4,why:"เป็นเอกสาร ไม่ได้เห็นการทำงานจริง"},
+      {t:"ติดกล้องดูจากห้องทำงาน",s:.3,why:"ไม่ได้คุยและแก้ปัญหาที่หน้างาน"}]},
+    effect:s=>s>=1?"ในไลน์ การทำงานผิดมาตรฐานจะเกิดน้อยลงและเห็นทันที":"ในไลน์ การทำงานผิดมาตรฐานจะเกิดบ่อยและเห็นช้า"},
+  {id:"ci",lean:"KUP 6 · Continuous Improvement (ECRS)",title:"ไคเซ็นงานประกอบด้วย ECRS",desc:"จับคู่ไอเดียปรับปรุงกับหลัก ECRS",kind:"classify",
+    data:{q:"ไอเดียปรับปรุงแต่ละข้อใช้หลักใด",cats:["E ตัดออก","C รวม","R สลับลำดับ","S ทำให้ง่าย"],items:[
+      {t:"แกะถุงไส้ปากกาทีละถุงที่โต๊ะ → ให้ผู้ผลิตส่งมาแบบไม่ห่อถุง",cat:0,why:"ตัดงานแกะถุงทิ้งได้ทั้งหมด"},
+      {t:"หยิบไส้แล้วค่อยหยิบสปริง → หยิบสองมือพร้อมกัน",cat:1,why:"รวมสองการเคลื่อนไหวเป็นครั้งเดียว"},
+      {t:"แพ็คกล่องแล้วค่อยทดสอบเขียน → ทดสอบก่อนแพ็ค",cat:2,why:"สลับลำดับ ไม่ต้องแกะกล่องเมื่อพบของเสีย"},
+      {t:"อัดด้ามด้วยมือ → ใช้จิ๊กอัดกดครั้งเดียว",cat:3,why:"ทำให้งานง่ายและเร็วขึ้น"},
+      {t:"นับปากกาทีละด้ามก่อนปิดกล่อง → ใช้ถาด 12 ช่อง เห็นครบทันที",cat:3,why:"มองเห็นจำนวนได้ทันที ไม่ต้องนับ"},
+      {t:"เดินไปถามหัวหน้าทุกครั้งที่ไส้หมด → ใช้ Kanban สองกล่อง",cat:0,why:"ตัดการเดินและการรอ"}]},
+    effect:s=>`เวลางานประกอบลดลง ${Math.round(s*12)}% ในทุกสถานี`}]}
+const JI={lean:"People · Job Instruction",title:"สอนงานพนักงานใหม่ (JI 4 ขั้น)",desc:"เรียงขั้นตอนการสอนงานให้ถูก และตัดวิธีที่ไม่ควรทำ",kind:"sequence",doneLabel:"ไปทำ 6 KUP →",
+  data:{q:"แตะเรียงขั้นตอนสอนงานพนักงานใหม่ ไม่ต้องใส่ข้อที่ไม่ควรทำ",steps:[
+    {t:"เตรียมผู้เรียน: ทักทาย อธิบายงานและความสำคัญ ให้รู้สึกสบายใจ",ord:1},
+    {t:"สาธิตทีละขั้นตามมาตรฐาน เน้นจุดสำคัญและเหตุผล",ord:2},
+    {t:"ให้ลองทำและอธิบายกลับ แก้ไขทันทีจนทำถูก",ord:3},
+    {t:"ติดตามผล ให้ทำเอง กำหนดคนที่ถามได้ ตรวจเป็นระยะ",ord:4},
+    {t:"ให้อ่าน OIS เองแล้วเริ่มทำเลย",waste:true,why:"ไม่ได้เห็นวิธีจริง ผิดง่าย"},
+    {t:"ให้ยืนดูคนอื่นทำทั้งวันโดยไม่อธิบาย",waste:true,why:"ไม่รู้จุดสำคัญ เสียเวลา"}]},
+  effect:s=>`พนักงานใหม่เรียนรู้เร็วขึ้น ${Math.round(s*100)}% (ฝีมือขึ้นเร็วในไลน์)`};
+
+// ---------------- the game ----------------
+SIMS.push({id:"factory",name:"เปิดโรงงานประกอบปากกา",genre:"เปิดโรงงาน · บริหารไลน์ 10 นาที",desc:"ตั้งเป้า SQDCPME จ้างพนักงานใหม่ ทำ 6 KUP ออกแบบโต๊ะและไลน์เอง แล้วเดินไลน์ 10 นาที ลูกค้าเพิ่มออเดอร์ทุก 2 นาที",
+  chips:["SQDCPME","จ้างคน + สอนงาน","6 KUP","5ส + ระยะเอื้อม","จัด Layout ไลน์","JPH เพิ่มทุก 2 นาที","กำไร + LBE"],levels:LEVELS,
+  thumb(c,w,h){const st=demoState(LEVELS[1]);render(c,st,w/W)},
   create(api){
-    const lv=api.lv,L=api.level,st=newState(lv),n=lv.st.length;
-    const acts=lv.acts.map(k=>Object.assign({id:k,score:null},ACTS[k]));
-    api.root.innerHTML=`<div id="stArea"></div><div id="kzArea"></div><div class="sim-wrap" id="pWrap"></div><div class="sim-hud" id="pHud"></div>
-      <div class="sim-ctl"><div class="panel"><h3>Yamazumi · จัดคนลงสถานี (เส้นแดง = Takt)</h3><div id="pYama"></div><p class="label" id="pLBE" style="text-transform:none;letter-spacing:0"></p></div>
-      <div class="panel"><h3>แผนการผลิต (JPH)</h3><div id="pPlan"></div><h3>กำลังคน</h3><div id="pHire"></div><h3>การปล่อยงานเข้าไลน์</h3><div class="seg" id="pMode"><button type="button" data-m="push">Push ตาม JPH</button><button type="button" data-m="pull">Pull + Kanban</button></div><div id="pRel"></div></div></div>`;
-    const wrap=$("pWrap"),{c}=api.canvas(wrap,W,H);
-    $("pMode").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.mode=b.dataset.m;sync(true)});
-    function fx(t,x,y,col){st.fx.push({t,x,y,col,life:1.4})}
-    const sumWC=()=>lv.st.reduce((a,_,i)=>a+wcOf(st,lv,i),0);
-    function sync(full){
-      const tk=3600/st.jph,used=st.alloc.reduce((a,b)=>a+b,0),free=st.hired-used,need=Math.ceil(sumWC()/tk);
-      const cts=st.alloc.map((_,i)=>ctOf(st,lv,i)),maxCT=Math.max(tk*1.5,...cts.filter(isFinite));
-      $("pYama").innerHTML=`<div class="yama">${lv.st.map((k,i)=>{const t=cts[i],h=isFinite(t)?Math.min(100,t/maxCT*100):100;return `<div class="ycol"><div class="ybar"><i style="height:${h}%;background:${isFinite(t)&&t<=tk?"var(--go)":"var(--stop)"}"></i><b style="bottom:${tk/maxCT*100}%"></b></div><span>${ST_ALL[k].n}</span><small>${isFinite(t)?Math.round(t)+"s":"-"} · งาน ${Math.round(wcOf(st,lv,i))}s</small><div class="ypm"><button data-w="${i}" data-d="-1" ${st.alloc[i]<=0?"disabled":""} aria-label="ลดคน">−</button><b>${st.alloc[i]}</b><button data-w="${i}" data-d="1" ${free<=0||st.alloc[i]>=6?"disabled":""} aria-label="เพิ่มคน">+</button></div></div>`}).join("")}</div>`;
-      $("pYama").querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const i=+b.dataset.w,d=+b.dataset.d;if(d>0&&free<=0)return;st.alloc[i]=Math.max(0,Math.min(6,st.alloc[i]+d));sync(true)});
-      $("pLBE").innerHTML=`Line Balance Efficiency <b>${Math.round(lbe(st,lv)*100)}%</b> · Takt ${tk.toFixed(0)} วิ · ต้องใช้อย่างน้อย ${need} คน (งานรวม ${Math.round(sumWC())} วิ ÷ Takt)`;
-      $("pMode").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===st.mode));
-      if(full){
-        $("pPlan").innerHTML=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>JPH เป้าหมาย</span><div class="ypm"><button data-j="-1">−</button><b>${st.jph}</b><button data-j="1">+</button></div><span class="label" style="text-transform:none;letter-spacing:0">ตลาดรับได้ไม่เกิน ~${lv.cap} คัน/ชม.${lv.mura?" (ขึ้นลง)":""}</span></div>`;
-        $("pPlan").querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{st.jph=Math.max(5,Math.min(30,st.jph+ +b.dataset.j));st.pushInt=3600/st.jph;sync(true)});
-        const canHire=st.cash>=ECON.hire+ECON.wage;
-        $("pHire").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span>จ้างแล้ว <b>${st.hired}</b> คน · ว่าง <b>${free}</b></span><button class="btn small" id="pHireB" ${canHire?"":"disabled"}>+ จ้าง 1 คน</button><button class="btn ghost small" id="pFireB" ${free>0?"":"disabled"}>− เลิกจ้างคนว่าง</button></div><p class="label" style="text-transform:none;letter-spacing:0">ค่าจ้างแรกเข้า ${ECON.hire} ฿ · ค่าแรง ${ECON.wage.toLocaleString()} ฿/คน/ชม. (จ่ายแม้ไม่ได้ลงสถานี)${canHire?"":" · เงินสดไม่พอจ้าง"}</p>`;
-        $("pHireB").onclick=()=>{if(st.cash<ECON.hire+ECON.wage)return;st.cash-=ECON.hire;st.hired++;st.hires++;api.toast(wrap,"จ้างคนเพิ่ม 1 คน");sync(true)};
-        $("pFireB").onclick=()=>{if(st.hired-st.alloc.reduce((a,b)=>a+b,0)<=0)return;st.cash-=ECON.fire;st.hired--;sync(true)};
-        $("pRel").innerHTML=st.mode==="push"?`<p class="label" style="text-transform:none;letter-spacing:0;margin-top:6px">ปล่อยรถเข้าไลน์ทุก ${Math.round(st.pushInt)} วินาทีตาม JPH ไม่ดูว่าไลน์พร้อมหรือไม่ ซื้อวัตถุดิบ ${ECON.mat} ฿ ทุกคันที่ปล่อย</p>`
-          :`<div style="display:flex;gap:10px;align-items:center;margin-top:6px"><span>WIP สูงสุดระหว่างสถานี</span><div class="ypm"><button data-l="-1">−</button><b>${st.limit}</b><button data-l="1">+</button></div></div><p class="label" style="text-transform:none;letter-spacing:0">ส่งงานต่อเมื่อช่องถัดไปไม่เต็ม ปล่อยรถใหม่เมื่อช่องแรกว่าง</p>`;
-        $("pRel").querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{st.limit=Math.max(1,Math.min(6,st.limit+ +b.dataset.l));sync(true)});}
-      const wip=st.buf.slice(0,n).reduce((a,b)=>a+b.length,0)+st.cur.filter(Boolean).length,left=SHIFT-st.t,profit=st.cash-ECON.cash;
-      $("pHud").innerHTML=[["เวลากะ",fmtT(st.t)+" / 60:00",left<300],["เงินสด",baht(st.cash),st.cash<ECON.mat],["กำไร",baht(profit),profit<0],["ส่งมอบ/ออเดอร์",`${st.shipped}/${st.orders}`],["ลูกค้ารอ",st.backlog,st.backlog>3],["WIP",wip,wip>n*3],["LBE",Math.round(lbe(st,lv)*100)+"%"]].map(h=>`<div class="hudi ${h[2]?"alert":""}"><span>${h[0]}</span><b>${h[1]}</b></div>`).join("");
+    const WHO0=lsGet("lq-sim-who",{}),lv=api.lv,L=api.level,B=newBench(),line={cuts:new Set(),cells:[]},K={},used=new Set();
+    let goals=Array(GOALS.length).fill(null),pool=candidates(8,used),hired=[],R=null,stdEff=0,acts=kupActs(lv),jiScore=0,step=0,st=null,loop={stop(){},pause(){}},room=null,ended=false;
+    const STEPS=["1 ตั้งเป้าหมาย","2 จ้างพนักงาน","3 ทำ 6 KUP","4 จัดไลน์","5 เดินไลน์ 10 นาที"];
+    api.root.innerHTML=`<div class="pf-steps" id="pfSteps"></div><div id="pfMain"></div>`;
+    const M=()=>$("pfMain");
+    function stepper(){$("pfSteps").innerHTML=STEPS.map((s,i)=>`<span class="${i<step?"done":i===step?"on":""}">${i<step?"✓ ":""}${s}</span>`).join("")}
+    function go(i){step=i;stepper();[goalsUI,hireUI,kupUI,lineUI,runUI][i]();window.scrollTo({top:$("pfSteps").offsetTop-10,behavior:"smooth"})}
+
+    // ----- 1 goals -----
+    function goalsUI(){const draw=()=>{M().innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">KUP 1 · Policy Deployment · เกม 1 ในห้องเรียน</span><h3>ตั้งเป้าหมาย SQDCPME ของโรงงานคุณ</h3><p>เป้าบริษัท: ส่งมอบครบ ไม่มีของเสียถึงลูกค้า และมีกำไร → ถ่ายทอดมาเป็นเป้าของไลน์คุณ เลือกระดับเป้าหมายแต่ละข้อ ทำได้ตามเป้าได้คะแนน เป้ายิ่งสูงยิ่งได้มาก แต่ถ้าทำไม่ถึงได้ 0</p></div></div>
+      <div class="pf-goals">${GOALS.map((g,i)=>{const T=tiersOf(g,lv);return `<div class="pf-goal"><span class="pf-k" style="background:${g.col}">${g.k}</span><div><b>${g.th}</b><small>${g.m}</small><div class="seg">${T.map((v,k)=>`<button type="button" data-g="${i}" data-t="${k}" aria-pressed="${goals[i]===k}">${TIERN[k]} ${g.dir<0?"≤":"≥"} ${v.toLocaleString()}${g.u.trim()} <small>+${(k+1)*100}</small></button>`).join("")}</div>${goals[i]!=null?`<p class="pf-smart">🎯 ${smart(g,T[goals[i]])}</p>`:""}</div></div>`}).join("")}</div>
+      <div class="lesson">SMART: <b>S</b>pecific ชัดเจน · <b>M</b>easurable วัดเป็นตัวเลข · <b>A</b>chievable ทำได้จริง · <b>R</b>elevant สอดคล้องเป้าบริษัท · <b>T</b>ime-bound มีกำหนดเวลา (กะนี้ 60 นาที)</div>
+      <div class="actions"><button class="btn go" id="gOk" ${goals.includes(null)?"disabled":""}>ประกาศเป้าหมาย → จ้างพนักงาน</button></div></div>`;
+      M().querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{goals[+b.dataset.g]=+b.dataset.t;draw()});$("gOk").onclick=()=>go(1)};draw()}
+
+    // ----- 2 hiring + JI -----
+    function candCard(cd,on){return `<div class="pf-cand ${on?"on":""}"><canvas width="160" height="150" data-face="${cd.id}" aria-hidden="true"></canvas><div><b>${esc(cd.n)}</b><small>${esc(cd.exp)}</small><div class="pf-sk"><i style="width:${Math.round(cd.sk*100)}%"></i></div><small>ฝีมือเริ่มต้น ${Math.round(cd.sk*100)}% · ค่าแรง ${cd.wage} ฿/ชม.</small></div>
+      <button type="button" class="btn small ${on?"ghost":""}" data-h="${cd.id}">${on?"ยกเลิก":"จ้าง"}</button></div>`}
+    function faces(root){root.querySelectorAll("canvas[data-face]").forEach(cv=>{const cd=pool.concat(hired).find(x=>x.id===+cv.dataset.face);if(!cd)return;const c=cv.getContext("2d");let g=c.createLinearGradient(0,0,0,150);g.addColorStop(0,"#e9eef2");g.addColorStop(1,"#c9d2d9");c.fillStyle=g;c.fillRect(0,0,160,150);staffBody(c,80,170,1.7,cd)})}
+    function hireUI(){const draw=()=>{const fee=hired.length*ECON.hire,wage=hired.reduce((a,x)=>a+x.wage,0);
+      M().innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">People · เปิดรับพนักงานใหม่</span><h3>จ้างพนักงานชุดแรก</h3><p>ทุนเปิดโรงงาน ${baht(ECON.cash)} ค่าจ้างแรกเข้า ${ECON.hire} ฿/คน ค่าแรงจ่ายทุกชั่วโมงแม้ไม่มีงาน ช่วงแรกลูกค้าต้องการ ${lv.jph[0]} ด้าม/ชม. (Takt ${Math.round(3600/lv.jph[0])} วินาที) งานประกอบ 1 ด้ามใช้ราว 25 ถึง 45 วินาที แล้วจะเพิ่มถึง ${lv.jph[NR-1]} ด้าม/ชม. ในช่วงท้าย จ้างเพิ่มระหว่างเดินไลน์ได้</p></div><div class="kz-total"><span class="label">จ้างแล้ว</span><b>${hired.length} คน</b></div></div>
+        <div class="st-kpi"><div class="hudi"><span>ค่าจ้างแรกเข้า</span><b>${baht(fee)}</b></div><div class="hudi"><span>ค่าแรงรวม/ชม.</span><b>${baht(wage)}</b></div><div class="hudi"><span>เงินสดคงเหลือ</span><b>${baht(ECON.cash-fee)}</b></div></div>
+        <div class="pf-cands">${hired.map(x=>candCard(x,true)).join("")}${pool.map(x=>candCard(x,false)).join("")}</div>
+        <div class="lesson">หมวกเหลืองและปลอกแขนเขียว = พนักงานใหม่ ฝีมือต่ำกว่า 85% จะทำงานช้าและค่อยๆ เก่งขึ้นตามจำนวนชิ้นที่ทำ ยิ่งสอนงานดียิ่งเรียนรู้เร็ว</div>
+        <div class="actions"><button class="btn go" id="hOk" ${hired.length?"":"disabled"}>ปฐมนิเทศและสอนงาน →</button></div></div>`;
+      faces(M());M().querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const id=+b.dataset.h;let k=hired.findIndex(x=>x.id===id);if(k>=0){pool.push(hired.splice(k,1)[0])}else{k=pool.findIndex(x=>x.id===id);hired.push(pool.splice(k,1)[0])}draw()});
+      $("hOk").onclick=()=>{hired.forEach(x=>used.add(x.n));KZ.single(M(),JI,s=>{jiScore=s;go(2)})}};draw()}
+
+    // ----- 3 six KUP -----
+    function kupUI(){const card=(lean,title,desc,sc,id,req)=>{const g=sc!=null?KZ.grade(sc):null;return `<div class="kz-act ${sc!=null?"done":""}"><div class="kz-ah"><span class="kz-tag">${lean}</span>${g?`<span class="kz-sc" style="background:${g[1]}">${KZ.pct(sc)}% · ${g[0]}</span>`:req?`<span class="kz-sc" style="background:var(--stop)">ต้องทำ</span>`:""}</div><b>${title}</b><small>${desc}</small>${id?`<button type="button" class="btn small ${sc!=null?"ghost":""}" data-k="${id}">${sc!=null?"ทำใหม่":"ลงมือทำ"}</button>`:""}</div>`};
+      const pdS=1,a=k=>acts.find(x=>x.id===k);
+      M().innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">เกม 2 ในห้องเรียน · 6 KUP</span><h3>เตรียมไลน์ด้วย 6 KUP</h3><p>ทำกิจกรรมแต่ละ KUP ด้วยตัวเอง คะแนนแต่ละข้อมีผลจริงตอนเดินไลน์ Standardized Work ต้องทำ เพราะได้เวลางานของไลน์</p></div><div class="kz-total"><span class="label">ความพร้อม 6 KUP</span><b>${KZ.pct((pdS+stdEff*(R?1:0)+["tdm","vm","pc","ci"].reduce((x,k)=>x+(a(k).score||0),0))/6)}%</b></div></div>
+        <div class="kz-acts">${card("KUP 1 · Policy Deployment","เป้าหมาย SQDCPME",goals.map((t,i)=>GOALS[i].k+" "+TIERN[t]).join(" · "),pdS,null)}
+        ${card(a("tdm").lean,a("tdm").title,a("tdm").desc,a("tdm").score,"tdm")}
+        ${card("KUP 3 · Standardized Work","ออกแบบโต๊ะประกอบและลำดับงาน (OIS)",R?`ประกอบ 1 ด้าม ${R.ct.toFixed(1)} วินาที · ท่าทางเสี่ยง ${R.risky} ครั้ง`:"5ส จัดวาง Part ในระยะเอื้อม บ่งชี้กันหยิบผิด ลำดับงาน",R?stdEff:null,"std",!R)}
+        ${["vm","pc","ci"].map(k=>card(a(k).lean,a(k).title,a(k).desc,a(k).score,k)).join("")}</div>
+        <div class="actions"><button class="btn go" id="kOk" ${R?"":"disabled"}>ไปจัดไลน์ →</button></div></div>`;
+      M().querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;
+        if(k==="std"){openBench(M(),B,0,(res,eff)=>{R=res;stdEff=eff;line.cuts=new Set();line.cells=[];kupUI()});return}
+        const act=a(k);KZ.single(M(),Object.assign({doneLabel:"กลับไปที่บอร์ด 6 KUP"},act),s=>{act.score=s;kupUI()})});
+      $("kOk").onclick=()=>{["tdm","vm","pc","ci"].forEach(k=>K[k]=a(k).score||0);K.std=stdEff;K.ji=jiScore;go(3)};
+      M().scrollIntoView({block:"start",behavior:"smooth"})}
+
+    // ----- 4 line: split work, layout, assign people -----
+    function lineEditor(el,opt){let selSt=0;
+      const draw=()=>{const S=stationList(B,R,line,K.ci),tk0=3600/(opt.jph||lv.jph[0]),tkN=3600/lv.jph[NR-1],mx=Math.max(tk0*1.2,...S.map(x=>x.wc));const workers=opt.workers;
+        const cutsOK=R.cuts;
+        el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">${opt.eyebrow}</span><h3>${opt.title}</h3><p>แตะ ✂ ระหว่างขั้นตอนเพื่อแบ่งเป็นสถานี (ตัดได้เฉพาะจุดที่มือว่าง) จากนั้นวางโต๊ะแต่ละสถานีบนผังโรงงาน และจัดคนลงสถานี เส้นแดงคือ Takt</p></div><div class="kz-total"><span class="label">สถานี</span><b>${S.length}</b></div></div>
+          <span class="label">ก · แบ่งงานเป็นสถานี (Yamazumi ตามงาน)</span>
+          <div class="pf-split">${B.seq.map((id,i)=>`<span class="pf-task" style="flex:${R.per[id].mv+R.per[id].sr+R.per[id].h}">${TK(id).s}<small>${(R.per[id].mv+R.per[id].sr+R.per[id].h*(1-.12*K.ci)).toFixed(1)}s</small></span>${i<B.seq.length-1?`<button type="button" class="pf-cut ${line.cuts.has(i)?"on":""}" data-cut="${i}" ${cutsOK[i]?"":"disabled"} title="${cutsOK[i]?"แบ่งสถานีตรงนี้":"มือยังถือชิ้นส่วนอยู่ แบ่งไม่ได้"}" aria-label="แบ่งสถานีหลัง ${TK(id).s}">✂</button>`:""}`).join("")}</div>
+          <div class="yama">${S.map((x,i)=>{const ws=workers.filter(w=>w.st===i&&!w.absent),sk=ws.reduce((a,w)=>a+w.sk,0),ct=sk?x.wc/sk:Infinity;return `<div class="ycol"><div class="ybar"><i style="height:${Math.min(100,(isFinite(ct)?ct:x.wc)/mx*100)}%;background:${isFinite(ct)&&ct<=tk0?"var(--go)":"var(--stop)"};opacity:${ws.length?1:.4}"></i><b style="bottom:${tk0/mx*100}%"></b>${opt.run?"":`<b style="bottom:${tkN/mx*100}%;background:var(--warn)"></b>`}</div><span>S${i+1}</span><small>งาน ${x.wc.toFixed(1)}s</small><small>CT ${isFinite(ct)?ct.toFixed(1)+"s":"-"} · ${ws.length} คน</small></div>`}).join("")}</div>
+          ${opt.run?"":`<p class="label" style="text-transform:none;letter-spacing:0">เส้นแดง = Takt ช่วงแรก ${tk0.toFixed(0)} วินาที · เส้นเหลือง = Takt ช่วงท้าย ${tkN.toFixed(0)} วินาที (ต้องปรับไลน์ระหว่างเกม)</p>`}
+          <span class="label">ข · จัด Layout ไลน์ (แตะสถานี แล้วแตะช่องบนผัง)</span>
+          <div class="seg pf-stsel">${S.map((x,i)=>`<button type="button" data-ss="${i}" aria-pressed="${i===selSt}">S${i+1} ${x.name}</button>`).join("")}</div>
+          <div class="sim-wrap" id="lyWrap"></div>
+          <div class="st-kpi"><div class="hudi"><span>ระยะเดินส่งงานรวม</span><b>${lineWalk(line.cells).toFixed(1)} ม.</b></div><div class="hudi"><span>เวลาส่งงานรวม/ด้าม</span><b>${S.reduce((a,x)=>a+x.tr,0).toFixed(1)}s</b></div><div class="hudi"><span>งานรวม/ด้าม</span><b>${S.reduce((a,x)=>a+x.wc,0).toFixed(1)}s</b></div><div class="hudi"><span>คนขั้นต่ำที่ Takt แรก</span><b>${Math.ceil(S.reduce((a,x)=>a+x.wc,0)/tk0)}</b></div></div>
+          <span class="label">ค · จัดคนลงสถานี</span>
+          <div class="pf-assign">${workers.map(w=>`<div class="pf-w ${w.absent?"off":""}"><span><b>${esc(w.n)}</b>${w.sk<.85?' <span class="kz-tag">ใหม่</span>':""}<small>ฝีมือ ${Math.round(w.sk*100)}%${w.absent?" · ลางาน":""}</small></span><div class="seg">${S.map((x,i)=>`<button type="button" data-w="${w.id}" data-st="${i}" aria-pressed="${w.st===i}" ${w.absent?"disabled":""}>S${i+1}</button>`).join("")}<button type="button" data-w="${w.id}" data-st="-1" aria-pressed="${w.st<0}" ${w.absent?"disabled":""}>ว่าง</button></div></div>`).join("")}</div>
+          <div class="actions">${opt.extra||""}<button class="btn go" id="lnOk">${opt.ok}</button></div></div>`;
+        layoutCanvas($("lyWrap"),S,selSt,(cell)=>{const k=line.cells.findIndex(c=>c.c===cell.c&&c.r===cell.r);if(k>=0&&k!==selSt){line.cells[k]=line.cells[selSt]}line.cells[selSt]=cell;selSt=Math.min(S.length-1,selSt+1);draw()});
+        el.querySelectorAll("[data-cut]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cut;if(line.cuts.has(i))line.cuts.delete(i);else if(groups(B.seq,line.cuts).length<6)line.cuts.add(i);
+          const n=groups(B.seq,line.cuts).length;workers.forEach(w=>{if(w.st>=n)w.st=n-1});line.cells.length=Math.min(line.cells.length,n);draw()});
+        el.querySelectorAll("[data-ss]").forEach(b=>b.onclick=()=>{selSt=+b.dataset.ss;draw()});
+        el.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const w=workers.find(x=>x.id===+b.dataset.w);w.st=+b.dataset.st;draw()});
+        $("lnOk").onclick=()=>opt.onOk(S);if(opt.bind)opt.bind(el)};
+      draw()}
+    function layoutCanvas(wrap,S,selSt,onCell){const LW=960,LH=330,cs=104,ox=150,oy=24;const cv=document.createElement("canvas"),dpr=Math.min(2,window.devicePixelRatio||1);cv.width=LW*dpr;cv.height=LH*dpr;cv.style.aspectRatio=LW+"/"+LH;const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);wrap.appendChild(cv);
+      const XY=cl=>({x:ox+cl.c*cs+cs/2+(cl.c<0?-20:cl.c>=GC?20:0),y:oy+cl.r*cs+cs/2});
+      let g=c.createLinearGradient(0,0,0,LH);g.addColorStop(0,"#79a98f");g.addColorStop(1,"#5a9073");c.fillStyle=g;c.fillRect(0,0,LW,LH);
+      for(let r=0;r<GR;r++)for(let k=0;k<GC;k++){c.strokeStyle="rgba(255,255,255,.35)";c.setLineDash([5,4]);c.strokeRect(ox+k*cs+4,oy+r*cs+4,cs-8,cs-8);c.setLineDash([])}
+      c.fillStyle="#f2d03b";c.fillRect(ox-6,oy-6,GC*cs+12,4);c.fillRect(ox-6,oy+GR*cs+2,GC*cs+12,4);
+      const rp=XY(RACK),sp=XY(SHIP);G.box(c,rp.x-40,rp.y-36,80,70,10,"#5c6670");G.text(c,"คลังชิ้นส่วน",rp.x,rp.y,13,"#fff","center",700);G.box(c,sp.x-40,sp.y-36,80,70,10,"#9b7b52");G.text(c,"ส่งลูกค้า",sp.x,sp.y,13,"#fff","center",700);
+      const pts=[rp].concat(S.map(x=>XY(x.cell))).concat([sp]);c.strokeStyle="rgba(255,255,255,.9)";c.lineWidth=3;c.setLineDash([9,6]);c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.stroke();c.setLineDash([]);
+      for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],m={x:(a.x+b.x)/2,y:(a.y+b.y)/2},an=Math.atan2(b.y-a.y,b.x-a.x);c.fillStyle="#fff";c.beginPath();c.moveTo(m.x+Math.cos(an)*8,m.y+Math.sin(an)*8);c.lineTo(m.x+Math.cos(an+2.5)*8,m.y+Math.sin(an+2.5)*8);c.lineTo(m.x+Math.cos(an-2.5)*8,m.y+Math.sin(an-2.5)*8);c.fill()}
+      S.forEach((x,i)=>{const p=XY(x.cell);G.box(c,p.x-36,p.y-18,72,40,8,i===selSt?"#f2b705":"#3c9a74");G.text(c,"S"+(i+1),p.x,p.y+2,18,i===selSt?"#1b222a":"#fff","center",700);G.text(c,x.name,p.x,p.y+34,10,"#fff","center",600)});
+      cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*LW/r.width,y=(e.clientY-r.top)*LH/r.height;const cc=Math.floor((x-ox)/cs),rr=Math.floor((y-oy)/cs);if(cc<0||cc>=GC||rr<0||rr>=GR)return;onCell({c:cc,r:rr})})}
+    function lineUI(){if(!st)st=newRun();lineEditor(M(),{eyebrow:"จัดไลน์ก่อนเปิดกะ",title:"แบ่งงาน วาง Layout และจัดคน",workers:st.workers,ok:"เปิดไลน์ เริ่มกะ 10 นาที →",onOk:S=>{if(!st.workers.some(w=>w.st>=0)){const b=$("lnOk");b.textContent="จัดคนลงสถานีก่อน ↑";return}go(4)}})}
+
+    // ----- 5 run -----
+    function newRun(){const workers=hired.map(mkWorker);workers.forEach((w,i)=>{w.st=0});
+      return {lv,t:0,round:0,jph:lv.jph[0],cash:ECON.cash-hired.length*ECON.hire,workers,S:[],buf:[[]],mode:"pull",limit:3,relT:0,nextOrd:3600/lv.jph[0],orders:0,backlog:0,shipped:0,
+        tested:0,firstFail:0,escaped:0,scrap:0,complaints:0,downtime:0,breaks:0,devs:0,rev:0,matCost:0,wages:0,rent:0,hires:hired.length,lbeSum:0,uid:0,fx:[],truck:0,banner:null,
+        hourly:lv.jph.map(j=>({plan:j*ROUND/3600,act:0})),goalRows:null,noMat:false}}
+    function rebuild(){const S=stationList(B,R,line,K.ci),old=st.S||[],units=[];
+      st.buf.forEach((b,i)=>{if(i<old.length)b.forEach(u=>units.push(u))});st.workers.forEach(w=>{if(w.job){units.push(w.job.u);w.job=null}});
+      const fg=st.buf[old.length]||[];
+      S.forEach((x,i)=>{const o=old.find(q=>q.i===i);x.broken=o?o.broken:false;x.repair=o?o.repair:0;x.dev=o?o.dev:false;x.devSeen=o?o.devSeen:0;x.brSeen=o?o.brSeen:0});
+      st.S=S;st.buf=S.map(()=>[]);st.buf.push(fg);
+      units.forEach(u=>{const k=Math.max(0,S.findIndex(x=>u.tk>=x.start&&u.tk<x.end));u.tk=S[k].start;st.buf[k].push(u)});
+      st.workers.forEach(w=>{if(w.st>=S.length)w.st=S.length-1})}
+    function runUI(){
+      rebuild();window.LQ_PF=st;
+      M().innerHTML=`<div class="sim-wrap" id="pWrap"></div><div id="pEditor"></div><div class="sim-hud" id="pHud"></div>
+        <div class="sim-ctl"><div class="panel"><h3>Yamazumi · CT ต่อสถานี (เส้นแดง = Takt)</h3><div id="pYama"></div><p class="label" id="pLBE" style="text-transform:none;letter-spacing:0"></p><div id="pAlerts" class="pf-alerts"></div></div>
+        <div class="panel"><h3>🏆 อันดับสด (กำไร + Line Balance)</h3><div id="pRank" class="pf-rank"><p class="label" style="text-transform:none;letter-spacing:0">กำลังเชื่อมต่อจอกลาง…</p></div><h3>ทีมงาน</h3><div id="pTeam"></div><h3>ปรับไลน์</h3><div class="actions" style="justify-content:flex-start"><button class="btn small" id="pEdit">✂ แบ่งงาน / Layout / จัดคน</button></div><h3>การปล่อยงานเข้าไลน์</h3><div class="seg" id="pMode"><button type="button" data-m="push">Push ตาม JPH</button><button type="button" data-m="pull">Pull + Kanban</button></div><div id="pRel"></div></div></div>`;
+      const wrap=$("pWrap"),{c,cv,toLocal}=api.canvas(wrap,W,H);
+      $("pMode").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.mode=b.dataset.m;sync(true)});
+      $("pEdit").onclick=()=>editLine();
+      cv.addEventListener("pointerdown",e=>{const p=toLocal(e);st.S.forEach((x,i)=>{const q=cellXY(x.cell);if(Math.abs(p.x-q.x)<80*q.s&&p.y>q.y-176*q.s&&p.y<q.y+60*q.s)resolve(i)})});
+      let syncT=0,presT=0;
+      function fx(t,x,y,col){st.fx.push({t,x,y,col,life:1.6})}
+      function resolve(i){const x=st.S[i];if(x.broken){x.broken=false;x.repair=30+90*(1-K.vm);fx("🔧 ช่างมาแล้ว",cellXY(x.cell).x,cellXY(x.cell).y-150,"#ffd27a");SFXp("ok");sync(true)}
+        else if(x.dev&&st.t>=x.devSeen){x.dev=false;fx("✓ ยืนยันกระบวนการ แก้ไขทันที",cellXY(x.cell).x,cellXY(x.cell).y-150,"#7dffa8");SFXp("ok");sync(true)}}
+      function SFXp(k){try{const m={ok:"right",bad:"wrong",level:"go"};if(window.PARTY&&PARTY.SFX)PARTY.SFX[m[k]]()}catch(e){}}
+      function hireOverlay(){if(ended||wrap.querySelector(".ovl"))return;loop.pause(true);let cands=candidates(3,new Set(st.workers.map(w=>w.n)));
+        const o=api.overlay(wrap,`<span class="label">จ้างพนักงานเพิ่มระหว่างกะ</span><h3>เลือกผู้สมัคร</h3><p class="label" style="text-transform:none;letter-spacing:0">เงินสด ${baht(st.cash)} · ค่าจ้างแรกเข้า ${ECON.hire} ฿ · พนักงานจะเข้ามาที่จุดว่าง แล้วจัดลงสถานีเอง</p><div class="pf-cands small">${cands.map(cd=>`<div class="pf-cand"><canvas width="160" height="150" data-face="${cd.id}" aria-hidden="true"></canvas><div><b>${esc(cd.n)}</b><small>${esc(cd.exp)}</small><small>ฝีมือ ${Math.round(cd.sk*100)}% · ${cd.wage} ฿/ชม.</small></div><button type="button" class="btn small" data-hc="${cd.id}" ${st.cash<ECON.hire+cd.wage?"disabled":""}>จ้าง</button></div>`).join("")}</div>`,[["ปิด",()=>{loop.pause(false)}]]);
+        o.querySelectorAll("canvas[data-face]").forEach(cvs=>{const cd=cands.find(x=>x.id===+cvs.dataset.face);const cc=cvs.getContext("2d");cc.fillStyle="#dfe5ea";cc.fillRect(0,0,160,150);staffBody(cc,80,170,1.7,cd)});
+        o.querySelectorAll("[data-hc]").forEach(b=>b.onclick=()=>{const cd=cands.find(x=>x.id===+b.dataset.hc);st.cash-=ECON.hire;st.hires++;st.workers.push(mkWorker(cd));o.remove();loop.pause(false);api.toast(wrap,`จ้าง ${cd.n} แล้ว จัดลงสถานีได้ที่ Yamazumi`);sync(true)})}
+      function editLine(){if(ended||$("pEditor").innerHTML)return;loop.pause(true);api.toast(wrap,"⏸ หยุดไลน์ชั่วคราว ปรับไลน์ด้านล่าง");
+        lineEditor($("pEditor"),{run:true,jph:st.jph,eyebrow:"⏸ หยุดไลน์ชั่วคราว",title:"ปรับไลน์",workers:st.workers,ok:"กลับไปเดินไลน์ →",onOk:()=>{$("pEditor").innerHTML="";rebuild();loop.pause(false);sync(true);wrap.scrollIntoView({block:"start",behavior:"smooth"})}});$("pEditor").scrollIntoView({block:"start",behavior:"smooth"})}
+      function drawRank(list){const el=$("pRank");if(!el||!list)return;const me=list.findIndex(r=>r.me);
+        el.innerHTML=`${me>=0?`<div class="pf-myrank"><b>#${me+1}</b><span>จาก ${list.length} คน</span></div>`:""}<ol>${list.slice(0,5).map((r,i)=>`<li class="${r.me?"me":""}"><span>${i+1}. ${esc(r.n)}</span><small>${baht(r.profit)} · LBE ${Math.round(r.lbe)}%</small><b>${r.sc.toLocaleString()}</b></li>`).join("")}${me>=5?`<li class="me"><span>${me+1}. ${esc(list[me].n)}</span><small>${baht(list[me].profit)} · LBE ${Math.round(list[me].lbe)}%</small><b>${list[me].sc.toLocaleString()}</b></li>`:""}</ol>`}
+      function sync(full){const tk=3600/st.jph,n=st.S.length,cts=st.S.map((_,i)=>stCT(st,i)),mx=Math.max(tk*1.4,...cts.filter(isFinite));const free=st.workers.filter(w=>w.st<0&&!w.absent);
+        const yh=`<div class="yama">${st.S.map((x,i)=>{const t=cts[i],ws=st.workers.filter(w=>w.st===i&&!w.absent);return `<div class="ycol"><div class="ybar"><i style="height:${isFinite(t)?Math.min(100,t/mx*100):100}%;background:${isFinite(t)&&t<=tk?"var(--go)":"var(--stop)"}"></i><b style="bottom:${tk/mx*100}%"></b></div><span>S${i+1}</span><small>${isFinite(t)?t.toFixed(1)+"s":"-"}</small><small class="pf-names">${ws.map(w=>esc(w.n)+(w.sk<.85?"*":"")).join(", ")||"ไม่มีคน"}</small><div class="ypm"><button data-ws="${i}" data-d="-1" ${ws.length?"":"disabled"} aria-label="เอาคนออก">−</button><b>${ws.length}</b><button data-ws="${i}" data-d="1" ${free.length?"":"disabled"} aria-label="เพิ่มคน">+</button></div></div>`}).join("")}</div>`;
+        const yk=st.S.map((x,i)=>st.workers.filter(w=>w.st===i&&!w.absent).map(w=>w.id+(w.sk<.85?"n":"")).join(".")).join("|")+"/"+(free.length>0)+"/"+tk;
+        if($("pYama")._k===yk){$("pYama").querySelectorAll(".ycol").forEach((col,i)=>{const t=cts[i],bar=col.querySelector(".ybar i");bar.style.height=(isFinite(t)?Math.min(100,t/mx*100):100)+"%";bar.style.background=isFinite(t)&&t<=tk?"var(--go)":"var(--stop)";col.querySelector(".ybar b").style.bottom=tk/mx*100+"%";col.querySelector("small").textContent=isFinite(t)?t.toFixed(1)+"s":"-"})}
+        else{$("pYama")._k=yk;$("pYama")._h=null}
+        if($("pYama")._h==null&&setH($("pYama"),yh))$("pYama").querySelectorAll("[data-ws]").forEach(b=>b.onclick=()=>{const i=+b.dataset.ws,d=+b.dataset.d;if(d>0){const w=st.workers.filter(w=>w.st<0&&!w.absent).sort((a,b)=>b.sk-a.sk)[0];if(w)w.st=i}else{const w=st.workers.filter(w=>w.st===i&&!w.absent).sort((a,b)=>a.sk-b.sk)[0];if(w){w.st=-1;if(w.job){st.buf[i].unshift(w.job.u);w.job=null}}}sync(true)});
+        $("pLBE").innerHTML=`LBE <b>${pct(lbeOf(st))}</b> · Takt ${tk.toFixed(1)} วิ · งานรวม ${st.S.reduce((a,x)=>a+x.wc,0).toFixed(1)} วิ/ด้าม → ต้องใช้อย่างน้อย ${Math.ceil(st.S.reduce((a,x)=>a+x.wc,0)/tk)} คน · * = พนักงานใหม่`;
+        const al=[];st.S.forEach((x,i)=>{if(x.broken&&st.t>=x.brSeen)al.push(`<button type="button" class="btn small" data-rs="${i}" style="background:var(--stop);border-color:var(--stop)">🔧 S${i+1} เครื่องอัดเสีย · เรียกช่าง</button>`);if(x.dev&&st.t>=x.devSeen)al.push(`<button type="button" class="btn small" data-rs="${i}" style="background:var(--warn);border-color:var(--warn);color:#1b222a">⚠️ S${i+1} ไม่ทำตาม OIS · ยืนยันกระบวนการ</button>`)});
+        const absent=st.workers.filter(w=>w.absent);if(absent.length)al.push(`<span class="label" style="text-transform:none;letter-spacing:0">ลางานรอบนี้: ${absent.map(w=>esc(w.n)).join(", ")}</span>`);
+        if(setH($("pAlerts"),al.join("")))$("pAlerts").querySelectorAll("[data-rs]").forEach(b=>b.onclick=()=>resolve(+b.dataset.rs));
+        $("pMode").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===st.mode));
+        if(full){const wage=st.workers.filter(w=>!w.absent).reduce((a,w)=>a+w.wage,0);
+          $("pTeam").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span>พนักงาน <b>${st.workers.length}</b> · ว่าง <b>${free.length}</b> · ค่าแรง ${baht(wage)}/ชม.</span><button class="btn small" id="pHireB">+ จ้างพนักงานใหม่</button><button class="btn ghost small" id="pFireB" ${free.length?"":"disabled"}>− เลิกจ้างคนว่าง</button></div>`;
+          $("pHireB").onclick=hireOverlay;$("pFireB").onclick=()=>{const w=st.workers.filter(w=>w.st<0&&!w.absent).sort((a,b)=>a.sk-b.sk)[0];if(!w)return;st.cash-=ECON.fire;st.workers.splice(st.workers.indexOf(w),1);api.toast(wrap,`เลิกจ้าง ${w.n} (ค่าชดเชย ${ECON.fire} ฿)`);sync(true)};
+          $("pRel").innerHTML=st.mode==="push"?`<p class="label" style="text-transform:none;letter-spacing:0;margin-top:6px">ปล่อยชิ้นส่วนเข้าไลน์ทุก ${(3600/st.jph).toFixed(1)} วินาทีตาม JPH ไม่ดูว่าไลน์พร้อมหรือไม่ ซื้อวัตถุดิบ ${ECON.mat} ฿/ด้าม</p>`
+            :`<div style="display:flex;gap:10px;align-items:center;margin-top:6px"><span>WIP สูงสุดหน้าแต่ละสถานี</span><div class="ypm"><button data-l="-1">−</button><b>${st.limit}</b><button data-l="1">+</button></div></div><p class="label" style="text-transform:none;letter-spacing:0">ส่งงานต่อเมื่อถาดหน้าสถานีถัดไปไม่เต็ม และผลิตเพิ่มเมื่อสต็อกสินค้าสำเร็จรูปไม่เกินจำนวนนี้ (ไม่ผลิตเกินความต้องการ)</p>`;
+          $("pRel").querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{st.limit=Math.max(1,Math.min(8,st.limit+ +b.dataset.l));sync(true)})}
+        const profit=st.cash-ECON.cash,fpy=st.tested?1-st.firstFail/st.tested:1;
+        $("pHud").innerHTML=[["เวลา",fmtT(st.t/SPEED)+" / 10:00"],["รอบ",`${st.round+1}/${NR}`],["ลูกค้าต้องการ",st.jph+" JPH"],["Takt",tk.toFixed(1)+"s"],["เงินสด",baht(st.cash),st.cash<500],["กำไร",baht(profit),profit<0],["ส่ง/ออเดอร์",`${st.shipped}/${st.orders}`,st.backlog>6],["FPY",pct(fpy),fpy<.95],["LBE",pct(lbeOf(st))]].map(h=>`<div class="hudi ${h[2]?"alert":""}"><span>${h[0]}</span><b>${h[1]}</b></div>`).join("");
+        st.goalRows=GOALS.map((g,i)=>{const v=liveKPI(i);return {k:g.k,col:g.col,txt:fmtKPI(i,v),ok:hit(g,tiersOf(g,lv)[goals[i]],v)}})}
+      function step(dtp){dtp=Math.max(0,dtp);const dt=dtp*SPEED;st.t+=dt;const n=st.S.length,tk=3600/st.jph;
+        // demand rises every 2 minutes
+        const rd=Math.min(NR-1,Math.floor(st.t/ROUND));if(rd!==st.round){st.round=rd;st.jph=lv.jph[rd];const ev=[];
+          if(rd===lv.colorsFrom)ev.push("ลูกค้าสั่ง 3 สี น้ำเงิน แดง ดำ ระวังหยิบไส้ผิดสี");if(rd===lv.brkFrom)ev.push("เครื่องอัดด้ามเริ่มเสียได้");if(rd===lv.pcFrom)ev.push("ระวังการทำงานไม่ตามมาตรฐาน");
+          st.workers.forEach(w=>{if(w.absent){w.absent=false}});
+          if(rd===lv.absent){const cand=st.workers.filter(w=>w.st>=0);if(cand.length>1){const w=pick(cand);w.absent=true;if(w.job){st.buf[w.st].unshift(w.job.u);w.job=null}ev.push(w.n+" ลางานกะนี้ ต้องจัดคนใหม่")}}
+          st.banner={t:`รอบ ${rd+1}: ลูกค้าเพิ่มเป็น ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที${ev.length?" · "+ev.join(" · "):""}`,life:5};SFXp("level");sync(true)}
+        if(st.banner)st.banner.life-=dtp;
+        const colorsOn=st.round>=lv.colorsFrom;
+        // orders
+        st.nextOrd-=dt;while(st.nextOrd<=0){st.nextOrd+=3600/st.jph;st.orders++;st.backlog++}
+        // material release
+        const newU=()=>{const ci=colorsOn?Math.floor(Math.random()*3):0;return {id:++st.uid,born:st.t,ci,ink:INKS[ci],tk:0}};
+        const buy=()=>{if(st.cash<ECON.mat){st.noMat=true;return false}st.noMat=false;st.cash-=ECON.mat;st.matCost+=ECON.mat;return true};
+        if(st.mode==="push"){st.relT-=dt;while(st.relT<=0){st.relT+=3600/st.jph;if(buy())st.buf[0].push(newU())}}
+        else{while(st.buf[0].length<st.limit&&buy())st.buf[0].push(newU())}
+        // random events
+        const brkSt=st.S.findIndex(x=>x.has.t9);
+        if(st.round>=lv.brkFrom&&brkSt>=0){const x=st.S[brkSt];if(!x.broken&&x.repair<=0&&Math.random()<dt/1000){x.broken=true;x.brSeen=st.t+(1-K.vm)*90;st.breaks++;if(K.vm>=.5){api.toast(wrap,`🔴 Andon S${brkSt+1}: เครื่องอัดด้ามเสีย แตะเพื่อเรียกช่าง`);SFXp("bad")}sync(false)}}
+        if(st.round>=lv.pcFrom&&Math.random()<dt/650*(1-.55*(K.pc||0))*(R.wiOk?1:1.6)){const cand=st.S.map((x,i)=>i).filter(i=>!st.S[i].dev&&st.workers.some(w=>w.st===i&&!w.absent));if(cand.length){const i=pick(cand);st.S[i].dev=true;st.S[i].devSeen=st.t+(1-(K.pc||0))*120;st.devs++;if((K.pc||0)>=1)api.toast(wrap,`🟡 S${i+1}: พบการทำงานไม่ตาม OIS`)}}
+        // stations
+        for(let i=n-1;i>=0;i--){const x=st.S[i];if(x.broken){st.downtime+=dt;continue}if(x.repair>0){x.repair-=dt;st.downtime+=dt;continue}
+          st.workers.forEach(w=>{if(w.st!==i||w.absent)return;w.ph+=dtp*(w.job?9:2);
+            if(!w.job&&st.buf[i].length)w.job={u:st.buf[i].shift(),rem:x.wc/w.sk};
+            if(!w.job)return;if(w.job.rem>0)w.job.rem-=dt;if(w.job.rem>0)return;const u=w.job.u;
+            if(st.mode==="pull"&&st.buf[i+1].length>=st.limit){w.blocked=true;return}w.blocked=false;
+            // quality events happen when the station completes its tasks
+            if(x.has.t1&&colorsOn&&Math.random()<R.riskRefill)u.wrong="สี";
+            if(x.has.t7&&Math.random()<R.riskUpper)u.wrong=u.wrong||"รุ่นด้าม";
+            if(x.dev&&Math.random()<.3)u.defect=true;
+            if(w.sk<.8&&Math.random()<(.8-w.sk)*.25)u.defect=true;
+            w.job=null;w.done++;w.sk=Math.min(w.cap,w.sk+(w.cap-w.sk)*(.012+.04*(K.ji||0)));
+            if(x.has.t10){const skip=x.dev;if(!u.tested){u.tested=true;st.tested++}
+              if(!skip&&(u.wrong||(u.defect&&Math.random()<.8))){if(!u.failed){u.failed=true;st.firstFail++}st.scrap++;st.cash-=ECON.scrap;const back=u.wrong==="สี"?st.S.findIndex(q=>q.has.t1):u.wrong?st.S.findIndex(q=>q.has.t7):0;
+                fx(u.wrong?`❌ ${u.wrong}ผิด! ทิ้งชิ้นส่วน ทำใหม่`:"❌ เขียนไม่ออก! ทำใหม่",cellXY(x.cell).x,cellXY(x.cell).y-160,"#ff8a7a");u.wrong=null;u.defect=false;u.ci=colorsOn?u.ci:0;u.tk=st.S[Math.max(0,back)].start;st.buf[Math.max(0,back)].push(u);return}
+              if(u.wrong||u.defect){u.escape=true;if(!u.failed){u.failed=true;st.firstFail++}}}
+            u.tk=x.end;st.buf[i+1].push(u)})}
+        // ship
+        const fg=st.buf[n];while(fg.length&&st.backlog>0){const u=fg.shift();st.backlog--;st.shipped++;st.cash+=ECON.price;st.rev+=ECON.price;st.hourly[st.round].act++;st.truck=1;
+          if(u.escape){st.escaped++;st.complaints++;st.cash-=ECON.complaint;fx(`ลูกค้าร้องเรียน! −${ECON.complaint}`,880,300,"#ff8a7a")}else if(Math.random()<.3)fx("+"+ECON.price,880,300,"#7dffa8")}
+        if(st.truck>0)st.truck=Math.max(0,st.truck-dtp*.7);
+        const wg=st.workers.filter(w=>!w.absent).reduce((a,w)=>a+w.wage,0)*dt/3600,rt=ECON.rent*dt/3600;st.cash-=wg+rt;st.wages+=wg;st.rent+=rt;
+        st.lbeSum+=lbeOf(st)*dt;
+        st.fx.forEach(f=>{f.life-=dtp;f.y-=dtp*26});st.fx=st.fx.filter(f=>f.life>0);
+        render(c,st);syncT-=dtp;if(syncT<=0){syncT=.35;sync(false)}
+        if(room){presT-=dtp;if(presT<=0){presT=.6;publish(false)}}
+        if(st.t>=SHIFT&&!ended){ended=true;loop.stop();finish()}}
+      function liveKPI(i){const k=GOALS[i].k;return k==="S"?R.risky:k==="Q"?Math.round((st.tested?1-st.firstFail/st.tested:1)*1000)/10:k==="D"?Math.round(st.orders?st.shipped/st.orders*100:100):k==="C"?Math.round(st.cash-ECON.cash-(ended?st.backlog*ECON.late:0)):k==="P"?Math.round(st.lbeSum/Math.max(1,st.t)*100):k==="M"?Math.round(st.downtime/60*10)/10:st.scrap}
+      function fmtKPI(i,v){const k=GOALS[i].k;return k==="C"?(Math.abs(v)>=1000?(v/1000).toFixed(1)+"k":String(v)):k==="Q"||k==="D"||k==="P"?v+"%":String(v)}
+      function result(){const penalty=st.backlog*ECON.late,profit=st.cash-ECON.cash-penalty,lbe=st.lbeSum/Math.max(1,st.t);let gp=0,gok=0;const rows=GOALS.map((g,i)=>{const tv=tiersOf(g,lv)[goals[i]],v=liveKPI(i),ok=hit(g,tv,v);if(ok){gp+=(goals[i]+1)*100;gok++}return {g,tv,v,ok}});
+        return {profit,penalty,lbe,gp,gok,rows,score:Math.max(0,Math.round(profit/2+lbe*1000+gp))}}
+      function publish(done){if(!room)return;const who=WHO0,r=result();room.presence({g:"factory",n:(who.name||"ผู้เล่น").slice(0,16),tm:(who.team||"").slice(0,16),L,t:Math.round(st.t),jph:st.jph,cash:Math.round(st.cash),profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),now:Math.round(lbeOf(st)*100),sh:st.shipped,or:st.orders,hired:st.workers.length,a:st.S.map((_,i)=>st.workers.filter(w=>w.st===i&&!w.absent).length),ct:st.S.map((_,i)=>{const t=stCT(st,i);return isFinite(t)?Math.round(t):0}),tk:Math.round(3600/st.jph),sc:r.score,gok:r.gok,done:!!done}).catch(()=>{})}
+      function finish(){ended=true;const r=result();if(room)publish(true);
+        const stars=r.gok>=6?3:r.gok>=4?2:r.gok>=2?1:0;
+        const L2=[`<b>SQDCPME:</b> ทำได้ตามเป้า ${r.gok}/7 ข้อ ${r.rows.map(x=>`${x.ok?"✅":"❌"} ${x.g.k} เป้า ${x.g.dir<0?"≤":"≥"} ${x.tv.toLocaleString()}${x.g.u.trim()} ได้ ${x.v.toLocaleString()}${x.g.u.trim()}`).join(" · ")}`];
+        L2.push(`<b>ผลประกอบการ:</b> รายได้ ${baht(st.rev)} − วัตถุดิบ ${baht(st.matCost)} − ค่าแรง ${baht(st.wages)} − ค่าจ้างแรกเข้า ${baht(st.hires*ECON.hire)} − ค่าเช่าโรงงาน ${baht(st.rent)} − ของเสีย/ร้องเรียน ${baht(st.scrap*ECON.scrap+st.complaints*ECON.complaint)}${r.penalty?` − ค่าปรับส่งไม่ทัน ${baht(r.penalty)}`:""} = กำไร <b>${baht(r.profit)}</b>`);
+        const miss=st.hourly.map((h,i)=>({i,gap:h.plan-h.act})).filter(h=>h.gap>1);if(miss.length)L2.push(`<b>Time & Data:</b> รอบที่ทำไม่ทันแผน ${miss.map(h=>`R${h.i+1} (${lv.jph[h.i]} JPH ขาด ${Math.round(h.gap)})`).join(", ")} เมื่อ JPH เพิ่มต้องจ้างคนและแบ่งงานใหม่ให้ทุกสถานีต่ำกว่า Takt`);
+        L2.push(`<b>Standardized Work:</b> โต๊ะของคุณ ${R.ct.toFixed(1)} วินาที/ด้าม (ดีที่สุด ${IDEAL_CT}) ท่าทางเสี่ยง ${R.risky} ครั้ง/ด้าม โอกาสหยิบไส้ผิดสี ${(R.riskRefill*100).toFixed(1)}%`);
+        L2.push(`<b>Layout:</b> ระยะเดินส่งงาน ${lineWalk(line.cells).toFixed(1)} เมตร/ด้าม ${lineWalk(line.cells)>12?"วางสถานีให้ติดกันตามลำดับงาน หรือเป็นรูปตัว U จะลดการเดิน":"วางได้กระชับ"}`);
+        if(st.breaks)L2.push(`<b>Maintenance / Visual:</b> เครื่องอัดเสีย ${st.breaks} ครั้ง หยุดรวม ${(st.downtime/60).toFixed(1)} นาที ${K.vm<.5?"ทีมเห็นปัญหาช้าเพราะ Visual Management ยังไม่ดี":""}`);
+        if(st.devs)L2.push(`<b>Process Confirmation:</b> พบการทำงานไม่ตาม OIS ${st.devs} ครั้ง ของเสียหลุดถึงลูกค้า ${st.escaped} ด้าม`);
+        const newbies=st.workers.filter(w=>w.done>0);if(newbies.length)L2.push(`<b>People:</b> ${newbies.map(w=>`${esc(w.n)} ${Math.round(w.sk*100)}%`).join(", ")} หลังทำงาน (สอนงาน JI ${KZ.pct(K.ji)}%)`);
+        api.end(wrap,{score:r.score,stars,stats:[["เป้า SQDCPME",`${r.gok}/7`],["กำไร",baht(r.profit)],["LBE เฉลี่ย",pct(r.lbe)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["FPY",pct(st.tested?1-st.firstFail/st.tested:1)],["คะแนน",r.score.toLocaleString()]],lessons:L2})}
+      sync(true);render(c,st);
+      api.overlay(wrap,`<span class="label">เดินไลน์ · ระดับ${LVN[L]}</span><h3>กะผลิต 60 นาที (เล่นจริง 10 นาที)</h3>
+        <ul><li>ทุก 2 นาที ลูกค้าเพิ่มออเดอร์: ${lv.jph.join(" → ")} ด้าม/ชม.</li><li>Takt สั้นลงเรื่อยๆ ต้องจ้างคนเพิ่ม แบ่งงานและย้ายคนให้ทุกแท่ง Yamazumi ต่ำกว่าเส้นแดง</li>
+        <li>ไฟแดงกระพริบ = Andon แตะที่สถานีเพื่อเรียกช่างหรือยืนยันกระบวนการ</li><li>ขายได้ด้ามละ ${ECON.price} ฿ วัตถุดิบ ${ECON.mat} ฿ ค่าเช่าโรงงาน ${ECON.rent} ฿/ชม.</li><li>คะแนน = กำไร ÷ 2 + LBE × 1,000 + คะแนนเป้า SQDCPME ที่ทำได้</li></ul>`,[["เริ่มกะ →",()=>{st.banner={t:`รอบ 1: ลูกค้าต้องการ ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที`,life:4};loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});
+          SIMHUB.joinRoom().then(r=>{room=r;r.onRank(drawRank);publish(ended)}).catch(()=>{$("pRank").innerHTML=`<p class="label" style="text-transform:none;letter-spacing:0">${window.LQ_STANDALONE?"ยังไม่ได้ใส่รหัสจอกลาง (ใส่ได้ที่หน้าเลือกเกม) จึงไม่เห็นอันดับสด":"อันดับสดต้องเปิดผ่าน claude.ai โดยล็อกอิน"}</p>`})}]]);
     }
-    let syncT=0,ended=false,loop={stop(){}},room=null,presT=0;
-    function step(dtp){
-      const dt=dtp*SPEED;st.t+=dt;const K=st.K;
-      // orders from the market
-      st.nextOrd-=dt;if(st.nextOrd<=0){st.nextOrd+=3600/Math.max(1,marketRate(st,lv));st.orders++;st.backlog++}
-      // release (buy material)
-      const newUnit=()=>({id:++st.uid,born:st.t,color:COLORS[Math.floor(Math.random()*lv.colors)]});
-      const buy=()=>{if(st.cash<ECON.mat){if(!st._noCash){st._noCash=1;api.toast(wrap,"เงินสดไม่พอซื้อวัตถุดิบ!")}return false}st.cash-=ECON.mat;st.matCost+=ECON.mat;st._noCash=0;return true};
-      if(st.mode==="push"){st.relT-=dt;if(st.relT<=0){st.relT+=st.pushInt;if(buy())st.buf[0].push(newUnit())}}
-      else if(st.buf[0].length<st.limit&&!st.cur[0]&&buy())st.buf[0].push(newUnit());
-      // stations
-      for(let i=n-1;i>=0;i--){const k=lv.st[i];
-        if(st.down[i]>0){st.down[i]-=dt;continue}
-        if(lv.brk&&st.cur[i]&&Math.random()<lv.brk*dt*(1-.7*(K.shine||0))){st.down[i]=180;st.breaks++;fx("เครื่องเสีย!",stX(lv,i),250,"#ff8a7a");continue}
-        if(st.setup[i]>0){st.setup[i]-=dt;continue}
-        let u=st.cur[i];
-        if(!u&&st.buf[i].length&&st.alloc[i]>0){u=st.buf[i].shift();u.rem=u.max=wcOf(st,lv,i);st.cur[i]=u;
-          if(k==="paint"&&lv.colors>1&&st.lastColor[i]&&st.lastColor[i]!==u.color){st.setup[i]=lv.chg*(1-.8*(K.smed||0));st.changes++}
-          if(k==="paint")st.lastColor[i]=u.color}
-        if(u&&u.rem>0)u.rem-=dt*st.alloc[i];
-        if(u&&u.rem<=0){
-          if(k==="body"&&!u.chk){u.chk=1;if(Math.random()<st.bodyRisk){u.wrong=true}}
-          if(k==="paint"&&lv.defect&&!u.pchk){u.pchk=1;if(Math.random()<lv.defect){if((K.jidoka||0)>=1){u.rem=u.max=90;st.caught++;fx("Jidoka แก้ทันที",stX(lv,i),250,"#ffd27a");continue}else u.defect=true}}
-          if(k==="qc"&&(u.defect||u.wrong)){const isW=!!u.wrong,back=isW?lv.st.indexOf("body"):lv.st.indexOf("paint");if(isW)st.wrong++;st.rework++;u.defect=false;u.wrong=false;st.buf[back].push(u);st.cur[i]=null;fx(isW?"Gap/Flush ไม่ผ่าน! ย้อนกลับไปปรับตั้งประตูใหม่":"สีเสีย! ย้อนกลับไปพ่นใหม่",stX(lv,i),250,"#ff8a7a");continue}
-          const nb=st.buf[i+1];if(st.mode==="pull"&&i<n-1&&nb.length>=st.limit)st.blocked[i]=true;else{st.blocked[i]=false;nb.push(u);st.cur[i]=null}}
-        else st.blocked[i]=false;}
-      // ship & sell
-      const fg=st.buf[n];while(fg.length&&st.backlog>0){const u=fg.shift();st.backlog--;st.shipped++;st.cash+=ECON.price;st.rev+=ECON.price;st.lead.push(st.t-u.born);st.truck=1;fx("+"+ECON.price,880,300,"#7dffa8")}
-      if(st.truck>0)st.truck=Math.max(0,st.truck-dtp*.8);
-      // wages & holding
-      const wg=st.hired*ECON.wage*dt/3600;st.cash-=wg;st.wages+=wg;
-      const wip=st.buf.reduce((a,b)=>a+b.length,0)+st.cur.filter(Boolean).length;const hc=wip*ECON.hold*dt/3600;st.cash-=hc;st.holdCost+=hc;
-      st.wipSum+=wip*dt;st.lbeSum+=lbe(st,lv)*dt;
-      st.fx.forEach(f=>{f.life-=dtp;f.y-=dtp*30});st.fx=st.fx.filter(f=>f.life>0);
-      render(c,st,lv,api.bg);syncT-=dtp;if(syncT<=0){syncT=.3;sync(false)}
-      if(room){presT-=dtp;if(presT<=0){presT=.5;publish(false)}}
-      if(st.t>=SHIFT&&!ended){ended=true;loop.stop();finish()}
-    }
-    function result(){const penalty=st.backlog*ECON.late,profit=st.cash-ECON.cash-penalty,L=st.lbeSum/Math.max(1,st.t),rate=st.shipped/Math.max(1,st.orders);
-      return {profit,lbe:L,rate,penalty,score:Math.max(0,Math.round(profit/10+L*1000))}}
-    function publish(done){const who=lsGet("lq-sim-who",{}),r=result();room.presence({g:"factory",n:(who.name||"ผู้เล่น").slice(0,16),tm:(who.team||"").slice(0,16),L,t:Math.round(st.t),jph:st.jph,cash:Math.round(st.cash),profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),now:Math.round(lbe(st,lv)*100),sh:st.shipped,or:st.orders,hired:st.hired,a:st.alloc.slice(),ct:lv.st.map((_,i)=>{const t=ctOf(st,lv,i);return isFinite(t)?Math.round(t):0}),tk:Math.round(3600/st.jph),wip:st.buf.slice(0,n).map(b=>b.length),sc:r.score,done:!!done}).catch(()=>{})}
-    function finish(){
-      const r=result(),stars=(r.rate*60+r.lbe*40)>=85?3:(r.rate*60+r.lbe*40)>=70?2:(r.rate*60+r.lbe*40)>=50?1:0;
-      if(room){publish(true)}
-      const avgL=st.lead.length?Math.round(st.lead.reduce((a,b)=>a+b,0)/st.lead.length/60)+" นาที":"-",avgWip=st.wipSum/st.t;
-      const tk=3600/st.jph,cts=lv.st.map((_,i)=>ctOf(st,lv,i)),bi=cts.indexOf(Math.max(...cts));
-      const L2=[`<b>ผลประกอบการ:</b> รายได้ ${baht(st.rev)} − วัตถุดิบ ${baht(st.matCost)} − ค่าแรง ${baht(st.wages)} − ค่าจ้างแรกเข้า ${baht(st.hires*ECON.hire)} − ค่าเก็บสต็อก ${baht(st.holdCost)}${r.penalty?` − ค่าปรับส่งไม่ทัน ${baht(r.penalty)}`:""} = กำไร <b>${baht(r.profit)}</b>`];
-      L2.push(`<b>Line balance:</b> LBE เฉลี่ย ${Math.round(r.lbe*100)}% ${cts.some(t=>t>tk)?`สถานี${ST_ALL[lv.st[bi]].n} CT ${isFinite(cts[bi])?Math.round(cts[bi]):"∞"} วินาที เกิน Takt ${Math.round(tk)} วินาที`:"ทุกสถานีทัน Takt"}${st.hired>st.alloc.reduce((a,b)=>a+b,0)?" มีคนว่างที่ยังรับค่าแรง":""}`);
-      L2.push(`<b>เดิน Gemba ภาพจริง:</b> พบความผิดปกติ ${Math.round((st.K.gemba||0)*100)}%`);
-      L2.push(`<b>สถานีที่คุณออกแบบ:</b> ${STN_RES?`FA-10 ปรับตั้งประตู ${STN_RES.ct.toFixed(0)} วินาที (OIS ${ASSY.oisTotal} วินาที, Takt ${ASSY.takt} วินาที) เดิน ${STN_RES.walkM.toFixed(1)} เมตร/คัน โอกาสหยิบเกจ/ประแจผิด ${(STN_RES.risk*100).toFixed(1)}% → ต้องปรับตั้งใหม่จริง ${st.wrong} คัน`:"-"}`);
-      if(STN_RES)STN_RES.tips.slice(0,2).forEach(t=>L2.push(t));
-      L2.push(`<b>WIP & Lead time:</b> WIP เฉลี่ย ${avgWip.toFixed(1)} คัน Lead time เฉลี่ย ${avgL}${st.mode==="push"&&avgWip>n*2?" การ Push ทำให้งานกองหน้าคอขวดและจมเงินสด":""}`);
-      if(st.orders>st.shipped)L2.push(`<b>JPH:</b> ส่งไม่ทัน ${st.backlog} คัน ${3600/st.jph<Math.max(...cts.filter(isFinite))?"กำลังการผลิตต่ำกว่า JPH ที่ตั้ง":""}`);
-      if(st.breaks)L2.push(`<b>TPM:</b> เครื่องเสีย ${st.breaks} ครั้ง`);
-      api.end(wrap,{score:r.score,stars,stats:[["กำไร",baht(r.profit)],["LBE เฉลี่ย",Math.round(r.lbe*100)+"%"],["ส่งมอบ",`${st.shipped}/${st.orders}`],["คนงาน",st.hired],["งานซ่อม",st.rework],["คะแนน",r.score.toLocaleString()]],lessons:L2});
-    }
-    let STN_RES=null;
-    render(c,st,lv,api.bg);sync(true);
-    const go=()=>{["shine","jidoka","smed"].forEach(k=>st.K[k]=KZ.sc(acts,k));preload(st,lv);sync(true);
-      api.overlay(wrap,`<span class="label">เริ่มกะ · ระดับ${LVN[L]}</span><h3>กะทำงาน 1 ชั่วโมง (เล่นจริง 3 นาที)</h3>
-      <ul><li>ตั้ง JPH ตามที่ตลาดรับได้ (ไม่เกิน ~${lv.cap} คัน/ชม.) Takt = 3600 ÷ JPH</li><li>จ้างคนให้พอ แล้วจัดลงสถานีให้ทุกแท่ง Yamazumi ไม่เกินเส้นแดง</li>
-      <li>ปล่อยรถเข้าไลน์ต้องซื้อวัตถุดิบ ${ECON.mat} ฿ ขายได้คันละ ${ECON.price.toLocaleString()} ฿ เมื่อส่งมอบ</li><li>คะแนน = กำไร ÷ 10 + LBE × 1,000 ทีมที่กำไรสูงและไลน์สมดุลที่สุดชนะ</li></ul>`,[["เริ่มกะ →",()=>{loop=api.loop(step);
-        if(CAP.room&&CAP.room.join)CAP.room.join("lean-factory").then(r=>{if(ended){publish(true);return}room=r;publish(false)}).catch(()=>{})}]])};
-    KZ.single($("stArea"),GEMBA,(gs)=>{st.K.gemba=gs;STN.open($("stArea"),{onDone:res=>{STN_RES=res;st.bodyCT=res.ct;st.bodyRisk=res.risk;sync(true);
-      if(acts.length)KZ.board($("kzArea"),acts,{title:"ก่อนเดินไลน์: TPM / Jidoka / SMED",start:"ไปที่ไลน์การผลิต →",onStart:go});else go()}})});
+    go(0);
     return {stop(){loop.stop();if(room){try{room.leave()}catch(e){}}}};
   }
 });
+function demoState(lv){const d=newBench();CLUTTER.forEach(c=>d.clutter[c.id]=c.need?"keep":"red");PARTS.forEach(p=>{d.labels[p.id]={};p.labels.forEach(l=>d.labels[p.id][l.id]=true)});d.seq=OIS_ORDER.slice();
+  const R=evalBench(d),line={cuts:new Set([2,4,8]),cells:[{c:0,r:1},{c:1,r:1},{c:2,r:1},{c:3,r:1}]},S=stationList(d,R,line,0);
+  const ws=candidates(6,new Set()).map(mkWorker);ws.forEach((w,i)=>{w.st=[0,1,2,2,3,-1][i];w.job=w.st>=0?{u:{ink:INKS[i%3]},rem:1}:null});ws[0].sk=.7;ws[3].sk=.75;
+  S.forEach(x=>{x.broken=false;x.repair=0;x.dev=false});S[2].broken=true;
+  return {lv,t:1500,round:2,jph:lv.jph[2],S,workers:ws,buf:[[{ink:INKS[0]},{ink:INKS[1]}],[{ink:INKS[2]}],[{ink:INKS[0]},{ink:INKS[0]},{ink:INKS[1]},{ink:INKS[2]},{ink:INKS[0]}],[],[{},{}]],shipped:40,fx:[],truck:0,hourly:lv.jph.map((j,i)=>({plan:j/5,act:i<2?Math.round(j/5)-2:i===2?14:0})),goalRows:GOALS.map((g,i)=>({k:g.k,col:g.col,txt:["0","97%","88%","1.2k","82%","1.5","3"][i],ok:i!==2}))}}
+window.PENF={render,demoState,LEVELS,evalBench,idealSearch,newBench,stationList,TASKS,PARTS,CLUTTER,SLOTS};
 })();
 
 // ---------------- GAME 4: Lean Legends (open-world action RPG) ----------------
@@ -3043,7 +3295,7 @@ function game(api){
 
 // ---------- init ----------
 renderLevels();renderTeamNames();hud();
-if(location.hash==="#train"){show("scrTrain");TRAIN.home()}else if(location.hash==="#sims"){show("scrSims");SIMHUB.open()}else if(location.hash==="#live"){show("scrLive")}else if(location.hash==="#editor"){show("scrEditor")}
+if(location.hash==="#train"){show("scrTrain");TRAIN.home()}else if(location.hash==="#sims"||/^#f\d{4}$/.test(location.hash)){show("scrSims");SIMHUB.open()}else if(location.hash==="#center"){show("scrSims");SIMHUB.open();setTimeout(()=>SIMHUB.center(),300)}else if(location.hash==="#live"){show("scrLive")}else if(location.hash==="#editor"){show("scrEditor")}
 boot();
 </script>
 
@@ -3116,6 +3368,21 @@ boot();
   const hm=/^#host(?:-(g1|g2|quiz))?$/.exec(location.hash);
   if(hm){if(hm[1])window.TR_PRESET={src:"train:"+hm[1],t:hm[1]==="quiz"?"20":"30"};setTimeout(()=>{show("scrLive");renderLive(true);openHost()},50)}
   window.LQ_openHost=()=>{if(!peer)openHost()};
+  // ---- center screen room for the sim games (center screen = host) ----
+  const FPX="leanquest-fac-";
+  window.LQ_SIMROOM={
+    host(onChange){return new Promise((res,rej)=>{if(typeof Peer==="undefined")return rej("โหลดระบบเชื่อมต่อไม่สำเร็จ");const conns=new Map();let pr;
+      const open=()=>{const code=String(Math.floor(1000+Math.random()*9000));pr=new Peer(FPX+code);
+        pr.on("open",()=>res({code,leave(){try{pr.destroy()}catch(e){}},broadcast(m){conns.forEach(c=>{try{if(c.open)c.send(m)}catch(e){}})}}));
+        pr.on("error",e=>{if(e.type==="unavailable-id"){pr.destroy();open()}else if(!conns.size)rej(e.type)});
+        pr.on("connection",cn=>{conns.set(cn.peer,cn);cn.on("data",m=>{if(m&&m.t==="pres"&&m.d&&typeof m.d==="object")onChange({peers:[{peer:cn.peer,presence:m.d}],left:[]})});
+          const gone=()=>{conns.delete(cn.peer);onChange({peers:[],left:[{peer:cn.peer}]})};cn.on("close",gone);cn.on("error",gone)});
+        pr.on("disconnected",()=>{try{pr.reconnect()}catch(e){}})};open()})},
+    join(code){return new Promise((res,rej)=>{if(typeof Peer==="undefined")return rej("nopeer");const pr=new Peer();let cn=null,last=null,rankCb=null,dead=false,myId="";
+      const connect=()=>{if(dead)return;cn=pr.connect(FPX+code,{reliable:true});cn.on("open",()=>{if(last)cn.send({t:"pres",d:last})});cn.on("data",m=>{if(m&&m.t==="rank"&&rankCb)rankCb(m.l||[])});cn.on("close",()=>setTimeout(connect,3000))};
+      pr.on("open",id=>{myId=id;connect();res({id:()=>myId,presence:d=>{last=d;try{if(cn&&cn.open)cn.send({t:"pres",d})}catch(e){}return Promise.resolve()},onRank(cb){rankCb=cb},leave(){dead=true;try{pr.destroy()}catch(e){}}})});
+      pr.on("error",e=>{if(e.type==="peer-unavailable"){setTimeout(connect,5000)}else if(!myId)rej(e.type)})})}
+  };
   setInterval(setCount,2000);
   window.addEventListener("beforeunload",e=>{if(isHost&&conns.length){e.preventDefault();e.returnValue=""}});
 })();
