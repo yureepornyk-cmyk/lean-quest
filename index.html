@@ -1,7 +1,7 @@
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Lean Quest</title><style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* Layout: shop-floor control board — floor-tape header, stages drawn as a Value Stream Map, andon-tower timer */
 :root{
@@ -728,6 +728,70 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
 .cps-dims>div small{grid-column:1/-1;color:var(--muted);font-size:12px;margin-top:-4px}
 .cps-dims b{font-family:var(--f-mono);text-align:right}
 @media (max-width:480px){.cps-dims>div{grid-template-columns:110px minmax(0,1fr) 40px}}
+/* ===== Equipment screen — dark, candle-lit RPG menu ===== */
+#scrEquip{margin:-8px -16px 0}
+.eq{--eg:#d8c79a;--eg2:#f3e7c4;--ed:#8f8366;--ebg:#14130f;color:var(--eg2);background:radial-gradient(900px 500px at 70% 0%,rgba(120,100,60,.25),transparent 60%),radial-gradient(700px 600px at 10% 100%,rgba(70,60,40,.35),transparent 60%),linear-gradient(180deg,#22201a,#121110 70%);min-height:calc(100vh - 80px);padding:16px 16px 28px;font-family:"Cormorant Garamond","Kanit",serif;position:relative}
+.eq::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 2px,transparent 2px 4px)}
+.eq-head{display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(216,199,154,.25);padding-bottom:10px;margin-bottom:14px}
+.eq-crest{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--ed);background:linear-gradient(135deg,#3a3426,#1c1a14);font-size:22px;color:var(--eg)}
+.eq-head h1{font-family:"Cinzel","Cormorant Garamond",serif;font-weight:500;font-size:26px;color:var(--eg2);letter-spacing:.04em}
+.eq-sub{color:var(--ed);font-family:"Kanit",sans-serif;font-size:13px}
+.eq-back{margin-left:auto;background:none;border:1px solid var(--ed);color:var(--eg);width:36px;height:36px;border-radius:50%;font-size:16px}
+.eq-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,.9fr);gap:18px}
+@media (max-width:980px){.eq-grid{grid-template-columns:1fr 1fr}.eq-right{grid-column:1/-1}}
+@media (max-width:640px){.eq-grid{grid-template-columns:1fr}}
+.eq-col{min-width:0}
+.eq-title{font-family:"Cinzel","Kanit",serif;color:var(--eg2);font-size:17px;margin-bottom:8px;display:flex;flex-direction:column}
+.eq-title em{font-style:normal;color:var(--eg);font-size:15px;font-family:"Kanit",sans-serif}
+.eq-title.sm{font-size:14px;color:var(--eg)}
+.eq-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.eq-slot,.eq-it{position:relative;aspect-ratio:1;border:1px solid rgba(143,131,102,.45);background:radial-gradient(circle at 50% 40%,rgba(80,72,52,.55),rgba(20,19,15,.9));display:grid;place-items:center;color:var(--eg2);padding:0;overflow:hidden}
+.eq-slot.sel,.eq-it.sel{border-color:#f3e7c4;box-shadow:0 0 0 1px #f3e7c4 inset,0 0 18px rgba(243,231,196,.35)}
+.eq-ico{font-size:30px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))}
+.eq-empty{font-style:normal;opacity:.25;font-size:26px;filter:grayscale(1)}
+.eq-slot small{position:absolute;left:0;right:0;bottom:2px;font-family:"Kanit",sans-serif;font-size:9px;color:var(--ed);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+.eq-rar{position:absolute;right:4px;top:4px;width:7px;height:7px;transform:rotate(45deg)}
+.eq-items{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.eq-it span{font-size:26px}
+.eq-it::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--rc)}
+.eq-it.lock span{filter:grayscale(1) brightness(.5)}
+.eq-it i{position:absolute;font-style:normal;font-size:14px;right:3px;bottom:4px}
+.eq-it b{position:absolute;left:4px;top:3px;font-family:"Cinzel",serif;font-size:12px;color:#f3e7c4;background:rgba(0,0,0,.6);padding:0 4px}
+.eq-name{font-family:"Kanit",sans-serif;font-weight:600;font-size:22px;line-height:1.2}
+.eq-meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--eg);font-family:"Kanit",sans-serif;font-size:13px;margin:4px 0 6px}
+.eq-meta span:not(:last-child)::after{content:"·";margin-left:10px;color:var(--ed)}
+.eq-preview{display:grid;place-items:center;background:radial-gradient(circle at 50% 70%,rgba(243,231,196,.08),transparent 60%);border-top:1px solid rgba(216,199,154,.15);border-bottom:1px solid rgba(216,199,154,.15);padding:6px 0;margin-bottom:8px}
+.eq-sec{border-left:1px solid rgba(216,199,154,.3);padding-left:12px;margin:8px 0}
+.eq-sec h3{font-family:"Cinzel","Kanit",serif;font-weight:500;color:var(--eg);font-size:14px;margin-bottom:4px}
+.eq-row,.eq-stat{display:flex;justify-content:space-between;gap:10px;font-family:"Kanit",sans-serif;font-size:14px;color:var(--eg2);padding:2px 0}
+.eq-row b,.eq-stat b{font-family:"Cormorant Garamond","Kanit",serif;font-size:17px;font-weight:600;color:#f3e7c4;font-variant-numeric:tabular-nums}
+.eq-stat span{color:var(--eg)}
+.eq-stat b.eq-up{color:#9fe0a8}.eq-stat b.over{color:#ff8a7a}
+.eq-lore{font-style:italic;color:var(--ed);font-size:16px;margin:10px 0}
+.eq-actions{display:flex;gap:8px;margin-top:10px}
+.eq-btn{font-family:"Kanit",sans-serif;background:linear-gradient(180deg,#5a4e33,#3a3322);border:1px solid #c9b47a;color:#f3e7c4;padding:10px 22px;font-size:16px;letter-spacing:.03em}
+.eq-btn.ghost{background:transparent}
+.eq-btn:disabled{opacity:.4}
+.eq-right{border-left:1px solid rgba(216,199,154,.25);padding-left:16px}
+@media (max-width:980px){.eq-right{border-left:0;padding-left:0;border-top:1px solid rgba(216,199,154,.25);padding-top:12px}}
+.eq-gap{height:10px}
+.eq-load{height:6px;background:rgba(255,255,255,.08);margin:4px 0}.eq-load i{display:block;height:100%}
+.eq-note{color:var(--ed);font-family:"Kanit",sans-serif;font-size:12px}
+.eq-body{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.eq-body .seg button{font-family:"Kanit",sans-serif;background:#22201a;color:var(--eg2);border-color:var(--ed)}
+.eq-body .seg button[aria-pressed="true"]{background:var(--eg);color:#14130f}
+.eq-skins{display:flex;gap:6px}.eq-skins button{width:26px;height:26px;border-radius:50%;background:var(--s);border:2px solid #3a3426}.eq-skins button[aria-pressed="true"]{border-color:#f3e7c4}
+.eq-foot{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;color:var(--ed);font-family:"Kanit",sans-serif;font-size:13px;border-top:1px solid rgba(216,199,154,.2);padding-top:10px}
+/* profile + quests */
+.prof-av.big{border-radius:16px;padding:4px;background:linear-gradient(180deg,#2a271f,#141310);width:160px}
+.quests{display:grid;gap:8px}
+.quest{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface);border-radius:12px;padding:10px 12px;box-shadow:var(--sh);font-size:14px}
+.quest span{font-size:18px;text-align:center}
+.quest.head{background:linear-gradient(135deg,#fff7e0,var(--surface));font-weight:600}
+.eq-ico,.eq-it>span{display:grid;place-items:center;width:100%;height:100%}
+.eq-emo{font-size:30px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))}
+.eq-it>span svg,.eq-ico svg{filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
+.eq-it.lock>span{filter:grayscale(1) brightness(.45)}
 
 </style>
 
@@ -774,6 +838,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
   <section id="scrRank" hidden><div id="rankBody"></div></section>
   <!-- PROFILE -->
   <section id="scrProfile" hidden><div id="profBody"></div></section>
+  <!-- EQUIPMENT -->
+  <section id="scrEquip" hidden><div id="eqBody"></div></section>
   <!-- SIMS -->
   <section id="scrSims" hidden>
     <div id="simHub"></div>
@@ -918,8 +984,8 @@ const KEYS=["A","B","C","D"];
 const imgSrc=id=>/\.(jpe?g|png|webp|gif)$/i.test(id)?id:"/_blob/"+encodeURIComponent(id);
 const rid=()=>Math.random().toString(36).slice(2,10);
 
-const SCREENS=["scrHome","scrLive","scrEditor","scrSims","scrRank","scrProfile"];
-const TAB_OF={scrHome:"home",scrLive:"live",scrEditor:"live",scrSims:"sims",scrRank:"rank",scrProfile:"profile"};
+const SCREENS=["scrHome","scrLive","scrEditor","scrSims","scrRank","scrProfile","scrEquip"];
+const TAB_OF={scrHome:"home",scrLive:"live",scrEditor:"live",scrSims:"sims",scrRank:"rank",scrProfile:"profile",scrEquip:"profile"};
 function show(id){
   SCREENS.forEach(s=>$(s).hidden=s!==id);
   document.querySelectorAll("#tabs button,#bnav button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===TAB_OF[id]?"page":"false"));
@@ -1549,6 +1615,16 @@ const SEASON={epoch:Date.UTC(2026,9,12),len:14,
   fmt(d){return d.toLocaleDateString("th-TH",{day:"numeric",month:"short"})}};
 function streakTouch(){const s=lsGet("lq-streak",{days:[]}),t=new Date().toISOString().slice(0,10);if(!s.days.includes(t)){s.days.push(t);s.days=s.days.slice(-60);lsSet("lq-streak",s)}let n=0;const set=new Set(s.days);for(let k=0;;k++){const d=new Date(Date.now()-k*864e5).toISOString().slice(0,10);if(set.has(d))n++;else break}return {today:true,streak:n,total:s.days.length}}
 function avatarSvg(p,size){const hat=p.hat||"#1f5fd0";return `<svg viewBox="0 0 64 64" width="${size||56}" height="${size||56}" aria-hidden="true"><circle cx="32" cy="34" r="30" fill="#e8eef9"/><rect x="18" y="38" width="28" height="22" rx="8" fill="#2e3d5c"/><rect x="31" y="40" width="2" height="18" fill="#c8322b"/><circle cx="32" cy="27" r="12" fill="#e6b993"/><path d="M18 26a14 14 0 0 1 28 0z" fill="${hat}"/><rect x="15" y="25" width="34" height="4" rx="2" fill="${hat}"/><circle cx="27" cy="30" r="1.6" fill="#22180f"/><circle cx="37" cy="30" r="1.6" fill="#22180f"/><path d="M28 35q4 3 8 0" stroke="#9a4637" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`}
+function cpsQuests(c){if(!window.CPSLV)return [];const X=CPSLV.level(c),Q=[];if(!c){return [{t:"เปิดโรงงานของคุณ: จ้างพนักงาน สอนงาน ออกแบบโต๊ะ แล้วเล่นด่าน 1",a:"play"}]}
+  const nx=X.next;if(!nx)return [{t:"คุณถึงระดับสูงสุดแล้ว รักษาความสม่ำเสมอทุกซีซัน",a:"play"}];
+  if(c.stage<nx.stage)Q.push({t:`ผ่านด่านให้ถึงด่าน ${nx.stage} (ตอนนี้ด่าน ${c.stage}) · ส่งมอบ ≥85%`,a:"play",done:false});
+  const K=c.K||{};const kupMiss=["tdm","vm","pc","ci"].filter(k=>!(K[k]>=.8));
+  if(kupMiss.length)Q.push({t:`ทำกิจกรรม 6 KUP ให้ได้ ≥80%: ${kupMiss.map(k=>({tdm:"Time & Data",vm:"Visual",pc:"Process Confirmation",ci:"ECRS"}[k])).join(", ")}`,a:"kup"});
+  X.weak.filter(w=>w.v<.8).forEach(w=>{if(["tdm","vm","pc","ci"].includes(w.x.id)&&kupMiss.length)return;Q.push({t:`${w.x.n} ${Math.round(w.v*100)}% → ${w.x.fix}`,a:["std"].includes(w.x.id)?"kup":["ci"].includes(w.x.id)?"play":"play"})});
+  if(X.skill.total<nx.skill)Q.unshift({t:`ทักษะ CPS รวมต้องถึง ${Math.round(nx.skill*100)}% (ตอนนี้ ${Math.round(X.skill.total*100)}%)`,a:null,head:true});
+  return Q.slice(0,5)}
+function questHtml(c){const Q=cpsQuests(c);return Q.length?`<div class="quests">${Q.map((q,i)=>`<div class="quest ${q.head?"head":""}"><span>${q.head?"🎯":"✦"}</span><p>${q.t}</p>${q.a?`<button type="button" class="btn small" data-qa="${q.a}">ไปทำ →</button>`:""}</div>`).join("")}</div>`:""}
+function bindQuests(root){root.querySelectorAll("[data-qa]").forEach(b=>b.onclick=()=>{if(b.dataset.qa==="kup")lsSet("lq-career-goto","kup");show("scrSims");SIMHUB.open();SIMHUB.play("career",0)})}
 function thumbCanvas(id){return `<canvas class="h-thumb" width="640" height="360" data-thumb="${id}" aria-hidden="true"></canvas>`}
 function drawThumbs(root){root.querySelectorAll("canvas[data-thumb]").forEach(cv=>{const g=SIMS.find(x=>x.id===cv.dataset.thumb);if(!g)return;const c=cv.getContext("2d");try{g.thumb(c,640,360,null)}catch(e){}})}
 function renderHome(){
@@ -1562,11 +1638,12 @@ function renderHome(){
     <div class="hero-art" id="heroArt">${thumbCanvas("career")}</div>
   </section>
   <div class="strip">
-    ${(()=>{const X=window.CPSLV?CPSLV.level(c):null;return X?`<button type="button" class="strip-i cps-strip" id="hLv"><i>${X.lv.em}</i><div><b>${X.lv.n}</b><small>${X.next?"อีก "+Math.round((1-X.prog)*100)+"% ถึง "+X.next.n:"ระดับสูงสุด"}</small></div></button>`:""})()}
+    ${(()=>{const X=window.CPSLV?CPSLV.level(c):null;return X?`<button type="button" class="strip-i cps-strip" id="hLv"><i>${X.lv.em}</i><div><b>${X.lv.n}</b><small>${X.next?"ภารกิจ: "+X.need.join(" · ").replace(/\(ตอนนี้[^)]*\)/g,""):"ระดับสูงสุด"}</small></div></button>`:""})()}
     <div class="strip-i"><i>🔥</i><div><b>${sk.streak} วันติด</b><small>เล่นแล้ว ${sk.total} วัน · วันนี้ +50</small></div></div>
     <div class="strip-i"><i>🗓️</i><div><b>ซีซัน ${se.n}</b><small>${SEASON.fmt(se.a)} – ${SEASON.fmt(se.b)} · เหลือ ${se.left} วัน</small></div></div>
     <div class="strip-i"><i>🏆</i><div><b>${my?"อันดับ #"+my.pos:"ยังไม่มีอันดับ"}</b><small>${my?my.score.toLocaleString()+" คะแนน":"เล่นให้จบ 1 ด่านเพื่อขึ้นตาราง"}</small></div></div>
   </div>
+  <h2 class="sec-h">ภารกิจเลื่อนระดับ CPS</h2>${questHtml(c)}
   <h2 class="sec-h">เล่นกับเพื่อนในห้อง</h2>
   <div class="tiles2">
     <button type="button" class="tile2 t-live" id="hLive"><i>⚡</i><b>Live Quiz</b><small>ตอบไว ได้คะแนนมาก แบบ Kahoot</small><span class="go-arrow">→</span></button>
@@ -1580,7 +1657,7 @@ function renderHome(){
   $("hHow").onclick=()=>SIMHUB.howto();
   $("hLive").onclick=()=>goTab("live");
   $("hClass").onclick=()=>{show("scrSims");SIMHUB.open();setTimeout(()=>{const e=document.getElementById("whoF");if(e){e.focus();e.scrollIntoView({block:"center"})}},50)};
-  if($("hProf"))$("hProf").onclick=()=>goTab("profile");
+  if($("hProf"))$("hProf").onclick=()=>goTab("profile");bindQuests($("homeBody"));
   if($("hLv"))$("hLv").onclick=()=>{goTab("profile");setTimeout(()=>{const e=$("cpsBox");if(e)e.scrollIntoView({block:"start",behavior:"smooth"})},80)};
   hud();
 }
@@ -1599,24 +1676,25 @@ async function renderRank(){const se=SEASON.cur(),day=lsGet("lq-day-results",[])
 function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=lsGet("lq-career",null);
   const HATS=[["#1f5fd0","น้ำเงิน"],["#f2f4f6","ขาว (หัวหน้า)"],["#f2b705","เหลือง"],["#2fbf6b","เขียว"],["#c8322b","แดง"]];
   $("profBody").innerHTML=`<div class="live-head"><div><span class="label">Profile</span><h1>ฉัน</h1></div></div>
-    <div class="prof-card"><div class="prof-av" id="pAv">${avatarSvg(p,96)}</div><div class="prof-f">
+    <div class="prof-card"><div class="prof-av big" id="pAv">${window.EQUIP?EQUIP.portrait(null,{h:220}):avatarSvg(p,96)}</div><div class="prof-f">
       <label class="field">ชื่อเล่น (แสดงบนตารางอันดับ)<input id="pfName" maxlength="20" value="${esc(p.name)}" placeholder="เช่น สมชาย"></label>
       <label class="field">รหัสพนักงาน<input id="pfEmp" maxlength="12" value="${esc(p.emp||"")}" placeholder="เช่น 10234" inputmode="numeric"></label>
       <label class="field">แผนก / ไลน์<input id="pfTeam" maxlength="20" value="${esc(p.team||"")}" placeholder="เช่น Trim 1"></label>
-      <div class="field">สีหมวก<div class="hats">${HATS.map(h=>`<button type="button" data-hat="${h[0]}" aria-pressed="${p.hat===h[0]}" style="--h:${h[0]}" title="${h[1]}"></button>`).join("")}</div></div>
+      <button type="button" class="btn go" id="pfEquip">🎽 ห้องแต่งตัว (Equipment)</button>
     </div></div>
     <div class="st-kpi"><div class="hudi"><span>XP</span><b>${totalXp().toLocaleString()}</b></div><div class="hudi"><span>วันที่เล่น</span><b>${sk.days.length}</b></div><div class="hudi"><span>ด่านโรงงาน</span><b>${c?c.stage:"-"}</b></div><div class="hudi"><span>คะแนนโรงงาน</span><b>${c?Math.round(c.total||0).toLocaleString():"-"}</b></div></div>
     ${(()=>{if(!window.CPSLV)return "";const X=CPSLV.level(c);return `<h2 class="sec-h" id="cpsBox">ระดับ CPS</h2><div class="cps-wrap"><div class="cps-card big"><span class="cps-em">${X.lv.em}</span><div><span class="label">ระดับปัจจุบัน</span><b>${X.lv.n}</b><small>${X.lv.desc}</small><div class="cps-bar"><i style="width:${Math.round(X.prog*100)}%"></i></div><small>${X.next?"ถัดไป <b>"+X.next.em+" "+X.next.n+"</b> ต้อง "+X.need.join(" และ "):"ระดับสูงสุดแล้ว 🎉"}</small></div></div>
       <div class="cps-radar">${CPSLV.radar(X.skill,240)}<p class="note2" style="text-align:center">ทักษะ CPS รวม <b>${Math.round(X.skill.total*100)}%</b></p></div></div>
+      <h3 class="sec-h" style="font-size:17px">ภารกิจเลื่อนระดับ</h3>${questHtml(c)}
       <div class="cps-ladder">${CPSLV.LV.map(L=>`<div class="${L.k<=X.lv.k?"on":""} ${L.k===X.lv.k?"cur":""}"><i>${L.em}</i><b>${L.n}</b><small>ด่าน ${L.stage}+ · ทักษะ ${Math.round(L.skill*100)}%+</small></div>`).join("")}</div>
       <div class="cps-dims">${CPSLV.DIM.map(x=>{const v=X.skill.d[x.id]||0;return `<div><span>${x.n}</span><div class="cps-bar sm"><i style="width:${Math.round(v*100)}%;background:${v>=.8?"var(--go)":v>=.5?"var(--warn)":"var(--stop)"}"></i></div><b>${Math.round(v*100)}%</b>${v<.8?`<small>${x.fix}</small>`:""}</div>`}).join("")}</div>`})()}
     <h2 class="sec-h">สำหรับวิทยากร</h2>
     <div class="actions"><button class="btn" id="pfAdmin">🔐 หลังบ้านวิทยากร (อันดับ + ประวัติ)</button><button class="btn" id="pfCenter">📺 เปิดจอกลาง (ห้องเรียน)</button><button class="btn ghost" id="pfEditor">✍️ สร้างชุดคำถาม Live Quiz</button><button class="btn ghost" id="pfHow">🎬 วิดีโอวิธีเล่น</button></div>
     <details class="bulk" style="margin-top:14px"><summary>⚙️ กระดานคะแนนกลาง (Google Sheets) · ${window.CLOUD&&CLOUD.enabled()?"เชื่อมต่อแล้ว":"ยังไม่เชื่อมต่อ"}</summary><label class="field">URL ของ Apps Script Web App<input id="pfSheet" value="${esc((window.CLOUD&&CLOUD.url())||"")}" placeholder="https://script.google.com/macros/s/…/exec"></label><div class="actions"><button class="btn small" id="pfSheetSave">บันทึกและทดสอบ</button></div><p class="note2" id="pfSheetMsg">${window.LQ_SHEET_URL?"ค่าตั้งต้นจากตัวเกม: "+esc(window.LQ_SHEET_URL):"ใส่เฉพาะตอนทดสอบ เมื่อยืนยันแล้วผมจะฝังลงในตัวเกมให้ทุกคน"}</p></details>
     <p class="note2" style="margin-top:14px">ข้อมูลโปรไฟล์เก็บในเครื่องนี้ ใช้ระบุคะแนนของคุณบนกระดานกลาง</p>`;
-  const save=()=>{const q=PROF.get();q.name=$("pfName").value.trim();q.emp=$("pfEmp").value.trim();q.team=$("pfTeam").value.trim();PROF.set(q);$("pAv").innerHTML=avatarSvg(q,96)};
+  const save=()=>{const q=PROF.get();q.name=$("pfName").value.trim();q.emp=$("pfEmp").value.trim();q.team=$("pfTeam").value.trim();PROF.set(q)};
+  $("pfEquip").onclick=()=>EQUIP.open();bindQuests($("profBody"));
   ["pfName","pfEmp","pfTeam"].forEach(id=>$(id).oninput=save);
-  $("profBody").querySelectorAll("[data-hat]").forEach(b=>b.onclick=()=>{const q=PROF.get();q.hat=b.dataset.hat;PROF.set(q);renderProfile()});
   $("pfSheetSave").onclick=async()=>{const u=$("pfSheet").value.trim();$("pfSheetMsg").textContent="กำลังทดสอบ…";if(!u){CLOUD.setUrl("");$("pfSheetMsg").textContent="ล้างค่าแล้ว";return}const ok=await CLOUD.test(u);if(ok){CLOUD.setUrl(u);CLOUD.flush();$("pfSheetMsg").textContent="✅ เชื่อมต่อสำเร็จ คะแนนที่ค้างในเครื่องส่งแล้ว"}else $("pfSheetMsg").textContent="❌ เชื่อมต่อไม่ได้ ตรวจว่า Deploy เป็น Web app แบบ Anyone และ URL ลงท้ายด้วย /exec"};
   $("pfAdmin").onclick=()=>renderAdmin();
   $("pfCenter").onclick=()=>{show("scrSims");SIMHUB.open();setTimeout(()=>SIMHUB.center(),50)};
@@ -2010,8 +2088,8 @@ window.PEN3D=(()=>{
   function boardTex(draw){const cv=document.createElement("canvas");cv.width=640;cv.height=320;const c=cv.getContext("2d");draw(c,cv.width,cv.height);const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return {cv,c,t}}
   // ---------- worker ----------
   function worker(w){// Changan-style uniform: navy work shirt with red piping, khaki trousers, blue safety helmet, ID badge, black safety shoes
-    const g=new THREE.Group(),L=w.look||{},skin=mat(L.skin||"#e6b993",{roughness:.7}),isNew=w.sk<.85,lead=w.sk>=.95;
-    const shirt=mat("#2e3d5c",{roughness:.8}),pants=mat("#cdbb9b",{roughness:.9}),red=mat("#c8322b",{roughness:.6}),shoe=mat("#1a1d21",{roughness:.5});
+    const E=w.eq||{},g=new THREE.Group(),L=w.look||{},skin=mat(L.skin||"#e6b993",{roughness:.7}),isNew=!w.eq&&w.sk<.85,lead=w.sk>=.95;
+    const shirt=mat(E.shirt||"#2e3d5c",{roughness:.8}),pants=mat(E.pants||"#cdbb9b",{roughness:.9}),red=mat(E.trim||"#c8322b",{roughness:.6}),shoe=mat(E.shoes||"#1a1d21",{roughness:E.shoes==="#e8b923"?.3:.5,metalness:E.shoes==="#e8b923"?.6:0});
     [-.1,.1].forEach(x=>{const l=cyl(.065,.075,.78,pants);l.position.set(x,.42,0);g.add(l);const sh=box(.13,.07,.22,shoe,x,.035,.04);g.add(sh)});
     g.add(box(.3,.06,.2,mat("#1f2430"),0,.8,0));// belt
     const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.2,.4,4,12),shirt);torso.position.y=1.08;torso.castShadow=true;g.add(torso);
@@ -2030,7 +2108,7 @@ window.PEN3D=(()=>{
     const hair=new THREE.Mesh(new THREE.SphereGeometry(.145,16,10,0,Math.PI*2,0,Math.PI*.55),mat(L.hair||"#2b1f17",{roughness:.9}));hair.position.y=1.565;g.add(hair);
     if(L.g==="f"){const pony=new THREE.Mesh(new THREE.CapsuleGeometry(.05,.2,3,8),mat(L.hair||"#2b1f17"));pony.position.set(0,1.4,-.13);g.add(pony)}
     // safety helmet: blue (leader white), with brim and ridges; new hires get a yellow band
-    const helC=lead?"#f2f4f6":"#1f5fd0",helM=mat(helC,{roughness:.35,metalness:.05});const hel=new THREE.Mesh(new THREE.SphereGeometry(.165,18,12,0,Math.PI*2,0,Math.PI*.52),helM);hel.position.y=1.6;g.add(hel);
+    const helC=E.helmet||(lead?"#f2f4f6":"#1f5fd0"),helM=mat(helC,{roughness:helC==="#e8b923"?.25:.35,metalness:helC==="#e8b923"?.7:.05});const hel=new THREE.Mesh(new THREE.SphereGeometry(.165,18,12,0,Math.PI*2,0,Math.PI*.52),helM);hel.position.y=1.6;g.add(hel);
     const brim=new THREE.Mesh(new THREE.TorusGeometry(.165,.018,8,24),helM);brim.rotation.x=Math.PI/2;brim.position.y=1.6;g.add(brim);g.add(box(.09,.015,.1,helM,0,1.6,.2));
     if(isNew){const band=cyl(.17,.17,.03,mat("#f2b705"));band.position.y=1.62;g.add(band)}
     [-.05,.05].forEach(x=>{const e=new THREE.Mesh(new THREE.SphereGeometry(.014,8,8),mat("#22180f"));e.position.set(x,1.57,.13);g.add(e)});
@@ -2153,7 +2231,11 @@ window.PEN3D=(()=>{
       const idle=st.workers.filter(w=>w.st<0&&!w.absent);idle.forEach((w,k)=>{let m=wkGroups.get(w.id);if(!m){m=worker(w);wkGroups.set(w.id,m)}if(m.parent!==scene){if(m.parent)m.parent.remove(m);scene.add(m)}m.position.set(rp[0]+1.2+k*.7,0,rp[1]+2.2);m.rotation.y=Math.PI;m.userData.arms[0].rotation.x=-.1;m.userData.arms[1].rotation.x=-.1});
       st.workers.filter(w=>w.absent).forEach(w=>{const m=wkGroups.get(w.id);if(m&&m.parent)m.parent.remove(m)});
       const lf=Math.max(.8,cam.position.distanceTo(new THREE.Vector3(ctl.tx,1,ctl.tz))/9);scene.traverse(o=>{if(o.isSprite&&o.userData.text!=null){const k=o.userData.o.k||.011,m=o.material.map.image;o.scale.set(m.width/2*k*lf,m.height/2*k*lf,1)}});
+      if(ctl.me){ctl.me.rotation.y=-.35+Math.sin(performance.now()/1400)*.25}
       R.render(scene,cam)}
+    // the player's own character (outfit from the Equipment screen) stands at the line as line leader
+    if(window.EQUIP){try{const lk=EQUIP.look3d(),me=worker({look:{g:lk.body.g,skin:lk.body.skin,hair:lk.body.hair},sk:1,eq:lk});if(lk.vest){const vm=mat(lk.vest,{roughness:.6});[-1,1].forEach(k=>me.add(box(.16,.42,.03,vm,k*.11,1.08,.2)))}if(lk.gloves){me.userData.arms.forEach(a=>a.children[1]&&a.children[1].material.color.set(lk.gloves))}
+      const tag=sprite("คุณ · หัวหน้าไลน์",{bg:"rgba(232,185,35,.95)",fg:"#1b222a",fs:26,k:.005});tag.position.y=2.05;me.add(tag);me.position.set(rp[0]+1.3,0,rp[1]+1.6);me.rotation.y=-.35;me.userData.arms[0].rotation.x=-.35;me.userData.arms[1].rotation.x=-1.2;scene.add(me);ctl.me=me}catch(e){console.warn(e)}}
     rebuild();update(0);
     return {update,resize,dispose(){ro.disconnect();R.dispose();R.domElement.remove()},el:R.domElement}}
   return {mount,load};
@@ -2314,7 +2396,7 @@ function stationList(B,R,line,ci,up){up=up||{};const g=groups(B.seq,line.cuts),n
   while(line.cells.length<n){const used=new Set(line.cells.map(c=>c.c+","+c.r));let p=null;for(let r of [1,0,2])for(let c=0;c<GC&&!p;c++)if(!used.has(c+","+r))p={c,r};line.cells.push(p||{c:0,r:0})}
   line.cells.length=n;
   const ciE=Math.min(1.8,(ci||0)+(up.jig?.8:0));
-  return g.map((tasks,i)=>{let wc=0;tasks.forEach(id=>{const p=R.per[id];wc+=p.mv+p.sr*(up.poka?.5:1)+p.h*(1-.12*ciE)*(up.press&&id==="t9"?.5:1)});const tr=transferT(i,line.cells,n)*(up.conv?.4:1);
+  return g.map((tasks,i)=>{let wc=0;tasks.forEach(id=>{const p=R.per[id];wc+=p.mv+p.sr*(up.poka?.5:1)+p.h*(1-.12*ciE)*(up.press&&id==="t9"?.5:1)*(1-(up.eqh||0))});const tr=transferT(i,line.cells,n)*(up.conv?.4:1);
     return {i,tasks,wc:wc+tr,tr,cell:line.cells[i],start:B.seq.indexOf(tasks[0]),end:B.seq.indexOf(tasks[tasks.length-1])+1,has:Object.fromEntries(tasks.map(t=>[t,1])),name:tasks.map(t=>TK(t).s).filter((x,k,a)=>!/^หยิบ/.test(x)||a.length===1).slice(0,2).join(" + ")||TK(tasks[0]).s}})}
 
 // ---------------- people ----------------
@@ -2649,8 +2731,8 @@ SIMS.push({id:"career",name:"โรงงานของฉัน · เล่�
 function createGame(api,career){
     const WHO0=lsGet("lq-sim-who",{}),lv=career?careerLV(career.stage):api.lv,L=api.level,B=career&&career.B?Object.assign(newBench(),career.B):newBench(),line=career&&career.line?{cuts:new Set(career.line.cuts),cells:career.line.cells.slice()}:{cuts:new Set(),cells:[]},K=career&&career.K?career.K:{},used=new Set();
     let goals=Array(GOALS.length).fill(career?1:null),pool=candidates(8,used),hired=career?career.hired.slice():[],R=career&&career.B?evalBench(B):null,stdEff=career&&R?Math.min(1,IDEAL_CT/R.ct):0,acts=kupActs(lv),jiScore=career?(K.ji||0):0,step=0,st=null,loop={stop(){},pause(){}},room=null,ended=false;
-    const UP=career?career.up:{};hired.forEach(x=>used.add(x.n));
-    function cSave(extra){if(!career)return;Object.assign(career,{hired:hired.map(x=>({id:x.id,n:x.n,exp:x.exp,sk:x.sk,cap:x.cap,wage:x.wage,look:x.look})),B:{clutter:B.clutter,pos:B.pos,labels:B.labels,seq:B.seq},line:{cuts:[...line.cuts],cells:line.cells},K,up:UP,fresh:false},extra||{});lsSet(CKEY,career)}
+    const UP=career?Object.assign({},career.up):{};const EQB=career&&window.EQUIP?EQUIP.bonus():{};if(EQB.handle)UP.eqh=EQB.handle;hired.forEach(x=>used.add(x.n));
+    function cSave(extra){if(!career)return;Object.assign(career,{hired:hired.map(x=>({id:x.id,n:x.n,exp:x.exp,sk:x.sk,cap:x.cap,wage:x.wage,look:x.look})),B:{clutter:B.clutter,pos:B.pos,labels:B.labels,seq:B.seq},line:{cuts:[...line.cuts],cells:line.cells},K,up:Object.fromEntries(Object.entries(UP).filter(([k])=>k!=="eqh")),fresh:false},extra||{});lsSet(CKEY,career)}
     function ckSave(){if(!career||!st||ended)return;const o={};Object.keys(st).forEach(k=>{if(["S","rank","_v3","flow","fx","banner","ev","evLast","goalRows","lv"].includes(k))return;o[k]=st[k]});o.workers=st.workers.map(w=>Object.assign({},w,{job:w.job?{u:w.job.u,rem:w.job.rem}:null}));career.runCk=o;career.cash=Math.round(st.cash);lsSet(CKEY,career)}
     const STEPS=["1 ตั้งเป้าหมาย","2 จ้างพนักงาน","3 ทำ 6 KUP","4 จัดไลน์","5 เดินไลน์"];
     api.root.innerHTML=`<div class="pf-steps" id="pfSteps"></div><div id="pfMain"></div>`;
@@ -2787,7 +2869,7 @@ function createGame(api,career){
           else if(pen==="cash"){st.cash-=300}
           else{st.S.forEach(x=>{if(!x.broken)x.repair=Math.max(x.repair,40)})}}
         st.evLast={e,o,at:st.t};sync(true)}
-      function resolve(i){const x=st.S[i];if(x.broken){x.broken=false;x.repair=30+90*(1-K.vm);fx("🔧 ช่างมาแล้ว",cellXY(x.cell).x,cellXY(x.cell).y-150,"#ffd27a");SFXp("ok");sync(true)}
+      function resolve(i){const x=st.S[i];if(x.broken){x.broken=false;x.repair=(30+90*(1-K.vm))*(1-(EQB.repair||0));fx("🔧 ช่างมาแล้ว",cellXY(x.cell).x,cellXY(x.cell).y-150,"#ffd27a");SFXp("ok");sync(true)}
         else if(x.dev&&st.t>=x.devSeen){x.dev=false;fx("✓ ยืนยันกระบวนการ แก้ไขทันที",cellXY(x.cell).x,cellXY(x.cell).y-150,"#7dffa8");SFXp("ok");sync(true)}}
       function SFXp(k){try{const m={ok:"right",bad:"wrong",level:"go"};if(window.PARTY&&PARTY.SFX)PARTY.SFX[m[k]]()}catch(e){}}
       function hireOverlay(){if(ended||wrap.querySelector(".ovl"))return;loop.pause(true);let cands=candidates(3,new Set(st.workers.map(w=>w.n)));
@@ -2830,7 +2912,7 @@ function createGame(api,career){
           if(rd===lv.colorsFrom)ev.push("ลูกค้าสั่ง 3 สี น้ำเงิน แดง ดำ ระวังหยิบไส้ผิดสี");if(rd===lv.brkFrom)ev.push("เครื่องอัดด้ามเริ่มเสียได้");if(rd===lv.pcFrom)ev.push("ระวังการทำงานไม่ตามมาตรฐาน");
           st.workers.forEach(w=>{if(w.absent){w.absent=false}});
           if(rd===lv.absent||(lv.absentEvery&&rd>lv.absent&&(rd-lv.absent)%lv.absentEvery===0)){const cand=st.workers.filter(w=>w.st>=0);if(cand.length>1){const w=pick(cand);w.absent=true;if(w.job){st.buf[w.st].unshift(w.job.u);w.job=null}ev.push(w.n+" ลางานกะนี้ ต้องจัดคนใหม่")}}
-          if(lv.god&&!st.ev){const pool=KEVENTS.filter(e=>!st.evDone.includes(e));if(pool.length){st.ev={e:pick(pool),until:st.t+150};ev.push("📋 มีปัญหาหน้างานรอการตัดสินใจ (แผงด้านล่าง)")}}
+          if(lv.god&&!st.ev){const pool=KEVENTS.filter(e=>!st.evDone.includes(e));if(pool.length){st.ev={e:pick(pool),until:st.t+150+(EQB.evTime||0)*SPEED};ev.push("📋 มีปัญหาหน้างานรอการตัดสินใจ (แผงด้านล่าง)")}}
           st.banner={t:`รอบ ${rd+1}: ลูกค้าเพิ่มเป็น ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที${ev.length?" · "+ev.join(" · "):""}`,life:5};SFXp("level");sync(true)}
         if(st.banner)st.banner.life-=dtp;
         if(st.ev&&st.t>=st.ev.until){applyEv(st.ev.e,null)}
@@ -2839,7 +2921,7 @@ function createGame(api,career){
         st.nextOrd-=dt;while(st.nextOrd<=0){st.nextOrd+=3600/st.jph;st.orders++;st.backlog++}
         // material release
         const newU=()=>{const ci=colorsOn?Math.floor(Math.random()*3):0;return {id:++st.uid,born:st.t,ci,ink:INKS[ci],tk:0}};
-        const matC=UP.kanban?Math.round(ECON.mat*.95):ECON.mat;const buy=()=>{if(st.cash<matC){st.noMat=true;return false}st.noMat=false;st.cash-=matC;st.matCost+=matC;return true};
+        const matC=Math.round(ECON.mat*(UP.kanban?.95:1)*(1-(EQB.mat||0))*100)/100;const buy=()=>{if(st.cash<matC){st.noMat=true;return false}st.noMat=false;st.cash-=matC;st.matCost+=matC;return true};
         if(st.mode==="push"){st.relT-=dt;while(st.relT<=0){st.relT+=3600/st.jph;if(buy()){const u=newU();st.buf[0].push(u);flow(-1,0,u)}}}
         else{while(st.buf[0].length<st.limit&&buy()){const u=newU();st.buf[0].push(u);flow(-1,0,u)}}
         // random events
@@ -2857,7 +2939,7 @@ function createGame(api,career){
             if(x.has.t7&&!UP.poka&&Math.random()<R.riskUpper)u.wrong=u.wrong||"รุ่นด้าม";
             if(x.dev&&Math.random()<.3)u.defect=true;
             if(w.sk<.8&&Math.random()<(.8-w.sk)*.25)u.defect=true;
-            w.job=null;w.done++;w.sk=Math.min(w.cap,w.sk+(w.cap-w.sk)*(.012+.04*(K.ji||0)));
+            w.job=null;w.done++;w.sk=Math.min(w.cap,w.sk+(w.cap-w.sk)*(.012+.04*(K.ji||0))*(1+(EQB.learn||0)));
             if(x.has.t10){const skip=x.dev;if(!u.tested){u.tested=true;st.tested++}
               if(!skip&&(u.wrong||(u.defect&&Math.random()<.8))){if(!u.failed){u.failed=true;st.firstFail++}st.scrap++;st.cash-=ECON.scrap;const back=u.wrong==="สี"?st.S.findIndex(q=>q.has.t1):u.wrong?st.S.findIndex(q=>q.has.t7):0;
                 fx(u.wrong?`❌ ${u.wrong}ผิด! ทิ้งชิ้นส่วน ทำใหม่`:"❌ เขียนไม่ออก! ทำใหม่",cellXY(x.cell).x,cellXY(x.cell).y-160,"#ff8a7a");u.wrong=null;u.defect=false;u.ci=colorsOn?u.ci:0;u.tk=st.S[Math.max(0,back)].start;st.buf[Math.max(0,back)].push(u);return}
@@ -2867,7 +2949,7 @@ function createGame(api,career){
         const fg=st.buf[n];while(fg.length&&st.backlog>0){const u=fg.shift();st.backlog--;st.shipped++;st.cash+=ECON.price;st.rev+=ECON.price;st.hourly[st.round].act++;st.truck=1;
           if(u.escape){st.escaped++;st.complaints++;st.cash-=ECON.complaint;fx(`ลูกค้าร้องเรียน! −${ECON.complaint}`,880,300,"#ff8a7a")}else if(Math.random()<.3)fx("+"+ECON.price,880,300,"#7dffa8")}
         if(st.truck>0)st.truck=Math.max(0,st.truck-dtp*.7);
-        const wg=st.workers.filter(w=>!w.absent).reduce((a,w)=>a+w.wage,0)*dt/3600,rt=(career?300:ECON.rent)*dt/3600;st.cash-=wg+rt;st.wages+=wg;st.rent+=rt;
+        const wg=st.workers.filter(w=>!w.absent).reduce((a,w)=>a+w.wage,0)*(1-(EQB.wage||0))*dt/3600,rt=(career?300:ECON.rent)*dt/3600;st.cash-=wg+rt;st.wages+=wg;st.rent+=rt;
         st.lbeSum+=lbeOf(st)*dt;
         st.fx.forEach(f=>{f.life-=dtp;f.y-=dtp*26});st.fx=st.fx.filter(f=>f.life>0);
         if(window.LQ_TICKING){}else if(st.view3d&&v3){v3.update(dtp);ovTick()}else render(c,st);syncT-=dtp;if(syncT<=0){syncT=.35;sync(false);if(st.view3d)ovRank()}
@@ -2891,7 +2973,8 @@ function createGame(api,career){
         if(lv.god)L2.push(`<b>ระดับเทพ · ปัญหาหน้างาน 6 KUP:</b> ตัดสินใจถูก ${st.evRight}/${st.evDone.length} ครั้ง (${st.evScore>=0?"+":""}${st.evScore} คะแนน)`);
         const newbies=st.workers.filter(w=>w.done>0);if(newbies.length)L2.push(`<b>People:</b> ${newbies.map(w=>`${esc(w.n)} ${Math.round(w.sk*100)}%`).join(", ")} หลังทำงาน (สอนงาน JI ${KZ.pct(K.ji)}%)`);
         if(career){const deliv=st.orders?st.shipped/st.orders:1,pass=deliv>=.85&&r.profit>-500;career.runCk=null;career.cash=Math.round(st.cash-r.penalty);if(career.cash<800){career.cash=1500;L2.push("<b>เงินสดต่ำ:</b> ธนาคารให้กู้ฉุกเฉิน เริ่มด่านถัดไปด้วย 1,500 ฿")}
-          hired.length=0;st.workers.forEach(w=>hired.push({id:w.id,n:w.n,exp:w.exp,sk:w.sk,cap:w.cap,wage:w.wage,look:w.look}));const lvBefore=cpsLevel(career).lv;career.hist.push({stage:career.stage,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),score:r.score,pass,deliv:Math.round(deliv*100),fpy:Math.round((st.tested?1-st.firstFail/st.tested:1)*1000)/10});career.hist=career.hist.slice(-40);career.evTot=(career.evTot||0)+st.evDone.length;career.evOk=(career.evOk||0)+st.evRight;career.pcMiss=Math.max(0,(career.pcMiss||0)+(st.escaped>0?1:-1));career.total=(career.total||0)+r.score;if(pass)career.stage++;career.step=0;cSave();const LVx=cpsLevel(career);if(LVx.lv.k>lvBefore.k){L2.unshift(`<b>🎉 เลื่อนระดับ!</b> คุณเป็น <b>${LVx.lv.em} ${LVx.lv.n}</b> แล้ว · ${LVx.lv.desc}`);try{if(window.PARTY){PARTY.confetti(160);PARTY.SFX.fanfare()}}catch(e){}}else if(LVx.next)L2.push(`<b>ระดับ CPS:</b> ${LVx.lv.em} ${LVx.lv.n} · เลื่อนเป็น ${LVx.next.em} ${LVx.next.n} ต้อง ${LVx.need.join(" และ ")} · จุดที่ควรฝึก: ${LVx.weak.map(w=>w.x.n).join(", ")}`);
+          hired.length=0;st.workers.forEach(w=>hired.push({id:w.id,n:w.n,exp:w.exp,sk:w.sk,cap:w.cap,wage:w.wage,look:w.look}));const lvBefore=cpsLevel(career).lv;career.hist.push({stage:career.stage,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),score:r.score,pass,deliv:Math.round(deliv*100),fpy:Math.round((st.tested?1-st.firstFail/st.tested:1)*1000)/10});career.hist=career.hist.slice(-40);career.evTot=(career.evTot||0)+st.evDone.length;career.evOk=(career.evOk||0)+st.evRight;career.pcMiss=Math.max(0,(career.pcMiss||0)+(st.escaped>0?1:-1));career.total=(career.total||0)+r.score;if(pass){career.stage++;if(EQB.cash){career.cash+=EQB.cash;L2.push(`<b>🎽 โบนัสชุดที่สวม:</b> +${EQB.cash} ฿`)}}career.step=0;cSave();const LVx=cpsLevel(career);if(LVx.lv.k>lvBefore.k){L2.unshift(`<b>🎉 เลื่อนระดับ!</b> คุณเป็น <b>${LVx.lv.em} ${LVx.lv.n}</b> แล้ว · ${LVx.lv.desc}`);try{if(window.PARTY){PARTY.confetti(160);PARTY.SFX.fanfare()}}catch(e){}}if(window.EQUIP){const NU=EQUIP.newUnlocks();if(NU.fresh.length){L2.unshift(`<b>🎁 ปลดล็อกชุดใหม่:</b> ${NU.fresh.map(i=>i.n).join(", ")} · ไปแต่งตัวที่แท็บ ฉัน → ห้องแต่งตัว`);NU.mark()}}
+          if(LVx.lv.k>lvBefore.k){}else if(LVx.next)L2.push(`<b>ระดับ CPS:</b> ${LVx.lv.em} ${LVx.lv.n} · เลื่อนเป็น ${LVx.next.em} ${LVx.next.n} ต้อง ${LVx.need.join(" และ ")} · จุดที่ควรฝึก: ${LVx.weak.map(w=>w.x.n).join(", ")}`);
           L2.unshift(`<b>ด่าน ${pass?career.stage-1:career.stage}:</b> ${pass?"ผ่าน! ส่งมอบ "+Math.round(deliv*100)+"% ไปด่าน "+career.stage+" ลูกค้าจะสั่ง "+careerLV(career.stage).jph[0]+" ด้าม/ชม.":"ยังไม่ผ่าน (ต้องส่งมอบ ≥85% และไม่ขาดทุนเกิน 500 ฿) ลองอัปเกรดโรงงานแล้วเล่นด่านนี้อีกครั้ง"}`);
           if(window.CLOUD){const LVc=cpsLevel(career);CLOUD.post({game:"career",stage:career.stage-(pass?1:0),score:r.score,total:Math.round(career.total),pass,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),deliv:Math.round(deliv*100),lvl:LVc.lv.k,skill:Math.round(LVc.skill.total*100)})}
           api.end(wrap,{score:Math.round(career.total),stars:pass?(deliv>=.98?3:2):1,buttons:[[pass?"ไปด่าน "+career.stage+" →":"เล่นด่านนี้อีกครั้ง",()=>SIMHUB.play("career",0)],["กลับหน้าเลือกเกม",()=>{SIMHUB.leave();SIMHUB.renderHub()}]],stats:[["ระดับ CPS",(()=>{const x=cpsLevel(career).lv;return x.em+" "+x.n})()],["ด่าน",String(pass?career.stage-1:career.stage)],["กำไรด่านนี้",baht(r.profit)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["LBE เฉลี่ย",pct(r.lbe)],["เงินสด",baht(career.cash)],["คะแนนรวม",Math.round(career.total).toLocaleString()]],lessons:L2});return}
@@ -2905,7 +2988,8 @@ function createGame(api,career){
         <li>ไฟแดงกระพริบ = Andon แตะที่สถานีเพื่อเรียกช่างหรือยืนยันกระบวนการ</li><li>ขายได้ด้ามละ ${ECON.price} ฿ วัตถุดิบ ${ECON.mat} ฿ ค่าเช่าโรงงาน ${ECON.rent} ฿/ชม.</li><li>คะแนน = กำไร ÷ 2 + LBE × 1,000 + คะแนนเป้า SQDCPME ที่ทำได้</li></ul>`,[["เริ่มกะ →",()=>{st.banner={t:`รอบ 1: ลูกค้าต้องการ ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที`,life:4};SIMHUB.onCtl(ctl=>{if(ctl&&ctl.stop&&!ended&&loop){ended=true;loop.stop();api.toast(wrap,"วิทยากรหยุดเกม สรุปผล");finish()}});loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});
           connectRank()}]]);
     }
-    if(career){if(career.runCk&&career.B&&hired.length){go(4)}else if(career.fresh||!hired.length){go(career.fresh?1:0)}else go(0)}else go(0);
+    const gotoK=lsGet("lq-career-goto",null);try{localStorage.removeItem("lq-career-goto")}catch(e){}
+    if(career){if(career.runCk&&career.B&&hired.length){go(4)}else if(career.fresh||!hired.length){go(career.fresh?1:0)}else if(gotoK==="kup")go(2);else go(0)}else go(0);
     return {stop(){if(career)ckSave();loop.stop();if(room){try{room.leave()}catch(e){}}if(st&&st._v3)try{st._v3.dispose()}catch(e){}}};
 }
 function demoState(lv){const d=newBench();CLUTTER.forEach(c=>d.clutter[c.id]=c.need?"keep":"red");PARTS.forEach(p=>{d.labels[p.id]={};p.labels.forEach(l=>d.labels[p.id][l.id]=true)});d.seq=OIS_ORDER.slice();
@@ -2916,6 +3000,192 @@ function demoState(lv){const d=newBench();CLUTTER.forEach(c=>d.clutter[c.id]=c.n
 window.PENF={render,demoState,LEVELS,evalBench,idealSearch,newBench,stationList,TASKS,PARTS,CLUTTER,SLOTS};
 })();
 
+// =====================================================================
+// EQUIPMENT — dress your CPS character (dark-fantasy style equipment screen, original content)
+// Items unlock with CPS level / stage / upgrades / days played and give small in-game perks.
+// =====================================================================
+const EQUIP=(()=>{
+  const KEY="lq-equip";
+  const RAR={c:{n:"ทั่วไป",col:"#b9b2a0"},r:{n:"หายาก",col:"#5ea8ff"},e:{n:"มหากาพย์",col:"#c08bff"},l:{n:"ตำนาน",col:"#ffcc4d"}};
+  const SLOTS=[
+    {id:"helmet",n:"หมวก",em:"⛑️"},{id:"shirt",n:"เสื้อ",em:"👕"},{id:"pants",n:"กางเกง",em:"👖"},{id:"shoes",n:"รองเท้า",em:"🥾"},
+    {id:"gloves",n:"ถุงมือ",em:"🧤"},{id:"glasses",n:"แว่นตา",em:"🥽"},{id:"tool",n:"มือขวา · เครื่องมือ",em:"🔧"},{id:"board",n:"มือซ้าย · เอกสาร",em:"📋"},
+    {id:"charm1",n:"ตรา 1",em:"🎖️",charm:true},{id:"charm2",n:"ตรา 2",em:"🎖️",charm:true},{id:"charm3",n:"ตรา 3",em:"🎖️",charm:true}];
+  // unlock: {lv:k} CPS level · {stage:n} · {up:"id"} · {ups:n} upgrades count · {days:n} days played
+  const ITEMS=[
+    // helmets
+    {id:"cap",slot:"helmet",n:"หมวกแก๊ปพนักงาน",r:"c",w:1,col:"#1f3a68",kind:"cap",lore:"หมวกประจำตัวพนักงานใหม่ทุกคน เรียบง่ายแต่ภูมิใจ",fx:{}},
+    {id:"hel_blue",slot:"helmet",n:"หมวกนิรภัยสีน้ำเงิน",r:"c",w:3,col:"#1f5fd0",kind:"helmet",lore:"หมวกมาตรฐานของไลน์ประกอบ ความปลอดภัยมาก่อนเสมอ (S ใน SQDCPME)",fx:{safe:1}},
+    {id:"hel_yellow",slot:"helmet",n:"หมวกนิรภัยเหลือง · ผู้สอนงาน",r:"r",w:3,col:"#f2b705",kind:"helmet",lock:{lv:1},lore:"สวมโดยผู้ที่สอนงานคนอื่นได้ตาม JI 4 ขั้น",fx:{learn:.1}},
+    {id:"hel_white",slot:"helmet",n:"หมวกนิรภัยขาว · หัวหน้าไลน์",r:"e",w:3,col:"#f2f4f6",kind:"helmet",lock:{lv:2},lore:"เมื่อไฟ Andon ติด ทุกคนมองหาหมวกใบนี้",fx:{repair:.1}},
+    {id:"hel_gold",slot:"helmet",n:"มงกุฎนิรภัยทองคำ",r:"l",w:4,col:"#e8b923",kind:"helmet",lock:{lv:4},lore:"มอบให้ผู้ที่บริหารไลน์ความต้องการสูงได้ครบทุก KUP",fx:{repair:.15,learn:.1}},
+    // shirts
+    {id:"sh_navy",slot:"shirt",n:"เสื้อช็อปกรมท่ากุ๊นแดง",r:"c",w:4,col:"#2e3d5c",trim:"#c8322b",lore:"ยูนิฟอร์มประจำไลน์ ทุกคนเท่าเทียมกันที่หน้างาน",fx:{}},
+    {id:"sh_vest",slot:"shirt",n:"เสื้อกั๊กสะท้อนแสง",r:"r",w:5,col:"#2e3d5c",trim:"#c8322b",vest:"#d7e22a",lock:{stage:3},lore:"มองเห็นได้ชัดจากทุกมุมโรงงาน ปลอดภัยเมื่อเดินข้างรถยก",fx:{safe:1,evTime:3}},
+    {id:"sh_leader",slot:"shirt",n:"เสื้อหัวหน้าทีม ตราแดง",r:"e",w:4,col:"#26324d",trim:"#e0463d",patch:true,lock:{lv:3},lore:"ตราแดงบนไหล่คือคำสัญญาว่าจะมาที่หน้างานเสมอ (Gemba)",fx:{wage:.05,evTime:5}},
+    {id:"sh_champ",slot:"shirt",n:"แจ็กเก็ตแชมป์ซีซัน",r:"l",w:5,col:"#1b1b2e",trim:"#e8b923",gold:true,lock:{days:10},lore:"สำหรับผู้ที่กลับมาฝึกทุกวัน ความสม่ำเสมอชนะทุกอย่าง",fx:{cash:200,wage:.05}},
+    // pants
+    {id:"pt_khaki",slot:"pants",n:"กางเกงกากี",r:"c",w:3,col:"#cdbb9b",lore:"ทนทาน คล่องตัว ใส่ได้ทั้งกะ",fx:{}},
+    {id:"pt_navy",slot:"pants",n:"กางเกงช็อปกรมท่า",r:"r",w:3,col:"#26324d",lock:{stage:2},lore:"เข้าชุดกับเสื้อช็อป ดูเป็นมืออาชีพ",fx:{handle:.02}},
+    {id:"pt_cargo",slot:"pants",n:"กางเกงคาร์โก้ช่างซ่อมบำรุง",r:"e",w:4,col:"#3a4048",lock:{up:"tpm"},lore:"กระเป๋าเยอะพอใส่เครื่องมือ AM ครบชุด",fx:{repair:.1}},
+    // shoes
+    {id:"sb_black",slot:"shoes",n:"รองเท้าเซฟตี้ดำ",r:"c",w:3,col:"#1a1d21",lore:"หัวเหล็กกันของตกใส่เท้า",fx:{safe:1}},
+    {id:"sb_blue",slot:"shoes",n:"รองเท้าเซฟตี้ ESD",r:"r",w:3,col:"#2356c9",lock:{stage:4},lore:"กันไฟฟ้าสถิตย์ ไม่ทำลายชิ้นส่วนอิเล็กทรอนิกส์",fx:{handle:.02}},
+    {id:"sb_gold",slot:"shoes",n:"รองเท้าก้าวน้อยที่สุด",r:"l",w:2,col:"#e8b923",lock:{lv:4},lore:"รองเท้าของผู้ที่ตัดการเดินที่ไม่จำเป็นออกได้หมด (Motion)",fx:{handle:.05}},
+    // gloves
+    {id:"gl_none",slot:"gloves",n:"มือเปล่า",r:"c",w:0,col:null,lore:"ว่องไวแต่ต้องระวังของมีคม",fx:{}},
+    {id:"gl_cotton",slot:"gloves",n:"ถุงมือผ้าฝ้าย",r:"c",w:1,col:"#f3f4f6",lock:{stage:2},lore:"กันรอยนิ้วมือบนชิ้นงาน",fx:{q:1}},
+    {id:"gl_cut",slot:"gloves",n:"ถุงมือกันบาด",r:"r",w:1,col:"#2fbf6b",lock:{stage:5},lore:"หยิบชิ้นส่วนขอบคมได้มั่นใจ",fx:{safe:1,handle:.02}},
+    {id:"gl_poka",slot:"gloves",n:"ถุงมือ Poka-yoke",r:"e",w:1,col:"#1f5fd0",lock:{up:"poka"},lore:"ปลายนิ้วสีต่างกันตามสีหมึก หยิบผิดไม่ได้",fx:{handle:.03,q:1}},
+    // glasses
+    {id:"gs_none",slot:"glasses",n:"ไม่สวม",r:"c",w:0,col:null,lore:"",fx:{}},
+    {id:"gs_clear",slot:"glasses",n:"แว่นนิรภัยใส",r:"c",w:1,col:"#cfe3f5",lock:{stage:2},lore:"ป้องกันเศษชิ้นงานกระเด็นเข้าตา",fx:{safe:1}},
+    {id:"gs_amber",slot:"glasses",n:"แว่นมองหาความสูญเปล่า",r:"e",w:1,col:"#f5a623",lock:{lv:2},lore:"เห็น 8 ความสูญเปล่าชัดขึ้นทุกครั้งที่เดิน Gemba",fx:{evTime:5,repair:.05}},
+    // right hand tools
+    {id:"t_driver",slot:"tool",n:"ไขควงมือ",r:"c",w:1,kind:"driver",lore:"เครื่องมือชิ้นแรกของทุกคน",fx:{}},
+    {id:"t_torque",slot:"tool",n:"ประแจทอร์ค",r:"r",w:3,kind:"wrench",lock:{stage:3},lore:"ค่าทอร์คถูกต้องทุกครั้ง คือคุณภาพที่ลูกค้าไม่เห็นแต่รู้สึกได้",fx:{q:1}},
+    {id:"t_watch",slot:"tool",n:"นาฬิกาจับเวลา",r:"r",w:1,kind:"watch",lock:{lv:1},lore:"วัดก่อนปรับ — Time study คือจุดเริ่มต้นของงานมาตรฐาน",fx:{handle:.03}},
+    {id:"t_scan",slot:"tool",n:"เครื่องสแกน Kanban",r:"e",w:2,kind:"scanner",lock:{up:"kanban"},lore:"ยิงบาร์โค้ด ของมาเติมเองตามจำนวนที่ใช้",fx:{mat:.04}},
+    {id:"t_gold",slot:"tool",n:"ประแจทองคำแห่งไคเซ็น",r:"l",w:3,kind:"wrench",gold:true,lock:{lv:5},lore:"ว่ากันว่าไม่มีกระบวนการใดที่ประแจนี้ปรับให้ดีขึ้นไม่ได้",fx:{handle:.05,mat:.03,repair:.1}},
+    // left hand boards
+    {id:"b_ois",slot:"board",n:"คลิปบอร์ด OIS",r:"c",w:1,kind:"clip",lore:"มาตรฐานอยู่ในมือเสมอ",fx:{}},
+    {id:"b_hourly",slot:"board",n:"แท็บเล็ต Hourly Board",r:"r",w:1,kind:"tablet",lock:{up:"andon"},lore:"เห็นแผนกับผลจริงทุกชั่วโมงแบบเรียลไทม์",fx:{evTime:4}},
+    {id:"b_kanban",slot:"board",n:"การ์ด Kanban",r:"r",w:1,kind:"card",lock:{ups:3},lore:"ผลิตเท่าที่ถูกดึง ไม่มากไม่น้อย",fx:{mat:.03}},
+    {id:"b_a3",slot:"board",n:"รายงาน A3",r:"e",w:1,kind:"clip",gold:true,lock:{lv:3},lore:"ปัญหาหนึ่งหน้า สาเหตุราก มาตรการ และการติดตาม",fx:{repair:.05,learn:.05}},
+    // charms
+    {id:"c_5s",slot:"charm",n:"ตรา 5ส",r:"c",w:1,em:"🧹",lock:{stage:2},lore:"สะสาง สะดวก สะอาด สุขลักษณะ สร้างนิสัย",fx:{handle:.01}},
+    {id:"c_ji",slot:"charm",n:"ตราผู้สอนงาน JI",r:"r",w:1,em:"🧑‍🏫",lock:{up:"ji"},lore:"ถ้าผู้เรียนไม่ได้เรียน แปลว่าผู้สอนยังไม่ได้สอน",fx:{learn:.1}},
+    {id:"c_andon",slot:"charm",n:"ตรา Andon",r:"r",w:1,em:"🚨",lock:{up:"andon"},lore:"หยุดเพื่อแก้ ดีกว่าส่งต่อของเสีย",fx:{repair:.05}},
+    {id:"c_tpm",slot:"charm",n:"ตราเฟือง TPM",r:"r",w:1,em:"⚙️",lock:{up:"tpm"},lore:"ทำความสะอาดคือการตรวจสอบ",fx:{repair:.05}},
+    {id:"c_kaizen",slot:"charm",n:"ดาวไคเซ็น",r:"e",w:1,em:"🌟",lock:{ups:5},lore:"ดีขึ้นทีละนิดทุกวัน",fx:{cash:100}},
+    {id:"c_flame",slot:"charm",n:"เปลวไฟความสม่ำเสมอ",r:"e",w:1,em:"🔥",lock:{days:7},lore:"เล่น 7 วัน คือการสร้างนิสัย (Shitsuke)",fx:{learn:.05,cash:50}},
+    {id:"c_medal",slot:"charm",n:"เหรียญด่าน 10",r:"l",w:1,em:"🏅",lock:{stage:10},lore:"ผ่านสัญญาลูกค้า 9 ด่านติดต่อกัน",fx:{cash:150,handle:.02}}
+  ];
+  const DEF={helmet:"hel_blue",shirt:"sh_navy",pants:"pt_khaki",shoes:"sb_black",gloves:"gl_none",glasses:"gs_none",tool:"t_driver",board:"b_ois",charm1:null,charm2:null,charm3:null};
+  const FXN={handle:["ความเร็วมือ","เวลาประกอบ −",v=>Math.round(v*100)+"%"],repair:["ซ่อมเร็ว","เวลาซ่อม −",v=>Math.round(v*100)+"%"],learn:["สอนงาน","พนักงานใหม่เก่งเร็วขึ้น +",v=>Math.round(v*100)+"%"],mat:["ต้นทุนวัตถุดิบ","ค่าวัตถุดิบ −",v=>Math.round(v*100)+"%"],wage:["ค่าแรง","ค่าแรง −",v=>Math.round(v*100)+"%"],evTime:["เวลาตัดสินใจ","เวลาตอบปัญหาหน้างาน +",v=>v+" วิ"],cash:["โบนัสผ่านด่าน","ผ่านด่านได้เงินเพิ่ม +",v=>v+" ฿"],safe:["ความปลอดภัย","Safety +",v=>v],q:["คุณภาพ","Quality +",v=>v]};
+  const CAP={handle:.12,repair:.35,learn:.3,mat:.1,wage:.1,evTime:15,cash:500};
+  const get=()=>Object.assign({},DEF,lsGet(KEY,{}));
+  const career=()=>lsGet("lq-career",null);
+  function ctx(){const c=career(),lv=window.CPSLV?CPSLV.level(c).lv.k:0,days=lsGet("lq-streak",{days:[]}).days.length;return {c,lv,stage:c?c.stage:1,up:c?c.up||{}:{},ups:c?Object.keys(c.up||{}).length:0,days}}
+  function unlocked(it,x){x=x||ctx();const L=it.lock;if(!L)return true;if(L.lv!=null&&x.lv<L.lv)return false;if(L.stage!=null&&x.stage<L.stage)return false;if(L.up&&!x.up[L.up])return false;if(L.ups!=null&&x.ups<L.ups)return false;if(L.days!=null&&x.days<L.days)return false;return true}
+  function lockText(it){const L=it.lock;if(!L)return "มีตั้งแต่เริ่ม";const LVN2=window.CPSLV?CPSLV.LV:[];const u=window.CPSLV?null:null;
+    if(L.lv!=null)return "ถึงระดับ "+(LVN2[L.lv]?LVN2[L.lv].em+" "+LVN2[L.lv].n:"CPS "+L.lv);if(L.stage!=null)return "ผ่านถึงด่าน "+L.stage;if(L.up)return "ติดตั้งอัปเกรด "+({ji:"สอนงาน JI",poka:"Poka-yoke",jig:"จิ๊ก",andon:"Andon",pc:"Process Confirmation",tpm:"TPM",kanban:"Kanban",conv:"รางลำเลียง",press:"เครื่องอัดกึ่งอัตโนมัติ"}[L.up]||L.up);if(L.ups!=null)return "อัปเกรดโรงงาน "+L.ups+" อย่าง";if(L.days!=null)return "เข้าเล่น "+L.days+" วัน";return ""}
+  const item=id=>ITEMS.find(i=>i.id===id);
+  function capacity(x){x=x||ctx();return 18+x.lv*6}
+  function load(eq){eq=eq||get();return Object.values(eq).reduce((a,id)=>a+((item(id)||{}).w||0),0)}
+  function bonus(){const eq=get(),x=ctx(),b={};Object.values(eq).forEach(id=>{const it=item(id);if(!it||!unlocked(it,x))return;Object.entries(it.fx||{}).forEach(([k,v])=>b[k]=(b[k]||0)+v)});Object.keys(CAP).forEach(k=>{if(b[k]>CAP[k])b[k]=CAP[k]});if(load(eq)>capacity(x))Object.keys(b).forEach(k=>b[k]=typeof b[k]==="number"?b[k]*.5:b[k]);return b}
+  // ---------- character portrait (SVG) ----------
+  function portrait(eq,o){eq=eq||get();o=o||{};const p=lsGet("lq-sim-who",{}),body=Object.assign({g:"m",skin:"#e6b993",hair:"#2b1f17"},p.body||{});
+    const I=s=>item(eq[s])||{},H=I("helmet"),S=I("shirt"),P=I("pants"),F=I("shoes"),Gl=I("gloves"),Gs=I("glasses"),T=I("tool"),B=I("board");
+    const sk=body.skin,hand=Gl.col||sk;let g="";
+    g+=`<defs><radialGradient id="pfloor" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="rgba(255,210,120,.35)"/><stop offset="1" stop-color="rgba(255,210,120,0)"/></radialGradient><linearGradient id="shirtG" x1="0" x2="1"><stop offset="0" stop-color="${shade(S.col||"#2e3d5c",-.25)}"/><stop offset=".45" stop-color="${S.col||"#2e3d5c"}"/><stop offset="1" stop-color="${shade(S.col||"#2e3d5c",-.3)}"/></linearGradient></defs>`;
+    g+=`<ellipse cx="100" cy="292" rx="70" ry="12" fill="url(#pfloor)"/>`;
+    // legs + shoes
+    g+=`<path d="M78 196 L74 278 L94 278 L98 206 L102 206 L106 278 L126 278 L122 196 Z" fill="${P.col||"#cdbb9b"}"/><path d="M98 206 L102 206 L101 270 L99 270Z" fill="rgba(0,0,0,.12)"/>`;
+    g+=`<path d="M70 276 h26 v10 h-30 q-2 -6 4 -10z" fill="${F.col||"#1a1d21"}"/><path d="M104 276 h26 q6 4 4 10 h-30z" fill="${F.col||"#1a1d21"}"/>`;
+    g+=`<rect x="76" y="190" width="48" height="10" rx="3" fill="#1f2430"/><rect x="96" y="191" width="8" height="8" rx="1" fill="#9aa3ab"/>`;
+    // torso
+    g+=`<path d="M68 112 Q100 100 132 112 L136 196 L64 196 Z" fill="url(#shirtG)"/>`;
+    if(S.trim)g+=`<rect x="99" y="112" width="2.5" height="80" fill="${S.trim}"/><path d="M74 128 h52" stroke="${S.trim}" stroke-width="2.2"/>`;
+    g+=`<rect x="76" y="136" width="18" height="14" rx="2" fill="rgba(255,255,255,.08)" stroke="${S.trim||"#c8322b"}" stroke-width="1"/><rect x="106" y="136" width="18" height="14" rx="2" fill="rgba(255,255,255,.08)" stroke="${S.trim||"#c8322b"}" stroke-width="1"/>`;
+    if(S.vest)g+=`<path d="M70 116 L92 112 L92 196 L66 196 Z" fill="${S.vest}" opacity=".95"/><path d="M130 116 L108 112 L108 196 L134 196 Z" fill="${S.vest}" opacity=".95"/><path d="M67 160 h25 M108 160 h26 M67 172 h25 M108 172 h26" stroke="#e6ebef" stroke-width="3"/>`;
+    if(S.gold)g+=`<path d="M68 112 Q100 100 132 112" stroke="#e8b923" stroke-width="4" fill="none"/><path d="M99 112 v84" stroke="#e8b923" stroke-width="3"/>`;
+    g+=`<rect x="110" y="152" width="13" height="17" rx="2" fill="#fff"/><rect x="110" y="152" width="13" height="4" fill="#1f3f8f"/><rect x="112" y="159" width="5" height="6" fill="#9aa3ab"/>`;
+    g+=`<rect x="77" y="118" width="10" height="6" rx="1.5" fill="#e8722a"/>`;
+    // charms on chest
+    ["charm1","charm2","charm3"].forEach((s,i)=>{const c=item(eq[s]);if(c)g+=`<circle cx="${82+i*9}" cy="${180}" r="5.5" fill="${RAR[c.r].col}" stroke="#1b1b1b" stroke-width=".8"/><text x="${82+i*9}" y="${182.5}" font-size="7" text-anchor="middle">${c.em}</text>`});
+    // arms
+    g+=`<path d="M70 116 Q54 140 58 186" stroke="${S.col||"#2e3d5c"}" stroke-width="17" stroke-linecap="round" fill="none"/><path d="M130 116 Q146 140 142 186" stroke="${S.col||"#2e3d5c"}" stroke-width="17" stroke-linecap="round" fill="none"/>`;
+    if(S.patch)g+=`<path d="M128 122 l10 4 l-3 10 l-10 -3z" fill="#e0463d"/>`;
+    // left hand board
+    if(B.kind){const bx=40,by=170;g+=B.kind==="tablet"?`<rect x="${bx}" y="${by}" width="26" height="34" rx="3" fill="#1b222a"/><rect x="${bx+3}" y="${by+3}" width="20" height="26" fill="#0f1214"/><path d="M${bx+5} ${by+22} l5 -6 l5 3 l6 -9" stroke="#38e070" stroke-width="2" fill="none"/>`
+      :B.kind==="card"?`<rect x="${bx+2}" y="${by+4}" width="22" height="28" rx="2" fill="#f2b705"/><rect x="${bx+5}" y="${by+8}" width="16" height="6" fill="#fff"/><rect x="${bx+5}" y="${by+18}" width="10" height="3" fill="#1b222a"/>`
+      :`<rect x="${bx}" y="${by}" width="26" height="34" rx="2" fill="${B.gold?"#f4e3b0":"#8b5a2b"}"/><rect x="${bx+3}" y="${by+5}" width="20" height="26" fill="#fff"/><rect x="${bx+8}" y="${by-2}" width="10" height="5" rx="1" fill="#9aa3ab"/>${[0,1,2,3].map(k=>`<rect x="${bx+6}" y="${by+10+k*5}" width="${k%2?10:14}" height="2" fill="#9aa3ab"/>`).join("")}`}
+    g+=`<circle cx="58" cy="188" r="7.5" fill="${hand}"/><circle cx="142" cy="188" r="7.5" fill="${hand}"/>`;
+    // right hand tool
+    if(T.kind){const tx=142,ty=188,gc=T.gold?"#e8b923":"#9aa3ab";g+=T.kind==="wrench"?`<path d="M${tx} ${ty} l18 -40" stroke="${gc}" stroke-width="6" stroke-linecap="round"/><circle cx="${tx+19}" cy="${ty-43}" r="7" fill="none" stroke="${gc}" stroke-width="4"/><rect x="${tx-4}" y="${ty-6}" width="9" height="16" rx="3" fill="#c8322b" transform="rotate(25 ${tx} ${ty})"/>`
+      :T.kind==="watch"?`<circle cx="${tx+4}" cy="${ty-14}" r="11" fill="#e9eef3" stroke="#3a4048" stroke-width="3"/><path d="M${tx+4} ${ty-14} v-7 M${tx+4} ${ty-14} l5 3" stroke="#c8322b" stroke-width="2"/><rect x="${tx+1}" y="${ty-29}" width="6" height="4" fill="#3a4048"/>`
+      :T.kind==="scanner"?`<path d="M${tx-4} ${ty-2} l6 -22 h16 l-2 10 h-8 l-4 14z" fill="#2b3138"/><rect x="${tx+8}" y="${ty-22}" width="10" height="3" fill="#ff3b2f"/>`
+      :`<path d="M${tx} ${ty} l4 -30" stroke="#f2b705" stroke-width="7" stroke-linecap="round"/><path d="M${tx+4} ${ty-30} l2 -14" stroke="#9aa3ab" stroke-width="2.5"/>`}
+    // head
+    g+=`<rect x="93" y="94" width="14" height="12" fill="${shade(sk,-.12)}"/><ellipse cx="100" cy="78" rx="21" ry="24" fill="${sk}"/><ellipse cx="79" cy="80" rx="4" ry="6" fill="${shade(sk,-.08)}"/><ellipse cx="121" cy="80" rx="4" ry="6" fill="${shade(sk,-.08)}"/>`;
+    if(body.g==="f")g+=`<path d="M80 72 q-4 30 4 40 l6 -2 q-6 -18 -2 -36z M120 72 q4 30 -4 40 l-6 -2 q6 -18 2 -36z" fill="${body.hair}"/>`;
+    g+=`<path d="M79 70 q21 -22 42 0 q-6 -6 -21 -6 q-15 0 -21 6z" fill="${body.hair}"/>`;
+    g+=`<ellipse cx="92" cy="80" rx="2.6" ry="3" fill="#22180f"/><ellipse cx="108" cy="80" rx="2.6" ry="3" fill="#22180f"/><path d="M88 73 h7 M105 73 h7" stroke="#3a2a1e" stroke-width="1.8" stroke-linecap="round"/><path d="M93 90 q7 5 14 0" stroke="#9a4637" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    if(Gs.col)g+=`<rect x="84" y="74" width="14" height="10" rx="3" fill="${Gs.col}" opacity=".55" stroke="#2a2f35" stroke-width="1.2"/><rect x="102" y="74" width="14" height="10" rx="3" fill="${Gs.col}" opacity=".55" stroke="#2a2f35" stroke-width="1.2"/><path d="M98 78 h4" stroke="#2a2f35" stroke-width="1.2"/>`;
+    // helmet / cap
+    const hc=H.col||"#1f5fd0";g+=H.kind==="cap"?`<path d="M78 66 q22 -26 44 0 z" fill="${hc}"/><path d="M98 64 h30 q-2 6 -12 6 h-18z" fill="${shade(hc,-.25)}"/><text x="98" y="60" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">LQ</text>`
+      :`<path d="M74 68 q26 -40 52 0 z" fill="${hc}"/><path d="M70 68 h60 q0 5 -6 6 h-48 q-6 -1 -6 -6z" fill="${shade(hc,-.15)}"/><path d="M100 36 v30 M88 40 q4 14 2 26 M112 40 q-4 14 -2 26" stroke="${shade(hc,.25)}" stroke-width="3" fill="none"/>${H.r==="l"?`<path d="M84 44 l6 -10 l5 8 l5 -12 l5 12 l5 -8 l6 10" stroke="#fff6c8" stroke-width="2" fill="none"/>`:""}`;
+    if(load(eq)>capacity())g+=`<text x="100" y="20" font-size="11" text-anchor="middle" fill="#ff8a7a">หนักเกินไป!</text>`;
+    return `<svg viewBox="0 0 200 300" width="${o.w||"100%"}" ${o.h?`height="${o.h}"`:""} role="img" aria-label="ตัวละครของคุณ">${g}</svg>`}
+  function icon(it,sl){if(!it)return "";const c=it.col||"#9aa3ab",sd=v=>shade(c,v),gold=it.gold||it.r==="l";let g="";const slot=sl||it.slot;
+    if(slot==="helmet")g=it.kind==="cap"?`<path d="M10 34 q22 -30 44 0z" fill="${c}"/><path d="M30 33 h26 q-2 6 -10 6 h-16z" fill="${sd(-.3)}"/>`:`<path d="M8 40 q24 -44 48 0z" fill="${c}"/><path d="M4 40 h56 q0 5 -6 6 h-44 q-6 -1 -6 -6z" fill="${sd(-.2)}"/><path d="M32 8 v30" stroke="${sd(.3)}" stroke-width="4"/>${gold?`<path d="M18 16 l5 -8 l4 6 l5 -9 l5 9 l4 -6 l5 8" stroke="#fff6c8" stroke-width="2.5" fill="none"/>`:""}`;
+    else if(slot==="shirt")g=`<path d="M14 14 l10 -6 q8 6 16 0 l10 6 l8 12 l-8 5 l-4 -5 v28 h-28 v-28 l-4 5 l-8 -5z" fill="${c}"/>${it.trim?`<path d="M32 10 v46" stroke="${it.trim}" stroke-width="2.5"/>`:""}${it.vest?`<path d="M20 18 h9 v36 h-9z M35 18 h9 v36 h-9z" fill="${it.vest}"/><path d="M20 38 h9 M35 38 h9" stroke="#e6ebef" stroke-width="3"/>`:""}${it.gold?`<path d="M24 8 q8 6 16 0" stroke="#e8b923" stroke-width="3" fill="none"/>`:""}${it.patch?`<path d="M46 16 l7 3 l-2 7 l-7 -2z" fill="#e0463d"/>`:""}`;
+    else if(slot==="pants")g=`<path d="M18 8 h28 l4 50 h-12 l-6 -36 l-6 36 h-12z" fill="${c}"/><rect x="18" y="8" width="28" height="5" fill="#1f2430"/>`;
+    else if(slot==="shoes")g=`<path d="M8 40 h22 l4 -16 h10 l2 16 q14 2 12 12 h-50z" fill="${c}"/><rect x="6" y="50" width="52" height="5" rx="2" fill="${sd(-.4)}"/>`;
+    else if(slot==="gloves")g=it.col?`<path d="M20 56 v-26 l-6 -10 q2 -4 6 -1 l6 8 v-17 q2 -4 5 0 v14 v-18 q3 -4 6 0 v18 v-15 q3 -4 6 0 v17 v-11 q3 -3 5 0 v22 q0 14 -12 14z" fill="${c}" stroke="${sd(-.3)}" stroke-width="1.5"/>`:`<text x="32" y="42" font-size="26" text-anchor="middle" opacity=".35">✋</text>`;
+    else if(slot==="glasses")g=it.col?`<rect x="6" y="22" width="22" height="16" rx="6" fill="${c}" opacity=".7" stroke="#2a2f35" stroke-width="2.5"/><rect x="36" y="22" width="22" height="16" rx="6" fill="${c}" opacity=".7" stroke="#2a2f35" stroke-width="2.5"/><path d="M28 28 h8" stroke="#2a2f35" stroke-width="2.5"/>`:`<text x="32" y="42" font-size="22" text-anchor="middle" opacity=".35">👁</text>`;
+    else if(slot==="tool"){const gc=gold?"#e8b923":"#b8c0c7";g=it.kind==="wrench"?`<path d="M14 52 l28 -30" stroke="${gc}" stroke-width="7" stroke-linecap="round"/><circle cx="45" cy="18" r="9" fill="none" stroke="${gc}" stroke-width="5"/><rect x="10" y="44" width="10" height="14" rx="3" fill="#c8322b" transform="rotate(45 15 51)"/>`:it.kind==="watch"?`<circle cx="32" cy="36" r="17" fill="#e9eef3" stroke="#3a4048" stroke-width="4"/><path d="M32 36 v-10 M32 36 l7 4" stroke="#c8322b" stroke-width="3"/><rect x="28" y="12" width="8" height="6" fill="#3a4048"/>`:it.kind==="scanner"?`<path d="M14 50 l8 -30 h26 l-3 14 h-12 l-6 16z" fill="#2b3138"/><rect x="30" y="20" width="16" height="4" fill="#ff3b2f"/>`:`<path d="M24 54 l6 -26" stroke="#f2b705" stroke-width="9" stroke-linecap="round"/><path d="M30 28 l4 -18" stroke="#b8c0c7" stroke-width="3.5"/>`}
+    else if(slot==="board")g=it.kind==="tablet"?`<rect x="14" y="8" width="36" height="48" rx="4" fill="#1b222a"/><rect x="18" y="12" width="28" height="38" fill="#0f1214"/><path d="M21 40 l7 -8 l6 4 l8 -12" stroke="#38e070" stroke-width="3" fill="none"/>`:it.kind==="card"?`<rect x="14" y="10" width="36" height="46" rx="3" fill="#f2b705"/><rect x="19" y="16" width="26" height="9" fill="#fff"/><rect x="19" y="30" width="16" height="4" fill="#1b222a"/>`:`<rect x="14" y="10" width="36" height="46" rx="3" fill="${gold?"#f4e3b0":"#8b5a2b"}"/><rect x="18" y="16" width="28" height="36" fill="#fff"/><rect x="25" y="6" width="14" height="7" rx="2" fill="#9aa3ab"/>${[0,1,2,3].map(k=>`<rect x="22" y="${22+k*7}" width="${k%2?14:20}" height="3" fill="#9aa3ab"/>`).join("")}`;
+    else return `<span class="eq-emo">${it.em||"🎖️"}</span>`;
+    return `<svg viewBox="0 0 64 64" width="78%" aria-hidden="true">${g}</svg>`}
+  function shade(hex,f){if(!hex||hex[0]!=="#")return hex;const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const t=f<0?0:255,p=Math.abs(f);r=Math.round((t-r)*p+r);g=Math.round((t-g)*p+g);b=Math.round((t-b)*p+b);return `rgb(${r},${g},${b})`}
+  // 3D colours for the player's avatar in the line view
+  function look3d(){const eq=get(),I=s=>item(eq[s])||{},p=lsGet("lq-sim-who",{});return {name:p.name||"คุณ",body:Object.assign({g:"m",skin:"#e6b993",hair:"#2b1f17"},p.body||{}),helmet:I("helmet").col,cap:I("helmet").kind==="cap",shirt:I("shirt").col,trim:I("shirt").trim,vest:I("shirt").vest,gold:!!I("shirt").gold,pants:I("pants").col,shoes:I("shoes").col,gloves:I("gloves").col,glasses:I("glasses").col}}
+  // ---------- screen ----------
+  let sel={slot:"helmet",item:null};
+  function open(){show("scrEquip");render()}
+  function render(){const eq=get(),x=ctx(),cap=capacity(x),ld=load(eq),b=bonus(),LV=window.CPSLV?CPSLV.level(x.c):null,p=lsGet("lq-sim-who",{});
+    const slot=SLOTS.find(s=>s.id===sel.slot),pool=ITEMS.filter(i=>slot.charm?i.slot==="charm":i.slot===slot.id);
+    const cur=item(sel.item)||item(eq[sel.slot])||pool[0];
+    const cell=(s)=>{const it=item(eq[s.id]);return `<button type="button" class="eq-slot ${sel.slot===s.id?"sel":""}" data-slot="${s.id}" title="${s.n}"><span class="eq-ico">${it?icon(it,s.charm?"charm":s.id):`<i class="eq-empty">${s.em}</i>`}</span>${it?`<span class="eq-rar" style="background:${RAR[it.r].col}"></span>`:""}<small>${s.n}</small></button>`};
+    $("eqBody").innerHTML=`<div class="eq">
+      <header class="eq-head"><span class="eq-crest">⚜</span><h1>Equipment</h1><span class="eq-sub">ห้องแต่งตัว · ${esc(p.name||"ผู้เล่น")}</span><button type="button" class="eq-back" id="eqBack">✕</button></header>
+      <div class="eq-grid">
+        <section class="eq-col eq-left"><div class="eq-title">${esc(slot.n)}<em>${esc(cur?cur.n:"")}</em></div>
+          <div class="eq-slots">${SLOTS.map(cell).join("")}</div>
+          <div class="eq-title" style="margin-top:12px">เลือกไอเท็ม <em>${pool.filter(i=>unlocked(i,x)).length}/${pool.length} ปลดล็อก</em></div>
+          <div class="eq-items">${(slot.charm?[{id:"__none",n:"ไม่สวม",em:"✖",r:"c"}]:[]).concat(pool).map(it=>{const ok=it.id==="__none"||unlocked(it,x),on=eq[sel.slot]===it.id||(it.id==="__none"&&!eq[sel.slot]);return `<button type="button" class="eq-it ${on?"on":""} ${ok?"":"lock"} ${cur&&cur.id===it.id?"sel":""}" data-it="${it.id}" style="--rc:${RAR[it.r].col}"><span>${it.id==="__none"?"✖":icon(it,slot.charm?"charm":slot.id)}</span>${ok?"":"<i>🔒</i>"}${on?"<b>E</b>":""}</button>`}).join("")}</div></section>
+        <section class="eq-col eq-mid">${cur&&cur.id!=="__none"?`<div class="eq-name" style="color:${RAR[cur.r].col}">${esc(cur.n)}</div>
+          <div class="eq-meta"><span>${esc(slot.n)}</span><span>${RAR[cur.r].n}</span><span>น้ำหนัก ${cur.w}</span></div>
+          <div class="eq-preview">${portrait(Object.assign({},eq,{[slot.charm?sel.slot:cur.slot]:cur.id}),{h:250})}</div>
+          <div class="eq-sec"><h3>ผลพิเศษ</h3>${Object.keys(cur.fx||{}).length?Object.entries(cur.fx).map(([k,v])=>`<div class="eq-row"><span>${FXN[k][1]}</span><b>${FXN[k][2](v)}</b></div>`).join(""):`<div class="eq-row"><span>— เพื่อความเท่ —</span><b></b></div>`}</div>
+          <div class="eq-sec"><h3>เงื่อนไขปลดล็อก</h3><div class="eq-row"><span>${esc(lockText(cur))}</span><b>${unlocked(cur,x)?"✓":"🔒"}</b></div></div>
+          ${cur.lore?`<p class="eq-lore">“${esc(cur.lore)}”</p>`:""}
+          <div class="eq-actions">${unlocked(cur,x)?(eq[sel.slot]===cur.id?`<button type="button" class="eq-btn ghost" id="eqOff" ${slot.charm||cur.slot==="gloves"||cur.slot==="glasses"?"":"disabled"}>ถอด</button>`:`<button type="button" class="eq-btn" id="eqOn">สวมใส่</button>`):`<button type="button" class="eq-btn" disabled>ยังล็อกอยู่</button>`}</div>`
+          :`<div class="eq-name">ไม่สวม</div><div class="eq-preview">${portrait(Object.assign({},eq,{[sel.slot]:null}),{h:250})}</div><div class="eq-actions"><button type="button" class="eq-btn" id="eqOff">ถอดตรานี้</button></div>`}</section>
+        <section class="eq-col eq-right"><div class="eq-title">Character Status</div>
+          <div class="eq-stat"><span>ระดับ CPS</span><b>${LV?LV.lv.em+" "+LV.lv.n:"-"}</b></div>
+          <div class="eq-stat"><span>ด่านโรงงาน</span><b>${x.stage}</b></div>
+          <div class="eq-stat"><span>คะแนนรวม</span><b>${x.c?Math.round(x.c.total||0).toLocaleString():0}</b></div>
+          <div class="eq-stat"><span>วันที่เล่น</span><b>${x.days}</b></div>
+          <div class="eq-gap"></div>
+          ${window.CPSLV?CPSLV.DIM.map(d=>`<div class="eq-stat"><span>${d.n}</span><b>${Math.round(((LV&&LV.skill.d[d.id])||0)*100)}</b></div>`).join(""):""}
+          <div class="eq-gap"></div>
+          <div class="eq-title sm">ผลจากชุดที่สวม</div>
+          ${Object.keys(FXN).filter(k=>b[k]).map(k=>`<div class="eq-stat"><span>${FXN[k][0]}</span><b class="eq-up">${typeof b[k]==="number"&&k!=="safe"&&k!=="q"?(k==="evTime"?"+":k==="cash"||k==="learn"?"+":"−")+FXN[k][2](b[k]):"+"+b[k]}</b></div>`).join("")||`<div class="eq-stat"><span>ยังไม่มีผลพิเศษ</span><b></b></div>`}
+          <div class="eq-gap"></div>
+          <div class="eq-stat"><span>น้ำหนักที่สวม</span><b class="${ld>cap?"over":""}">${ld} / ${cap}</b></div>
+          <div class="eq-load"><i style="width:${Math.min(100,ld/cap*100)}%;background:${ld>cap?"#e5484d":ld>cap*.7?"#f5b73b":"#7dffa8"}"></i></div>
+          <small class="eq-note">${ld>cap?"หนักเกินไป ผลพิเศษเหลือครึ่งเดียว":"ขีดจำกัดน้ำหนักเพิ่มตามระดับ CPS"}</small>
+          <div class="eq-title sm" style="margin-top:12px">รูปร่าง</div>
+          <div class="eq-body"><div class="seg">${[["m","ชาย"],["f","หญิง"]].map(g=>`<button type="button" data-bg="${g[0]}" aria-pressed="${(p.body||{}).g===g[0]||(!p.body&&g[0]==="m")}">${g[1]}</button>`).join("")}</div>
+            <div class="eq-skins">${["#f1cfae","#e6b993","#d6a27a","#b9805a","#8d5a3b"].map(c=>`<button type="button" data-skin="${c}" style="--s:${c}" aria-pressed="${((p.body||{}).skin||"#e6b993")===c}"></button>`).join("")}</div></div>
+        </section></div>
+      <footer class="eq-foot"><span>แตะช่องเพื่อเลือก</span><span>✓ สวมใส่</span><span>🔒 ปลดล็อกด้วยการเล่น</span></footer></div>`;
+    $("eqBack").onclick=()=>goTab("profile");
+    $("eqBody").querySelectorAll("[data-slot]").forEach(b=>b.onclick=()=>{sel={slot:b.dataset.slot,item:null};render()});
+    $("eqBody").querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const id=b.dataset.it;if(id==="__none"){sel.item=null;const e=get();e[sel.slot]=null;lsSet(KEY,e);render();return}sel.item=id;render()});
+    if($("eqOn"))$("eqOn").onclick=()=>{const e=get();if(slot.charm){["charm1","charm2","charm3"].forEach(s=>{if(e[s]===cur.id)e[s]=null})}e[sel.slot]=cur.id;lsSet(KEY,e);syncHat(e);try{if(window.PARTY)PARTY.SFX.pop()}catch(er){}render()};
+    if($("eqOff"))$("eqOff").onclick=()=>{const e=get();e[sel.slot]=slot.charm?null:sel.slot==="gloves"?"gl_none":sel.slot==="glasses"?"gs_none":e[sel.slot];lsSet(KEY,e);sel.item=null;render()};
+    $("eqBody").querySelectorAll("[data-bg]").forEach(b=>b.onclick=()=>{const q=lsGet("lq-sim-who",{});q.body=Object.assign({g:"m",skin:"#e6b993",hair:"#2b1f17"},q.body||{},{g:b.dataset.bg});lsSet("lq-sim-who",q);render()});
+    $("eqBody").querySelectorAll("[data-skin]").forEach(b=>b.onclick=()=>{const q=lsGet("lq-sim-who",{});q.body=Object.assign({g:"m",skin:"#e6b993",hair:"#2b1f17"},q.body||{},{skin:b.dataset.skin});lsSet("lq-sim-who",q);render()})}
+  function syncHat(e){const h=item(e.helmet);if(h){const q=lsGet("lq-sim-who",{});q.hat=h.col;lsSet("lq-sim-who",q)}}
+  function newUnlocks(){const x=ctx(),seen=lsGet("lq-equip-seen",[]),now=ITEMS.filter(i=>i.lock&&unlocked(i,x)).map(i=>i.id),fresh=now.filter(id=>!seen.includes(id));return {fresh:fresh.map(item),mark(){lsSet("lq-equip-seen",now)}}}
+  return {open,render,icon,portrait,bonus,look3d,get,item,ITEMS,newUnlocks,unlocked};
+})();
+window.EQUIP=EQUIP;
+
 
 // ---------- init ----------
 hud();
@@ -2925,6 +3195,7 @@ hud();
   else if(h==="#live"||/^#j\d{4}$/.test(h)||/^#host/.test(h)){show("scrLive")}
   else if(h==="#editor"){show("scrEditor")}
   else if(h==="#rank"){show("scrRank");renderRank()}
+  else if(h==="#equip"){EQUIP.open()}
   else {show("scrHome");renderHome()}
   document.querySelectorAll("#tabs button,#bnav button").forEach(b=>b.setAttribute("aria-current",b.dataset.tab===TAB_OF[SCREENS.find(s=>!$(s).hidden)]?"page":"false"))})();
 boot();
