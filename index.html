@@ -2421,6 +2421,8 @@ function groups(seq,cuts){const g=[];let cur=[];seq.forEach((id,i)=>{cur.push(id
 function transferT(i,cells,n){const prev=i===0?RACK:cells[i-1];const d=cellD(prev,cells[i]);let t=i===0?.3+.25*d:.5+.9*Math.max(0,d-1);if(i===n-1)t+=.3+.25*cellD(cells[i],SHIP);return t}
 function lineWalk(cells){let m=0;cells.forEach((c,i)=>{m+=cellD(i?cells[i-1]:RACK,c)*1.5});if(cells.length)m+=cellD(cells[cells.length-1],SHIP)*1.5;return m}
 function stationList(B,R,line,ci,up){up=up||{};const g=groups(B.seq,line.cuts),n=g.length;
+  // repair layouts saved with empty/duplicate cells (old saves): keep valid unique cells only
+  {const seen=new Set();line.cells=(line.cells||[]).filter(c=>c&&Number.isFinite(c.c)&&Number.isFinite(c.r)&&c.c>=0&&c.c<GC&&c.r>=0&&c.r<GR&&!seen.has(c.c+","+c.r)&&seen.add(c.c+","+c.r));}
   while(line.cells.length<n){const used=new Set(line.cells.map(c=>c.c+","+c.r));let p=null;for(let r of [1,0,2])for(let c=0;c<GC&&!p;c++)if(!used.has(c+","+r))p={c,r};line.cells.push(p||{c:0,r:0})}
   line.cells.length=n;
   const ciE=Math.min(1.8,(ci||0)+(up.jig?.8:0));
@@ -2836,7 +2838,7 @@ function createGame(api,career){
           <span class="label">ค · จัดคนลงสถานี</span>
           <div class="pf-assign">${workers.map(w=>`<div class="pf-w ${w.absent?"off":""}"><span><b>${esc(w.n)}</b>${w.sk<.85?' <span class="kz-tag">ใหม่</span>':""}<small>ฝีมือ ${Math.round(w.sk*100)}%${w.absent?" · ลางาน":""}</small></span><div class="seg">${S.map((x,i)=>`<button type="button" data-w="${w.id}" data-st="${i}" aria-pressed="${w.st===i}" ${w.absent?"disabled":""}>S${i+1}</button>`).join("")}<button type="button" data-w="${w.id}" data-st="-1" aria-pressed="${w.st<0}" ${w.absent?"disabled":""}>ว่าง</button></div></div>`).join("")}</div>
           <div class="actions">${opt.extra||""}<button class="btn go" id="lnOk">${opt.ok}</button></div></div>`;
-        layoutCanvas($("lyWrap"),S,selSt,(cell)=>{const k=line.cells.findIndex(c=>c.c===cell.c&&c.r===cell.r);if(k>=0&&k!==selSt){line.cells[k]=line.cells[selSt]}line.cells[selSt]=cell;selSt=Math.min(S.length-1,selSt+1);draw()});
+        layoutCanvas($("lyWrap"),S,selSt,(cell)=>{const k=line.cells.findIndex(c=>c.c===cell.c&&c.r===cell.r);if(k>=0&&k!==selSt){if(line.cells[selSt])line.cells[k]=line.cells[selSt];else line.cells.splice(k,1)}line.cells[selSt]=cell;selSt=Math.min(S.length-1,selSt+1);draw()});
         el.querySelectorAll("[data-cut]").forEach(b=>b.onclick=()=>{const i=+b.dataset.cut;if(line.cuts.has(i))line.cuts.delete(i);else if(groups(B.seq,line.cuts).length<6)line.cuts.add(i);
           const n=groups(B.seq,line.cuts).length;workers.forEach(w=>{if(w.st>=n)w.st=n-1});line.cells.length=Math.min(line.cells.length,n);draw()});
         el.querySelectorAll("[data-ss]").forEach(b=>b.onclick=()=>{selSt=+b.dataset.ss;draw()});
