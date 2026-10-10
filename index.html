@@ -699,6 +699,10 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
 .board.big .brow{padding:10px 12px;border-radius:12px;box-shadow:var(--sh)}
 .panel,.kz-board,.hudi,.pf-goal,.pf-cand,.kz-act{border-radius:14px}
 .kz-board{box-shadow:var(--sh);border-color:transparent}
+.tbl-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.tbl{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+.tbl th,.tbl td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.tbl th{font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;position:sticky;top:0;background:var(--surface)}
 
 </style>
 
@@ -1504,9 +1508,10 @@ const CLOUD=(()=>{
   function post(o){const w=who(),days=lsGet("lq-streak",{days:[]}).days.length;const row=Object.assign({ts:Date.now(),dev:dev(),emp:w.emp||"",name:w.name||"ผู้เล่น",team:w.team||"",days},o);const q=lsGet("lq-cloud-q",[]);q.push(row);lsSet("lq-cloud-q",q.slice(-200));flush()}
   function postLive(gameId,title,players){if(!enabled())return;const rows=players.map(p=>({ts:Date.now(),dev:"live",emp:p.emp||"",name:p.name,team:p.team||"",game:"live",stage:0,score:p.score,title,gid:gameId}));send(rows)}
   async function board(force){if(!enabled())return null;if(!force&&cache&&Date.now()-cacheAt<30000)return cache;try{const r=await fetch(url()+(url().includes("?")?"&":"?")+"season=current&_="+Date.now());const j=await r.json();if(j&&j.rows){cache=j;cacheAt=Date.now();return j}}catch(e){}return cache}
+  async function admin(pin,q){if(!enabled())return null;try{const r=await fetch(url()+(url().includes("?")?"&":"?")+"admin="+encodeURIComponent(pin)+"&"+(q||"")+"&_="+Date.now());return await r.json()}catch(e){return null}}
   async function test(u){try{const r=await fetch(u+"?ping=1&_="+Date.now());const j=await r.json();return !!(j&&j.ok)}catch(e){return false}}
   setTimeout(flush,2000);window.addEventListener("online",flush);
-  return {post,postLive,board,flush,enabled,test,url,setUrl(u){try{if(u)localStorage.setItem("lq-sheet-url",u);else localStorage.removeItem("lq-sheet-url")}catch(e){}cache=null}};
+  return {post,postLive,board,admin,flush,enabled,test,url,setUrl(u){try{if(u)localStorage.setItem("lq-sheet-url",u);else localStorage.removeItem("lq-sheet-url")}catch(e){}cache=null}};
 })();
 window.CLOUD=CLOUD;
 
@@ -1575,15 +1580,39 @@ function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=ls
     </div></div>
     <div class="st-kpi"><div class="hudi"><span>XP</span><b>${totalXp().toLocaleString()}</b></div><div class="hudi"><span>วันที่เล่น</span><b>${sk.days.length}</b></div><div class="hudi"><span>ด่านโรงงาน</span><b>${c?c.stage:"-"}</b></div><div class="hudi"><span>คะแนนโรงงาน</span><b>${c?Math.round(c.total||0).toLocaleString():"-"}</b></div></div>
     <h2 class="sec-h">สำหรับวิทยากร</h2>
-    <div class="actions"><button class="btn" id="pfCenter">📺 เปิดจอกลาง (ห้องเรียน)</button><button class="btn ghost" id="pfEditor">✍️ สร้างชุดคำถาม Live Quiz</button><button class="btn ghost" id="pfHow">🎬 วิดีโอวิธีเล่น</button></div>
+    <div class="actions"><button class="btn" id="pfAdmin">🔐 หลังบ้านวิทยากร (อันดับ + ประวัติ)</button><button class="btn" id="pfCenter">📺 เปิดจอกลาง (ห้องเรียน)</button><button class="btn ghost" id="pfEditor">✍️ สร้างชุดคำถาม Live Quiz</button><button class="btn ghost" id="pfHow">🎬 วิดีโอวิธีเล่น</button></div>
     <details class="bulk" style="margin-top:14px"><summary>⚙️ กระดานคะแนนกลาง (Google Sheets) · ${window.CLOUD&&CLOUD.enabled()?"เชื่อมต่อแล้ว":"ยังไม่เชื่อมต่อ"}</summary><label class="field">URL ของ Apps Script Web App<input id="pfSheet" value="${esc((window.CLOUD&&CLOUD.url())||"")}" placeholder="https://script.google.com/macros/s/…/exec"></label><div class="actions"><button class="btn small" id="pfSheetSave">บันทึกและทดสอบ</button></div><p class="note2" id="pfSheetMsg">${window.LQ_SHEET_URL?"ค่าตั้งต้นจากตัวเกม: "+esc(window.LQ_SHEET_URL):"ใส่เฉพาะตอนทดสอบ เมื่อยืนยันแล้วผมจะฝังลงในตัวเกมให้ทุกคน"}</p></details>
     <p class="note2" style="margin-top:14px">ข้อมูลโปรไฟล์เก็บในเครื่องนี้ ใช้ระบุคะแนนของคุณบนกระดานกลาง</p>`;
   const save=()=>{const q=PROF.get();q.name=$("pfName").value.trim();q.emp=$("pfEmp").value.trim();q.team=$("pfTeam").value.trim();PROF.set(q);$("pAv").innerHTML=avatarSvg(q,96)};
   ["pfName","pfEmp","pfTeam"].forEach(id=>$(id).oninput=save);
   $("profBody").querySelectorAll("[data-hat]").forEach(b=>b.onclick=()=>{const q=PROF.get();q.hat=b.dataset.hat;PROF.set(q);renderProfile()});
   $("pfSheetSave").onclick=async()=>{const u=$("pfSheet").value.trim();$("pfSheetMsg").textContent="กำลังทดสอบ…";if(!u){CLOUD.setUrl("");$("pfSheetMsg").textContent="ล้างค่าแล้ว";return}const ok=await CLOUD.test(u);if(ok){CLOUD.setUrl(u);CLOUD.flush();$("pfSheetMsg").textContent="✅ เชื่อมต่อสำเร็จ คะแนนที่ค้างในเครื่องส่งแล้ว"}else $("pfSheetMsg").textContent="❌ เชื่อมต่อไม่ได้ ตรวจว่า Deploy เป็น Web app แบบ Anyone และ URL ลงท้ายด้วย /exec"};
+  $("pfAdmin").onclick=()=>renderAdmin();
   $("pfCenter").onclick=()=>{show("scrSims");SIMHUB.open();setTimeout(()=>SIMHUB.center(),50)};
   $("pfEditor").onclick=()=>goTab("editor");$("pfHow").onclick=()=>SIMHUB.howto()}
+
+// ---------- admin back office (trainer) ----------
+async function renderAdmin(){show("scrProfile");const root=$("profBody");let pin="";try{pin=sessionStorage.getItem("lq-admin-pin")||""}catch(e){}
+  if(!(window.CLOUD&&CLOUD.enabled())){root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><button class="btn ghost small" id="adBack">← กลับ</button></div><div class="notice"><b>ยังไม่ได้เชื่อมต่อกระดานคะแนนกลาง</b><span>ตั้งค่า Google Sheets ที่แท็บ ฉัน ก่อน (ดูไฟล์ SHEETS-SETUP.md) · ระหว่างนี้ดูผล Live Quiz ที่เล่นบนเครื่องนี้ได้ที่แท็บ อันดับ</span></div>`;$("adBack").onclick=renderProfile;return}
+  if(!pin){root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><button class="btn ghost small" id="adBack">← กลับ</button></div><form id="adF" class="kz-board" style="max-width:420px"><label class="field">รหัส PIN (ตั้งไว้ในสคริปต์ ADMIN_PIN)<input id="adPin" inputmode="numeric" maxlength="8" autocomplete="off"></label><div class="actions"><button class="btn go" type="submit">เข้าหลังบ้าน →</button></div><p class="note2" id="adMsg"></p></form>`;$("adBack").onclick=renderProfile;
+    $("adF").onsubmit=async e=>{e.preventDefault();const v=$("adPin").value.trim();$("adMsg").textContent="กำลังตรวจสอบ…";const j=await CLOUD.admin(v,"list=scores&n=5");if(j&&j.ok){try{sessionStorage.setItem("lq-admin-pin",v)}catch(e){}renderAdmin()}else $("adMsg").textContent=j&&j.err==="pin"?"PIN ไม่ถูกต้อง":"เชื่อมต่อไม่ได้"};return}
+  root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><div class="tools"><button class="btn ghost small" id="adRefresh">↻ โหลดใหม่</button><a class="btn ghost small" href="${esc(CLOUD.url().replace(/\/exec.*$/,"").replace("/macros/s/","/macros/s/"))}" target="_blank" rel="noopener" hidden>Sheets</a><button class="btn ghost small" id="adOut">ออก</button></div></div><div id="adBody"><div class="notice"><b>กำลังโหลด…</b></div></div>`;
+  $("adOut").onclick=()=>{try{sessionStorage.removeItem("lq-admin-pin")}catch(e){}renderProfile()};$("adRefresh").onclick=renderAdmin;
+  const j=await CLOUD.admin(pin,"list=scores&n=2000");if(!j||!j.ok){$("adBody").innerHTML=`<div class="notice"><b>โหลดไม่สำเร็จ</b></div>`;return}
+  const seasons=j.seasons||[j.current],cur=j.current;let sel=cur,game="all";
+  const GN={career:"โรงงานของฉัน",factory:"ห้องเรียน",live:"Live Quiz"};
+  const draw=async()=>{const b=await (async()=>{try{const r=await fetch(CLOUD.url()+(CLOUD.url().includes("?")?"&":"?")+"season="+sel+"&_="+Date.now());return await r.json()}catch(e){return null}})();
+    const rows=(j.rows||[]).filter(r=>+r.season===+sel&&(game==="all"||r.game===game));
+    $("adBody").innerHTML=`<div class="tools" style="margin-bottom:10px"><label class="field">ซีซัน<select id="adS">${seasons.map(x=>`<option value="${x}" ${+x===+sel?"selected":""}>ซีซัน ${x}${+x===+cur?" (ปัจจุบัน)":""}</option>`).join("")}</select></label><label class="field">เกม<select id="adG">${[["all","ทุกเกม"],["career","โรงงานของฉัน"],["factory","ห้องเรียน"],["live","Live Quiz"]].map(x=>`<option value="${x[0]}" ${x[0]===game?"selected":""}>${x[1]}</option>`).join("")}</select></label><button class="btn small" id="adXls">⬇ Excel ซีซันนี้</button></div>
+      <h2 class="sec-h">อันดับซีซัน ${sel}${b&&b.label?" · "+esc(b.label):""}</h2>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>คะแนน</th><th>โรงงาน</th><th>ด่าน</th><th>ห้องเรียน</th><th>Live</th><th>วัน</th><th>ครั้ง</th></tr></thead><tbody>${(b&&b.rows||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td><b>${(+r.score).toLocaleString()}</b></td><td>${r.career}</td><td>${r.stage}</td><td>${r.cls}</td><td>${r.live}</td><td>${r.days}</td><td>${r.plays}</td></tr>`).join("")||`<tr><td colspan="11">ยังไม่มีข้อมูล</td></tr>`}</tbody></table></div>
+      <h2 class="sec-h">ประวัติการเล่น (${rows.length} รายการล่าสุด)</h2>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>เวลา</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>เกม</th><th>ด่าน</th><th>คะแนน</th><th>กำไร</th><th>LBE</th><th>ส่งมอบ</th><th>ผ่าน</th></tr></thead><tbody>${rows.slice(0,400).map(r=>`<tr><td>${new Date(r.ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td>${GN[r.game]||esc(r.game)}${r.title?" · "+esc(r.title):""}</td><td>${esc(r.stage)}</td><td><b>${esc(r.score)}</b></td><td>${esc(r.profit)}</td><td>${r.lbe!==""&&r.lbe!=null?r.lbe+"%":""}</td><td>${r.deliv!==""&&r.deliv!=null?r.deliv+"%":""}</td><td>${r.pass==="Y"?"✅":r.pass==="N"?"❌":""}</td></tr>`).join("")}</tbody></table></div>`;
+    $("adS").onchange=e=>{sel=+e.target.value;draw()};$("adG").onchange=e=>{game=e.target.value;draw()};
+    $("adXls").onclick=async()=>{try{const X=await loadXLSX();const wb=X.utils.book_new();X.utils.book_append_sheet(wb,X.utils.json_to_sheet((b&&b.rows||[]).map((r,i)=>({อันดับ:i+1,รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,คะแนนซีซัน:r.score,คะแนนโรงงาน:r.career,ด่านสูงสุด:r.stage,ห้องเรียน:r.cls,LiveQuiz:r.live,วันที่เล่น:r.days,จำนวนครั้ง:r.plays}))),"อันดับซีซัน "+sel);
+      X.utils.book_append_sheet(wb,X.utils.json_to_sheet((j.rows||[]).filter(r=>+r.season===+sel).map(r=>({เวลา:new Date(r.ts).toLocaleString("th-TH"),รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,เกม:GN[r.game]||r.game,ชุด:r.title||"",ด่าน:r.stage,คะแนน:r.score,กำไร:r.profit,LBE:r.lbe,ส่งมอบ:r.deliv,ผ่าน:r.pass}))),"ประวัติการเล่น");
+      X.writeFile(wb,`LeanQuest-season${sel}.xlsx`)}catch(e){alert("ดาวน์โหลดไม่สำเร็จ ต้องมีอินเทอร์เน็ตเพื่อโหลดตัวสร้าง Excel")}}};
+  draw()}
 
 // =====================================================================
 // SIM GAMES — hub, shared graphics, online leaderboard

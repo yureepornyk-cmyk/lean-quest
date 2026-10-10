@@ -6,13 +6,18 @@
 var SEASON_EPOCH = new Date(2026, 9, 12);   // วันเริ่มซีซัน 1 (12 ต.ค. 2026) — แก้ได้
 var SEASON_DAYS  = 14;                      // ความยาวซีซัน (วัน)
 var STREAK_PTS   = 50, STREAK_MAX_DAYS = 10;
+var ADMIN_PIN    = '2468';                  // รหัสเข้าหลังบ้านในเกม (แท็บ ฉัน → หลังบ้านวิทยากร) — เปลี่ยนได้
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.ping) return out_({ ok: true, v: 1 });
   var sn = p.season === 'current' || !p.season ? currentSeason_() : Number(p.season);
+  if (p.admin != null) {
+    if (String(p.admin) !== String(ADMIN_PIN)) return out_({ ok: false, err: 'pin' });
+    if (p.list === 'scores') return out_({ ok: true, rows: recentScores_(Number(p.n) || 2000), seasons: seasonsList_(), current: currentSeason_() });
+  }
   var rows = leaderboard_(sn);
-  return out_({ ok: true, season: sn, label: seasonLabel_(sn), rows: rows, updated: new Date().toISOString() });
+  return out_({ ok: true, season: sn, label: seasonLabel_(sn), rows: rows, current: currentSeason_(), updated: new Date().toISOString() });
 }
 
 function doPost(e) {
@@ -80,6 +85,17 @@ function updatePlayers_(rows) {
     if (!row) { row = sh.getLastRow() + 1; idx[emp] = row; }
     sh.getRange(row, 1, 1, 4).setValues([[emp, s_(r.name), s_(r.team), new Date()]]);
   });
+}
+
+function recentScores_(n) {
+  var sh = sheet_('scores'), last = sh.getLastRow(); if (last < 2) return [];
+  var from = Math.max(2, last - n + 1), v = sh.getRange(from, 1, last - from + 1, 16).getValues();
+  return v.map(function (r) { return { ts: new Date(r[0]).getTime(), season: r[1], emp: r[2], name: r[3], team: r[4], game: r[5], stage: r[6], score: r[7], profit: r[8], lbe: r[9], deliv: r[10], pass: r[11], days: r[12], title: r[13] }; }).reverse();
+}
+function seasonsList_() {
+  var sh = sheet_('scores'), last = sh.getLastRow(); if (last < 2) return [currentSeason_()];
+  var seen = {}; sh.getRange(2, 2, last - 1, 1).getValues().forEach(function (r) { seen[Number(r[0])] = 1; }); seen[currentSeason_()] = 1;
+  return Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
 }
 
 // ---------- helpers ----------
