@@ -16,6 +16,7 @@ function doGet(e) {
   if (p.admin != null) {
     if (String(p.admin) !== String(ADMIN_PIN)) return out_({ ok: false, err: 'pin' });
     if (p.list === 'scores') return out_({ ok: true, rows: recentScores_(Number(p.n) || 2000), seasons: seasonsList_(), current: currentSeason_() });
+    if (p.list === 'players') return out_({ ok: true, online: onlineList_(), players: playersList_(), now: Date.now() });
   }
   var rows = leaderboard_(sn);
   return out_({ ok: true, season: sn, label: seasonLabel_(sn), rows: rows, current: currentSeason_(), updated: new Date().toISOString() });
@@ -24,6 +25,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (body.hb) { online_(body.hb); return out_({ ok: true }); }
     var rows = Array.isArray(body.rows) ? body.rows : [];
     if (!rows.length) return out_({ ok: false, err: 'no rows' });
     var sh = sheet_('scores', ['เวลา', 'ซีซัน', 'รหัสพนักงาน', 'ชื่อ', 'แผนก', 'เกม', 'ด่าน/ระดับ', 'คะแนน', 'กำไร', 'LBE', 'ส่งมอบ%', 'ผ่าน', 'วันที่เล่น', 'ชุดคำถาม', 'เครื่อง', 'gid', 'ระดับ CPS', 'ทักษะ CPS %']);
@@ -97,6 +99,34 @@ function seasonsList_() {
   var sh = sheet_('scores'), last = sh.getLastRow(); if (last < 2) return [currentSeason_()];
   var seen = {}; sh.getRange(2, 2, last - 1, 1).getValues().forEach(function (r) { seen[Number(r[0])] = 1; }); seen[currentSeason_()] = 1;
   return Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
+}
+
+// ---------- presence: who is online now (heartbeat every ~90 s from each open game) ----------
+var ONLINE_TTL_MS = 3 * 60 * 1000;
+function online_(hb) {
+  var lock = LockService.getScriptLock(); try { lock.waitLock(3000); } catch (e) { return; }
+  try {
+    var c = CacheService.getScriptCache(), m = JSON.parse(c.get('online') || '{}'), now = Date.now();
+    var id = s_(hb.emp) || ('dev:' + s_(hb.dev));
+    m[id] = { emp: s_(hb.emp), name: s_(hb.name), team: s_(hb.team), screen: s_(hb.screen), stage: hb.stage == null ? '' : hb.stage, lvl: hb.lvl == null ? '' : hb.lvl, ts: now };
+    Object.keys(m).forEach(function (k) { if (now - m[k].ts > ONLINE_TTL_MS) delete m[k]; });
+    c.put('online', JSON.stringify(m), 21600);
+  } finally { lock.releaseLock(); }
+}
+function onlineList_() {
+  var m = JSON.parse(CacheService.getScriptCache().get('online') || '{}'), now = Date.now();
+  return Object.keys(m).map(function (k) { return m[k]; }).filter(function (r) { return now - r.ts <= ONLINE_TTL_MS; }).sort(function (a, b) { return b.ts - a.ts; });
+}
+function playersList_() {
+  var sh = sheet_('scores'), last = sh.getLastRow(), P = {};
+  if (last >= 2) sh.getRange(2, 1, last - 1, 18).getValues().forEach(function (r) {
+    var key = s_(r[2]) || ('n:' + s_(r[3]) + '|' + s_(r[14])); if (s_(r[5]) === 'live' && !s_(r[2])) key = 'n:' + s_(r[3]);
+    var p = P[key] || (P[key] = { emp: s_(r[2]), name: s_(r[3]), team: s_(r[4]), plays: 0, first: r[0], last: r[0], stage: 0, lvl: '', skill: '', total: 0 });
+    p.plays++; p.total += Number(r[7]) || 0; if (r[0] > p.last) p.last = r[0]; if (r[0] < p.first) p.first = r[0];
+    p.name = s_(r[3]) || p.name; p.team = s_(r[4]) || p.team;
+    if (s_(r[5]) === 'career') { p.stage = Math.max(p.stage, Number(r[6]) || 0); if (r[16]) { p.lvl = s_(r[16]); p.skill = r[17]; } }
+  });
+  return Object.keys(P).map(function (k) { var p = P[k]; p.first = new Date(p.first).getTime(); p.last = new Date(p.last).getTime(); return p; }).sort(function (a, b) { return b.last - a.last; });
 }
 
 // ---------- helpers ----------

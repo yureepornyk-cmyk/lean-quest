@@ -728,6 +728,14 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
 .cps-dims>div small{grid-column:1/-1;color:var(--muted);font-size:12px;margin-top:-4px}
 .cps-dims b{font-family:var(--f-mono);text-align:right}
 @media (max-width:480px){.cps-dims>div{grid-template-columns:110px minmax(0,1fr) 40px}}
+.ad-kpi{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.online{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.on-i{display:grid;grid-template-columns:12px minmax(0,1fr) auto;grid-template-rows:auto auto;gap:0 8px;align-items:center;background:var(--surface);border-radius:12px;padding:8px 12px;box-shadow:var(--sh);font-size:13px}
+.on-i i{grid-row:1/3;width:10px;height:10px;border-radius:50%;background:#2fbf6b;box-shadow:0 0 0 4px rgba(47,191,107,.2);animation:pulse 1.6s infinite}
+.on-i b{font-family:var(--f-display);font-size:15px}.on-i small{grid-column:2;color:var(--muted)}
+.on-i span{grid-column:3;grid-row:1;text-align:right;font-size:12px}.on-i em{grid-column:3;grid-row:2;text-align:right;font-style:normal;color:var(--muted);font-size:11px}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(47,191,107,0)}}
+.dot-on{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2fbf6b}
 /* ===== Equipment screen — dark, candle-lit RPG menu ===== */
 #scrEquip{margin:-8px -16px 0}
 .eq{--eg:#d8c79a;--eg2:#f3e7c4;--ed:#8f8366;--ebg:#14130f;color:var(--eg2);background:radial-gradient(900px 500px at 70% 0%,rgba(120,100,60,.25),transparent 60%),radial-gradient(700px 600px at 10% 100%,rgba(70,60,40,.35),transparent 60%),linear-gradient(180deg,#22201a,#121110 70%);min-height:calc(100vh - 80px);padding:16px 16px 28px;font-family:"Cormorant Garamond","Kanit",serif;position:relative}
@@ -1601,8 +1609,14 @@ const CLOUD=(()=>{
   async function board(force){if(!enabled())return null;if(!force&&cache&&Date.now()-cacheAt<30000)return cache;try{const r=await fetch(url()+(url().includes("?")?"&":"?")+"season=current&_="+Date.now());const j=await r.json();if(j&&j.rows){cache=j;cacheAt=Date.now();return j}}catch(e){}return cache}
   async function admin(pin,q){if(!enabled())return null;try{const r=await fetch(url()+(url().includes("?")?"&":"?")+"admin="+encodeURIComponent(pin)+"&"+(q||"")+"&_="+Date.now());return await r.json()}catch(e){return null}}
   async function test(u){try{const r=await fetch(u+"?ping=1&_="+Date.now());const j=await r.json();return !!(j&&j.ok)}catch(e){return false}}
-  setTimeout(flush,2000);window.addEventListener("online",flush);
-  return {post,postLive,board,admin,flush,enabled,test,url,setUrl(u){try{if(u)localStorage.setItem("lq-sheet-url",u);else localStorage.removeItem("lq-sheet-url")}catch(e){}cache=null}};
+  let hbT=null,lastHb=0;
+  function heartbeat(force){if(!enabled()||document.hidden)return;if(!force&&Date.now()-lastHb<80000)return;lastHb=Date.now();const w=who(),c=lsGet("lq-career",null);let lvl="";try{if(window.CPSLV&&c)lvl=CPSLV.level(c).lv.k}catch(e){}
+    const scr=(SCREENS||[]).find(s=>{const e=document.getElementById(s);return e&&!e.hidden})||"";const playing=document.getElementById("pWrap")?"เล่นโรงงาน":"";
+    fetch(url(),{method:"POST",body:JSON.stringify({hb:{emp:w.emp||"",name:w.name||"ผู้เล่น",team:w.team||"",dev:dev(),screen:playing||({scrHome:"หน้าแรก",scrSims:"โรงงาน",scrLive:"Live Quiz",scrRank:"อันดับ",scrProfile:"ฉัน",scrEquip:"ห้องแต่งตัว",scrEditor:"สร้างคำถาม"}[scr]||scr),stage:c?c.stage:"",lvl}})}).catch(()=>{})}
+  function startHb(){clearInterval(hbT);hbT=setInterval(()=>heartbeat(false),30000);heartbeat(true)}
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)heartbeat(true)});
+  setTimeout(()=>{flush();startHb()},2000);window.addEventListener("online",flush);
+  return {post,postLive,board,admin,heartbeat,flush,enabled,test,url,setUrl(u){try{if(u)localStorage.setItem("lq-sheet-url",u);else localStorage.removeItem("lq-sheet-url")}catch(e){}cache=null}};
 })();
 window.CLOUD=CLOUD;
 
@@ -1705,14 +1719,27 @@ async function renderAdmin(){show("scrProfile");const root=$("profBody");let pin
   if(!(window.CLOUD&&CLOUD.enabled())){root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><button class="btn ghost small" id="adBack">← กลับ</button></div><div class="notice"><b>ยังไม่ได้เชื่อมต่อกระดานคะแนนกลาง</b><span>ตั้งค่า Google Sheets ที่แท็บ ฉัน ก่อน (ดูไฟล์ SHEETS-SETUP.md) · ระหว่างนี้ดูผล Live Quiz ที่เล่นบนเครื่องนี้ได้ที่แท็บ อันดับ</span></div>`;$("adBack").onclick=renderProfile;return}
   if(!pin){root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><button class="btn ghost small" id="adBack">← กลับ</button></div><form id="adF" class="kz-board" style="max-width:420px"><label class="field">รหัส PIN (ตั้งไว้ในสคริปต์ ADMIN_PIN)<input id="adPin" inputmode="numeric" maxlength="8" autocomplete="off"></label><div class="actions"><button class="btn go" type="submit">เข้าหลังบ้าน →</button></div><p class="note2" id="adMsg"></p></form>`;$("adBack").onclick=renderProfile;
     $("adF").onsubmit=async e=>{e.preventDefault();const v=$("adPin").value.trim();$("adMsg").textContent="กำลังตรวจสอบ…";const j=await CLOUD.admin(v,"list=scores&n=5");if(j&&j.ok){try{sessionStorage.setItem("lq-admin-pin",v)}catch(e){}renderAdmin()}else $("adMsg").textContent=j&&j.err==="pin"?"PIN ไม่ถูกต้อง":"เชื่อมต่อไม่ได้"};return}
-  root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><div class="tools"><button class="btn ghost small" id="adRefresh">↻ โหลดใหม่</button><a class="btn ghost small" href="${esc(CLOUD.url().replace(/\/exec.*$/,"").replace("/macros/s/","/macros/s/"))}" target="_blank" rel="noopener" hidden>Sheets</a><button class="btn ghost small" id="adOut">ออก</button></div></div><div id="adBody"><div class="notice"><b>กำลังโหลด…</b></div></div>`;
+  root.innerHTML=`<div class="live-head"><div><span class="label">Admin</span><h1>หลังบ้านวิทยากร</h1></div><div class="tools"><div class="seg" id="adTabs"><button type="button" data-t="players" aria-pressed="true">👥 ผู้เล่น / ออนไลน์</button><button type="button" data-t="rank" aria-pressed="false">🏆 อันดับ + ประวัติ</button></div><button class="btn ghost small" id="adRefresh">↻ โหลดใหม่</button><a class="btn ghost small" href="${esc(CLOUD.url().replace(/\/exec.*$/,"").replace("/macros/s/","/macros/s/"))}" target="_blank" rel="noopener" hidden>Sheets</a><button class="btn ghost small" id="adOut">ออก</button></div></div><div id="adBody"><div id="adMain"><div class="notice"><b>กำลังโหลด…</b></div></div></div>`;
   $("adOut").onclick=()=>{try{sessionStorage.removeItem("lq-admin-pin")}catch(e){}renderProfile()};$("adRefresh").onclick=renderAdmin;
-  const j=await CLOUD.admin(pin,"list=scores&n=2000");if(!j||!j.ok){$("adBody").innerHTML=`<div class="notice"><b>โหลดไม่สำเร็จ</b></div>`;return}
-  const seasons=j.seasons||[j.current],cur=j.current;let sel=cur,game="all";
+  const j=await CLOUD.admin(pin,"list=scores&n=2000");if(!j||!j.ok){$("adMain").innerHTML=`<div class="notice"><b>โหลดไม่สำเร็จ</b></div>`;return}
+  const seasons=j.seasons||[j.current],cur=j.current;let sel=cur,game="all",tab="players",pt=null;
   const GN={career:"โรงงานของฉัน",factory:"ห้องเรียน",live:"Live Quiz"};
+  const ago=ms=>{const m=Math.round(ms/60000);return m<1?"เมื่อสักครู่":m<60?m+" นาทีที่แล้ว":m<1440?Math.round(m/60)+" ชม.ที่แล้ว":Math.round(m/1440)+" วันที่แล้ว"};
+  const LVNAME=k=>window.CPSLV&&CPSLV.LV[k]?CPSLV.LV[k].em+" "+CPSLV.LV[k].n:"";
+  const drawPlayers=async()=>{clearTimeout(pt);if(tab!=="players"||!document.getElementById("adBody"))return;const r=await CLOUD.admin(pin,"list=players");if(tab!=="players")return;
+    if(!r||!r.ok){$("adMain").innerHTML=`<div class="notice"><b>โหลดรายชื่อไม่สำเร็จ</b><span>ถ้าเพิ่งอัปเดตสคริปต์ ต้อง Deploy เวอร์ชันใหม่ก่อน</span></div>`;return}
+    const on=r.online||[],onKey=new Set(on.map(o=>o.emp||o.name)),now=r.now||Date.now(),q=($("adQ")||{}).value||"";const list=(r.players||[]).filter(p=>!q||(p.name+p.emp+p.team).toLowerCase().includes(q.toLowerCase()));
+    const teams={};(r.players||[]).forEach(p=>{const t=p.team||"-";teams[t]=(teams[t]||0)+1});
+    $("adMain").innerHTML=`<div class="ad-kpi"><div class="hudi"><span>ออนไลน์ตอนนี้</span><b style="color:var(--go)">● ${on.length}</b></div><div class="hudi"><span>ผู้เล่นทั้งหมด</span><b>${(r.players||[]).length}</b></div><div class="hudi"><span>เล่นใน 7 วัน</span><b>${(r.players||[]).filter(p=>now-p.last<7*864e5).length}</b></div><div class="hudi"><span>แผนก</span><b>${Object.keys(teams).length}</b></div></div>
+      <h2 class="sec-h">🟢 ออนไลน์ตอนนี้ <small class="note2">อัปเดตอัตโนมัติทุก 30 วินาที</small></h2>
+      <div class="online">${on.length?on.map(o=>`<div class="on-i"><i></i><b>${esc(o.name)}</b><small>${esc(o.team||"")}${o.emp?" · "+esc(o.emp):""}</small><span>${esc(o.screen||"")}${o.stage?" · ด่าน "+o.stage:""}${o.lvl!==""&&o.lvl!=null?" · "+LVNAME(+o.lvl):""}</span><em>${ago(now-o.ts)}</em></div>`).join(""):`<p class="label" style="text-transform:none;letter-spacing:0">ยังไม่มีใครออนไลน์</p>`}</div>
+      <h2 class="sec-h">👥 ผู้เล่นทั้งหมด</h2><label class="field" style="max-width:320px;margin-bottom:8px">ค้นหา ชื่อ / รหัส / แผนก<input id="adQ" value="${esc(q)}"></label>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>ระดับ CPS</th><th>ด่าน</th><th>เล่น (ครั้ง)</th><th>คะแนนสะสม</th><th>เล่นล่าสุด</th><th>เริ่มเล่น</th></tr></thead><tbody>${list.map(p=>`<tr><td>${onKey.has(p.emp||p.name)?'<span class="dot-on" title="ออนไลน์"></span>':""}</td><td>${esc(p.emp)}</td><td>${esc(p.name)}</td><td>${esc(p.team)}</td><td>${esc(p.lvl||"")}${p.skill!==""&&p.skill!=null?" · "+p.skill+"%":""}</td><td>${p.stage||""}</td><td>${p.plays}</td><td>${Math.round(p.total).toLocaleString()}</td><td>${ago(now-p.last)}</td><td>${new Date(p.first).toLocaleDateString("th-TH",{day:"numeric",month:"short"})}</td></tr>`).join("")||`<tr><td colspan="10">ยังไม่มีผู้เล่น</td></tr>`}</tbody></table></div>`;
+    if($("adQ"))$("adQ").oninput=()=>{clearTimeout(window._adq);window._adq=setTimeout(drawPlayers,300)};
+    pt=setTimeout(drawPlayers,30000)};
   const draw=async()=>{const b=await (async()=>{try{const r=await fetch(CLOUD.url()+(CLOUD.url().includes("?")?"&":"?")+"season="+sel+"&_="+Date.now());return await r.json()}catch(e){return null}})();
-    const rows=(j.rows||[]).filter(r=>+r.season===+sel&&(game==="all"||r.game===game));
-    $("adBody").innerHTML=`<div class="tools" style="margin-bottom:10px"><label class="field">ซีซัน<select id="adS">${seasons.map(x=>`<option value="${x}" ${+x===+sel?"selected":""}>ซีซัน ${x}${+x===+cur?" (ปัจจุบัน)":""}</option>`).join("")}</select></label><label class="field">เกม<select id="adG">${[["all","ทุกเกม"],["career","โรงงานของฉัน"],["factory","ห้องเรียน"],["live","Live Quiz"]].map(x=>`<option value="${x[0]}" ${x[0]===game?"selected":""}>${x[1]}</option>`).join("")}</select></label><button class="btn small" id="adXls">⬇ Excel ซีซันนี้</button></div>
+    const rows=(j.rows||[]).filter(r=>+r.season===+sel&&(game==="all"||r.game===game));if(tab!=="rank")return;
+    $("adMain").innerHTML=`<div class="tools" style="margin-bottom:10px"><label class="field">ซีซัน<select id="adS">${seasons.map(x=>`<option value="${x}" ${+x===+sel?"selected":""}>ซีซัน ${x}${+x===+cur?" (ปัจจุบัน)":""}</option>`).join("")}</select></label><label class="field">เกม<select id="adG">${[["all","ทุกเกม"],["career","โรงงานของฉัน"],["factory","ห้องเรียน"],["live","Live Quiz"]].map(x=>`<option value="${x[0]}" ${x[0]===game?"selected":""}>${x[1]}</option>`).join("")}</select></label><button class="btn small" id="adXls">⬇ Excel ซีซันนี้</button></div>
       <h2 class="sec-h">อันดับซีซัน ${sel}${b&&b.label?" · "+esc(b.label):""}</h2>
       <div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>คะแนน</th><th>โรงงาน</th><th>ด่าน</th><th>ห้องเรียน</th><th>Live</th><th>วัน</th><th>ครั้ง</th><th>ระดับ CPS</th><th>ทักษะ</th></tr></thead><tbody>${(b&&b.rows||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td><b>${(+r.score).toLocaleString()}</b></td><td>${r.career}</td><td>${r.stage}</td><td>${r.cls}</td><td>${r.live}</td><td>${r.days}</td><td>${r.plays}</td><td>${esc(r.lvl||"")}</td><td>${r.skill!==""&&r.skill!=null?r.skill+"%":""}</td></tr>`).join("")||`<tr><td colspan="13">ยังไม่มีข้อมูล</td></tr>`}</tbody></table></div>
       <h2 class="sec-h">ประวัติการเล่น (${rows.length} รายการล่าสุด)</h2>
@@ -1721,7 +1748,8 @@ async function renderAdmin(){show("scrProfile");const root=$("profBody");let pin
     $("adXls").onclick=async()=>{try{const X=await loadXLSX();const wb=X.utils.book_new();X.utils.book_append_sheet(wb,X.utils.json_to_sheet((b&&b.rows||[]).map((r,i)=>({อันดับ:i+1,รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,คะแนนซีซัน:r.score,คะแนนโรงงาน:r.career,ด่านสูงสุด:r.stage,ห้องเรียน:r.cls,LiveQuiz:r.live,วันที่เล่น:r.days,จำนวนครั้ง:r.plays,ระดับCPS:r.lvl||"",ทักษะCPS:r.skill}))),"อันดับซีซัน "+sel);
       X.utils.book_append_sheet(wb,X.utils.json_to_sheet((j.rows||[]).filter(r=>+r.season===+sel).map(r=>({เวลา:new Date(r.ts).toLocaleString("th-TH"),รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,เกม:GN[r.game]||r.game,ชุด:r.title||"",ด่าน:r.stage,คะแนน:r.score,กำไร:r.profit,LBE:r.lbe,ส่งมอบ:r.deliv,ผ่าน:r.pass}))),"ประวัติการเล่น");
       X.writeFile(wb,`LeanQuest-season${sel}.xlsx`)}catch(e){alert("ดาวน์โหลดไม่สำเร็จ ต้องมีอินเทอร์เน็ตเพื่อโหลดตัวสร้าง Excel")}}};
-  draw()}
+  $("adTabs").querySelectorAll("button").forEach(bt=>bt.onclick=()=>{tab=bt.dataset.t;$("adTabs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===bt));$("adMain").innerHTML=`<div class="notice"><b>กำลังโหลด…</b></div>`;if(tab==="players")drawPlayers();else draw()});
+  drawPlayers()}
 
 // =====================================================================
 // SIM GAMES — hub, shared graphics, online leaderboard
@@ -2733,7 +2761,7 @@ function createGame(api,career){
     let goals=Array(GOALS.length).fill(career?1:null),pool=candidates(8,used),hired=career?career.hired.slice():[],R=career&&career.B?evalBench(B):null,stdEff=career&&R?Math.min(1,IDEAL_CT/R.ct):0,acts=kupActs(lv),jiScore=career?(K.ji||0):0,step=0,st=null,loop={stop(){},pause(){}},room=null,ended=false;
     const UP=career?Object.assign({},career.up):{};const EQB=career&&window.EQUIP?EQUIP.bonus():{};if(EQB.handle)UP.eqh=EQB.handle;hired.forEach(x=>used.add(x.n));
     function cSave(extra){if(!career)return;Object.assign(career,{hired:hired.map(x=>({id:x.id,n:x.n,exp:x.exp,sk:x.sk,cap:x.cap,wage:x.wage,look:x.look})),B:{clutter:B.clutter,pos:B.pos,labels:B.labels,seq:B.seq},line:{cuts:[...line.cuts],cells:line.cells},K,up:Object.fromEntries(Object.entries(UP).filter(([k])=>k!=="eqh")),fresh:false},extra||{});lsSet(CKEY,career)}
-    function ckSave(){if(!career||!st||ended)return;const o={};Object.keys(st).forEach(k=>{if(["S","rank","_v3","flow","fx","banner","ev","evLast","goalRows","lv"].includes(k))return;o[k]=st[k]});o.workers=st.workers.map(w=>Object.assign({},w,{job:w.job?{u:w.job.u,rem:w.job.rem}:null}));career.runCk=o;career.cash=Math.round(st.cash);lsSet(CKEY,career)}
+    function ckSave(){if(!career||!st||ended||!st.started)return;const o={};Object.keys(st).forEach(k=>{if(["S","rank","_v3","flow","fx","banner","ev","evLast","goalRows","lv"].includes(k))return;o[k]=st[k]});o.workers=st.workers.map(w=>Object.assign({},w,{job:w.job?{u:w.job.u,rem:w.job.rem}:null}));career.runCk=o;career.cash=Math.round(st.cash);lsSet(CKEY,career)}
     const STEPS=["1 ตั้งเป้าหมาย","2 จ้างพนักงาน","3 ทำ 6 KUP","4 จัดไลน์","5 เดินไลน์"];
     api.root.innerHTML=`<div class="pf-steps" id="pfSteps"></div><div id="pfMain"></div>`;
     const M=()=>$("pfMain");
@@ -2825,10 +2853,10 @@ function createGame(api,career){
       for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],m={x:(a.x+b.x)/2,y:(a.y+b.y)/2},an=Math.atan2(b.y-a.y,b.x-a.x);c.fillStyle="#fff";c.beginPath();c.moveTo(m.x+Math.cos(an)*8,m.y+Math.sin(an)*8);c.lineTo(m.x+Math.cos(an+2.5)*8,m.y+Math.sin(an+2.5)*8);c.lineTo(m.x+Math.cos(an-2.5)*8,m.y+Math.sin(an-2.5)*8);c.fill()}
       S.forEach((x,i)=>{const p=XY(x.cell);G.box(c,p.x-36,p.y-18,72,40,8,i===selSt?"#f2b705":"#3c9a74");G.text(c,"S"+(i+1),p.x,p.y+2,18,i===selSt?"#1b222a":"#fff","center",700);G.text(c,x.name,p.x,p.y+34,10,"#fff","center",600)});
       cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*LW/r.width,y=(e.clientY-r.top)*LH/r.height;const cc=Math.floor((x-ox)/cs),rr=Math.floor((y-oy)/cs);if(cc<0||cc>=GC||rr<0||rr>=GR)return;onCell({c:cc,r:rr})})}
-    function lineUI(){if(!st)st=newRun();lineEditor(M(),{eyebrow:career?"ด่าน "+career.stage+" · จัดไลน์ก่อนเปิดกะ":"จัดไลน์ก่อนเปิดกะ",title:"แบ่งงาน วาง Layout และจัดคน",workers:st.workers,ok:career?"เปิดกะ 3 นาที →":"เปิดไลน์ เริ่มกะ →",onOk:S=>{if(!st.workers.some(w=>w.st>=0)){const b=$("lnOk");b.textContent="จัดคนลงสถานีก่อน ↑";return}if(career)cSave();go(4)}})}
+    function lineUI(){if(st&&st.started){st=null}if(career&&career.runCk&&!career.runCk.started)career.runCk=null;if(!st)st=newRun();lineEditor(M(),{eyebrow:career?"ด่าน "+career.stage+" · จัดไลน์ก่อนเปิดกะ":"จัดไลน์ก่อนเปิดกะ",title:"แบ่งงาน วาง Layout และจัดคน",workers:st.workers,ok:career?"เปิดกะ 3 นาที →":"เปิดไลน์ เริ่มกะ →",onOk:S=>{if(!st.workers.some(w=>w.st>=0)){const b=$("lnOk");b.textContent="จัดคนลงสถานีก่อน ↑";return}if(career)cSave();go(4)}})}
 
     // ----- 5 run -----
-    function restoreRun(){const ck=career.runCk,o=Object.assign(newRun(),ck);o.lv=lv;o.S=stationList(B,R,line,K.ci,UP);o.workers=ck.workers.map(w=>Object.assign({},w));o.fx=[];o.banner=null;o.ev=null;o.flow=[];o.rank=null;return o}
+    function restoreRun(){const ck=career.runCk,o=Object.assign(newRun(),ck);o.lv=lv;o.S=stationList(B,R,line,K.ci,UP).map(x=>Object.assign(x,{broken:false,repair:0,dev:false,devSeen:0,brSeen:0}));if(!Array.isArray(ck.buf)||ck.buf.length!==o.S.length+1){o.S=[];o.buf=[[]]}o.workers=(ck.workers||[]).map(w=>Object.assign({},w,{job:null}));o.fx=[];o.banner=null;o.ev=null;o.flow=[];o.rank=null;o.started=true;return o}
     function newRun(){const workers=hired.map(mkWorker);workers.forEach((w,i)=>{w.st=0});
       return {lv,t:0,round:0,jph:lv.jph[0],cash:career?career.cash:ECON.cash-hired.length*ECON.hire,cash0:career?career.cash:ECON.cash,workers,S:[],buf:[[]],mode:"pull",limit:3,relT:0,nextOrd:3600/lv.jph[0],orders:0,backlog:0,shipped:0,
         tested:0,firstFail:0,escaped:0,scrap:0,complaints:0,downtime:0,breaks:0,devs:0,rev:0,matCost:0,wages:0,rent:0,hires:hired.length,lbeSum:0,uid:0,fx:[],truck:0,banner:null,
@@ -2840,8 +2868,12 @@ function createGame(api,career){
       st.S=S;st.buf=S.map(()=>[]);st.buf.push(fg);
       units.forEach(u=>{const k=Math.max(0,S.findIndex(x=>u.tk>=x.start&&u.tk<x.end));u.tk=S[k].start;st.buf[k].push(u)});
       st.workers.forEach(w=>{if(w.st>=S.length)w.st=S.length-1})}
-    function runUI(){
-      const resumed=!!(career&&career.runCk);if(resumed){st=restoreRun()}
+    function runUI(){try{runUI0()}catch(e){console.error(e);const msg=String(e&&e.message||e);if(career){career.runCk=null;cSave()}
+      if(!window.LQ_NO3D){window.LQ_NO3D=1}st=null;
+      M().innerHTML=`<div class="notice"><b>เปิดกะไม่สำเร็จ</b><span>ระบบแก้ให้แล้ว กดปุ่มด้านล่างเพื่อลองใหม่ (ถ้ายังไม่ได้ ส่งภาพหน้าจอนี้ให้ผู้ดูแล)</span><code style="font-size:11px;word-break:break-all">${esc(msg)}</code><div class="actions"><button class="btn go" id="rtry">ลองเปิดกะอีกครั้ง →</button></div></div>`;
+      $("rtry").onclick=()=>{st=null;go(3)}}}
+    function runUI0(){
+      let resumed=!!(career&&career.runCk&&career.runCk.started);if(career&&career.runCk&&!resumed)career.runCk=null;if(resumed){try{st=restoreRun()}catch(e){career.runCk=null;resumed=false}}
       rebuild();window.LQ_PF=st;let ckT=0;window.LQ_TICK=(n,d)=>{window.LQ_TICKING=1;try{for(let j=0;j<n&&!ended;j++)step(d||.05)}finally{window.LQ_TICKING=0}return st.t};
       M().innerHTML=`<div class="sim-wrap" id="pWrap"></div><div id="pEditor"></div><div class="sim-hud" id="pHud"></div>
         <div class="sim-ctl"><div class="panel"><h3>Yamazumi · CT ต่อสถานี (เส้นแดง = Takt)</h3><div id="pYama"></div><p class="label" id="pLBE" style="text-transform:none;letter-spacing:0"></p><div id="pAlerts" class="pf-alerts"></div></div>
@@ -2981,8 +3013,8 @@ function createGame(api,career){
         if(window.CLOUD)CLOUD.post({game:"factory",stage:L,score:r.score,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),gok:r.gok});
         api.end(wrap,{score:r.score,stars,stats:[["เป้า SQDCPME",`${r.gok}/7`],["กำไร",baht(r.profit)],["LBE เฉลี่ย",pct(r.lbe)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["FPY",pct(st.tested?1-st.firstFail/st.tested:1)],["คะแนน",r.score.toLocaleString()]],lessons:L2})}
       sync(true);render(c,st);ovRank();
-      if(career){if(resumed){api.toast(wrap,"▶ เล่นต่อจากที่ค้างไว้");st.banner={t:"เล่นต่อจากที่ค้างไว้",s:`เหลือเวลา ${fmtT(Math.max(0,lv.dur-st.t)/SPEED)}`,life:3};loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});connectRank();return}
-        api.overlay(wrap,`<span class="label">โรงงานของฉัน · ด่าน ${career.stage}</span><h3>กะ 3 นาที · ลูกค้าต้องการ ${lv.jph[0]} ด้าม/ชม.</h3><ul><li>ผ่านด่านเมื่อส่งมอบ ≥85% และไม่ขาดทุนเกิน 500 ฿</li><li>กำไรที่ได้จะเก็บไว้อัปเกรดโรงงานในด่านถัดไป</li><li>เกมเซฟอัตโนมัติทุก 5 วินาที ปิดหน้าจอแล้วกลับมาเล่นต่อได้</li>${lv.god?"<li>🔥 มีปัญหาหน้างานให้ตัดสินใจด้วย 6 KUP</li>":""}</ul>`,[["เปิดกะ →",()=>{st.banner={t:`ด่าน ${career.stage}: ลูกค้าต้องการ ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที · 3 นาที`,life:4};loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});connectRank();ckSave()}]]);return}
+      if(career){if(resumed){api.toast(wrap,"▶ เล่นต่อจากที่ค้างไว้");st.banner={t:"เล่นต่อจากที่ค้างไว้",s:`เหลือเวลา ${fmtT(Math.max(0,lv.dur-st.t)/SPEED)}`,life:3};st.started=true;loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});connectRank();return}
+        api.overlay(wrap,`<span class="label">โรงงานของฉัน · ด่าน ${career.stage}</span><h3>กะ 3 นาที · ลูกค้าต้องการ ${lv.jph[0]} ด้าม/ชม.</h3><ul><li>ผ่านด่านเมื่อส่งมอบ ≥85% และไม่ขาดทุนเกิน 500 ฿</li><li>กำไรที่ได้จะเก็บไว้อัปเกรดโรงงานในด่านถัดไป</li><li>เกมเซฟอัตโนมัติทุก 5 วินาที ปิดหน้าจอแล้วกลับมาเล่นต่อได้</li>${lv.god?"<li>🔥 มีปัญหาหน้างานให้ตัดสินใจด้วย 6 KUP</li>":""}</ul>`,[["เปิดกะ →",()=>{st.banner={t:`ด่าน ${career.stage}: ลูกค้าต้องการ ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที · 3 นาที`,life:4};st.started=true;loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});connectRank();ckSave()}]]);return}
       api.overlay(wrap,`<span class="label">เดินไลน์ · ระดับ${LVN[L]}</span><h3>เดินไลน์จนกว่าวิทยากรจะหยุดเกม</h3>
         <ul><li>ทุก 2 นาที ลูกค้าเพิ่มออเดอร์: ${lv.jph.join(" → ")} → … ด้าม/ชม. เพิ่มขึ้นเรื่อยๆ ไม่มีเพดาน</li><li>เกมจบเมื่อวิทยากรกดหยุดที่จอกลาง แล้วสรุปผลพร้อมกันทุกคน</li>${lv.god?`<li>🔥 ระดับเทพ: ทุกรอบมีปัญหาหน้างานให้ตัดสินใจด้วยหลัก 6 KUP ภายใน 25 วินาที ถูก +150 และไลน์เร็วขึ้น 1 รอบ ผิดมีบทลงโทษจริง · 3 สีตั้งแต่ต้น เครื่องเสียและคนลาบ่อยขึ้น</li>`:""}<li>Takt สั้นลงเรื่อยๆ ต้องจ้างคนเพิ่ม แบ่งงานและย้ายคนให้ทุกแท่ง Yamazumi ต่ำกว่าเส้นแดง</li>
         <li>ไฟแดงกระพริบ = Andon แตะที่สถานีเพื่อเรียกช่างหรือยืนยันกระบวนการ</li><li>ขายได้ด้ามละ ${ECON.price} ฿ วัตถุดิบ ${ECON.mat} ฿ ค่าเช่าโรงงาน ${ECON.rent} ฿/ชม.</li><li>คะแนน = กำไร ÷ 2 + LBE × 1,000 + คะแนนเป้า SQDCPME ที่ทำได้</li></ul>`,[["เริ่มกะ →",()=>{st.banner={t:`รอบ 1: ลูกค้าต้องการ ${st.jph} ด้าม/ชม.`,s:`Takt ${(3600/st.jph).toFixed(1)} วินาที`,life:4};SIMHUB.onCtl(ctl=>{if(ctl&&ctl.stop&&!ended&&loop){ended=true;loop.stop();api.toast(wrap,"วิทยากรหยุดเกม สรุปผล");finish()}});loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});
