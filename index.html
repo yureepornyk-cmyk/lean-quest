@@ -1865,7 +1865,7 @@ const SIMHUB=(()=>{
   }
   const HOWTO="https://yureepornyk-cmyk.github.io/lean-quest/howto.mp4";
   function howto(){let o=document.getElementById("howtoOvl");if(o)o.remove();o=document.createElement("div");o.id="howtoOvl";o.className="howto-ovl";
-    o.innerHTML=`<div class="howto-box"><div class="sim-top"><div><span class="label">วิดีโอแนะนำ · 3 นาที 40 วินาที</span><h2>วิธีเล่น เปิดโรงงานประกอบปากกา</h2></div><button class="btn ghost small" id="howtoX">✕ ปิด</button></div><video controls playsinline preload="metadata" src="${HOWTO}"></video><p class="label" style="text-transform:none;letter-spacing:0">วิทยากรเปิดจอกลางและเลือกระดับ → ผู้เล่นสแกน QR → ตั้งเป้า SQDCPME → จ้างและสอนงาน → 6 KUP → จัดไลน์ → เดินไลน์จนวิทยากรกดหยุด</p></div>`;
+    o.innerHTML=`<div class="howto-box"><div class="sim-top"><div><span class="label">วิดีโอแนะนำ · 3 นาที 40 วินาที</span><h2>วิธีเล่น เปิดโรงงานประกอบปากกา</h2></div><div class="actions" style="margin:0"><a class="btn small" href="${HOWTO}" download="lean-quest-howto.mp4" target="_blank" rel="noopener">⬇ ดาวน์โหลดคลิป (5 MB)</a><button class="btn ghost small" id="howtoX">✕ ปิด</button></div></div><video controls playsinline preload="metadata" src="${HOWTO}"></video><p class="label" style="text-transform:none;letter-spacing:0">วิทยากรเปิดจอกลางและเลือกระดับ → ผู้เล่นสแกน QR → ตั้งเป้า SQDCPME → จ้างและสอนงาน → 6 KUP → จัดไลน์ → เดินไลน์จนวิทยากรกดหยุด</p></div>`;
     document.body.appendChild(o);$("howtoX").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};o.querySelector("video").play().catch(()=>{})}
   function leave(){if(cur){try{cur.stop()}catch(e){}cur=null}}
   return {open,leave,play,renderHub,center,joinRoom,onCtl,rankRows,setCode(c){WHO.fcode=c;lsSet("lq-sim-who",WHO)}};
