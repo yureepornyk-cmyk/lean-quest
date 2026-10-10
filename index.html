@@ -624,6 +624,16 @@ body.party .pod.p2 .blk{animation-delay:.3s}body.party .pod.p3 .blk{animation-de
 @keyframes pfBlink{to{background:#9b2b22}}
 .pf-ovl-2d{position:absolute;left:8px;top:8px;pointer-events:auto;background:rgba(20,24,30,.75);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:4px 8px;font-family:var(--f-mono);font-size:12px}
 .lvls button.ghost{background:var(--surface);color:var(--ink)}
+/* ---- auto plant ---- */
+.au-shops{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin:6px 0 12px}
+.au-shop{text-align:left;border:2px solid var(--line);border-top:8px solid var(--c);border-radius:12px;background:var(--surface);padding:12px;display:grid;gap:4px}
+.au-shop b{font-family:var(--f-display);font-size:20px}.au-shop span{font-size:14px}.au-shop small{color:var(--muted);font-size:12px;line-height:1.3}.au-shop em{font-style:normal;color:var(--stop);font-size:12px}
+.au-shop:disabled{opacity:.55}
+.au-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.au-map{grid-template-columns:1fr 1fr}}
+.au-cell{background:rgba(255,255,255,.08);border-top:5px solid var(--c);border-radius:10px;padding:8px;display:grid;gap:4px;color:#fff}
+.au-cell b{font-family:var(--f-display)}.au-cell span{font-size:13px;background:rgba(0,0,0,.25);border-radius:6px;padding:4px 6px;display:grid}.au-cell span em{font-style:normal;font-size:11px;opacity:.85}
+.au-cell span.req{background:rgba(255,216,77,.35)}.au-cell span.ai{opacity:.6}
 /* =============== Lean Quest shell theme (fun, mobile-first) =============== */
 :root{--bg:#eef2f8;--surface:#ffffff;--sunk:#e3e9f2;--ink:#15213a;--muted:#5b6b85;--line:#d6deea;--tape:#ffc233;--tape-ink:#15213a;--blue:#2a6df4;--blue-soft:#e3ecff;--go:#17a65a;--go-soft:#dcf5e7;--warn:#f59e0b;--warn-soft:#fff3d6;--stop:#e5484d;--stop-soft:#fde3e4;--r:16px;--sh:0 10px 30px rgba(21,33,58,.08),0 2px 6px rgba(21,33,58,.06);--f-display:"Kanit","IBM Plex Sans Thai",system-ui,sans-serif}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1524;--surface:#18203a;--sunk:#222c4a;--ink:#eef2ff;--muted:#9aa8c7;--line:#2e3a5c;--blue:#6b9cff;--blue-soft:#1d2d55;--go:#3ad07e;--go-soft:#163a2b;--warn:#f5b73b;--warn-soft:#3d3014;--stop:#ff7a7e;--stop-soft:#43222a;--sh:0 10px 30px rgba(0,0,0,.35)}}
@@ -736,6 +746,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
 .on-i span{grid-column:3;grid-row:1;text-align:right;font-size:12px}.on-i em{grid-column:3;grid-row:2;text-align:right;font-style:normal;color:var(--muted);font-size:11px}
 @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(47,191,107,0)}}
 .dot-on{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2fbf6b}
+.stage-map{background:linear-gradient(180deg,#dff1ff,#bfe3f7);border-radius:16px;padding:6px 4px;margin:4px 0 10px;box-shadow:var(--sh)}
 /* ===== Equipment screen — dark, candle-lit RPG menu ===== */
 #scrEquip{margin:-8px -16px 0}
 .eq{--eg:#d8c79a;--eg2:#f3e7c4;--ed:#8f8366;--ebg:#14130f;color:var(--eg2);background:radial-gradient(900px 500px at 70% 0%,rgba(120,100,60,.25),transparent 60%),radial-gradient(700px 600px at 10% 100%,rgba(70,60,40,.35),transparent 60%),linear-gradient(180deg,#22201a,#121110 70%);min-height:calc(100vh - 80px);padding:16px 16px 28px;font-family:"Cormorant Garamond","Kanit",serif;position:relative}
@@ -1813,14 +1824,14 @@ const SIMHUB=(()=>{
   function renderHub(){
     $("simPlay").hidden=true;$("simHub").hidden=false;
     const WHOp=Object.assign({},lsGet("lq-sim-who",{}));WHO.name=WHOp.name||"";WHO.team=WHOp.team||"";WHO.fcode=WHOp.fcode||WHO.fcode||"";
-    const order=["career","factory"],games=order.map(id=>SIMS.find(g=>g.id===id)).filter(Boolean);
+    const order=["career","auto","factory"],games=order.map(id=>SIMS.find(g=>g.id===id)).filter(Boolean);
     $("simHub").innerHTML=`<div class="sim-intro"><div><span class="label">Pen Factory · Lean + CPS 6 KUP</span><h1>โรงงานประกอบปากกา</h1><p>บริหารไลน์ผลิตจริงแบบ 3 มิติ เล่นคนเดียวแบบผ่านด่าน หรือแข่งพร้อมกันทั้งห้องเมื่อวิทยากรเปิดห้อง</p></div>
       <div class="who"><button class="btn ghost small" id="howtoBtn">🎬 วิดีโอวิธีเล่น</button><button class="btn ghost small" id="centerBtn" title="ฉายขึ้นจอให้เห็นทุกทีม">📺 จอกลาง (วิทยากร)</button></div></div>
       <div class="games">${games.map(g=>`<article class="gcard ${g.id}"><canvas width="640" height="360" data-thumb="${g.id}" aria-hidden="true"></canvas><div class="gb">
         <span class="genre">${esc(g.genre)}</span><h3>${esc(g.name)}</h3><p>${esc(g.desc)}</p>
         <div class="chips">${g.chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>
         ${g.id==="factory"?`<label class="field" style="margin-bottom:8px">รหัสห้องจากวิทยากร (4 หลัก)<input id="whoF" inputmode="numeric" maxlength="4" value="${esc(WHO.fcode||"")}" placeholder="เช่น 4127"></label>`:""}
-        <div class="lvls">${g.lvlsHtml?g.lvlsHtml():g.id==="factory"&&CTL&&CTL.L!=null?`<button type="button" class="trainer" data-g="${g.id}" data-l="${CTL.L}" ${CTL.stop?"disabled":""}>${CTL.stop?"วิทยากรหยุดเกมแล้ว รอเปิดรอบใหม่":"▶ เข้าร่วม · ระดับ"+LVN[CTL.L]+" (วิทยากรเลือก)"}<small>${starHtml(myStars(g.id,CTL.L).stars||0)}</small></button>`:g.id==="factory"?`<p class="note2" style="grid-column:1/-1">${window.LQ_STANDALONE?"ใส่รหัสห้องด้านบน แล้วปุ่มเข้าร่วมจะปรากฏเมื่อวิทยากรเปิดห้อง · หรือฝึกเองด้านล่าง":"รอวิทยากรเปิดห้อง · หรือฝึกเองด้านล่าง"}</p>`+g.levels.map((_,l)=>`<button type="button" data-g="${g.id}" data-l="${l}" class="${l===3?"god":""}">${LVN[l]}<small>${starHtml(myStars(g.id,l).stars||0)}</small></button>`).join(""):""}</div>
+        <div class="lvls">${g.lvlsHtml?g.lvlsHtml():g.id==="factory"&&CTL&&CTL.L!=null?`<button type="button" class="trainer" data-g="${g.id}" data-l="${CTL.L}" ${CTL.stop?"disabled":""}>${CTL.stop?"วิทยากรหยุดเกมแล้ว รอเปิดรอบใหม่":"▶ เข้าร่วม · ระดับ"+LVN[CTL.L]+" (วิทยากรเลือก)"}<small>${starHtml(myStars(g.id,CTL.L).stars||0)}</small></button>`:g.id==="factory"?`<p class="note2" style="grid-column:1/-1">${window.LQ_STANDALONE?"ใส่รหัสห้องด้านบน แล้วปุ่มเข้าร่วมจะปรากฏเมื่อวิทยากรเปิดห้อง · หรือฝึกเองด้านล่าง":"รอวิทยากรเปิดห้อง · หรือฝึกเองด้านล่าง"}</p>`+g.levels.map((_,l)=>`<button type="button" data-g="${g.id}" data-l="${l}" class="${l===3?"god":""}">${LVN[l]}<small>${starHtml(myStars(g.id,l).stars||0)}</small></button>`).join(""):g.levels.map((_,l)=>`<button type="button" data-g="${g.id}" data-l="${l}" class="${l===3?"god":""}">${LVN[l]}<small>${starHtml(myStars(g.id,l).stars||0)}</small></button>`).join("")}</div>
       </div></article>`).join("")}</div>`;
     $("centerBtn").onclick=center;
     $("howtoBtn").onclick=howto;
@@ -1890,10 +1901,11 @@ const SIMHUB=(()=>{
   function joinRoom(){if(ROOMP)return ROOMP;ROOMP=joinRoom0().then(r=>{if(r.onCtl)r.onCtl(applyCtl);return r}).catch(e=>{ROOMP=null;throw e});return ROOMP}
   function joinRoom0(){
     if(window.LQ_STANDALONE){const code=String(WHO.fcode||"").replace(/\D/g,"");if(code.length!==4||!window.LQ_SIMROOM)return Promise.reject("nocode");
-      return LQ_SIMROOM.join(code).then(r=>({presence:d=>r.presence(d),onRank:cb=>r.onRank(l=>cb(l.map(x=>Object.assign({},x,{me:x.id===r.id()})))),onCtl:cb=>r.onCtl(cb),leave:()=>r.leave()}))}
+      return LQ_SIMROOM.join(code).then(r=>({presence:d=>r.presence(d),onRank:cb=>r.onRank(l=>cb(l.map(x=>Object.assign({},x,{me:x.id===r.id()})))),onCtl:cb=>r.onCtl(cb),onPlant:cb=>r.onPlant(l=>cb(l.map(x=>Object.assign({},x,{me:x.id===r.id()})))),leave:()=>r.leave()}))}
     if(CAP.room&&CAP.room.join)return CAP.room.join("lean-factory").then(r=>({presence:d=>r.presence(d),
       onRank:cb=>r.onPeers(ch=>cb(rankRows(ch.peers.filter(p=>(p.presence||{}).g==="factory").map(p=>Object.assign({},p.presence,{id:p.peer,me:!!(p.sameTab||p.isMe)})))),()=>{}),
-      onCtl:cb=>r.onPeers(ch=>{const c=ch.peers.find(p=>(p.presence||{}).g==="center"&&!p.sameTab);if(c)cb({L:c.presence.L,stop:!!c.presence.stop})},()=>{}),leave:()=>r.leave()}));
+      onCtl:cb=>r.onPeers(ch=>{const c=ch.peers.find(p=>(p.presence||{}).g==="center"&&!p.sameTab);if(c)cb({L:c.presence.L,stop:!!c.presence.stop})},()=>{}),
+      onPlant:cb=>r.onPeers(ch=>cb(ch.peers.filter(p=>(p.presence||{}).g==="auto").map(p=>Object.assign({},p.presence,{id:p.peer,me:!!(p.sameTab||p.isMe)}))),()=>{}),leave:()=>r.leave()}));
     return Promise.reject("noroom")}
   // animated board: rows keep their DOM node and slide to the new rank
   function kboard(el,list,val,fmt,cls){const RH=46;el.style.height=Math.max(1,list.length)*RH+"px";el._rows=el._rows||{};const seen=new Set(),mx=Math.max(1,...list.map(r=>Math.abs(val(r))));
@@ -1917,22 +1929,28 @@ const SIMHUB=(()=>{
     const stop=()=>{alive=false;clearInterval(tick);if(room){try{room.leave()}catch(e){}}};
     $("cBack").onclick=()=>{stop();cur=null;renderHub()};$("cHow").onclick=howto;$("cFull").onclick=()=>{try{document.documentElement.requestFullscreen()}catch(e){}};
     cur={stop};
-    const onCh=ch=>{(ch.peers||[]).forEach(p=>{const pr=p.presence||{};if(pr.g==="factory"&&!p.sameTab)seen[p.peer]=Object.assign({},pr,{id:p.peer,on:true,at:Date.now()})});(ch.left||[]).forEach(p=>{if(seen[p.peer])seen[p.peer].on=false})};
+    const AUTO={};const onCh=ch=>{(ch.peers||[]).forEach(p=>{const pr=p.presence||{};if(pr.g==="factory"&&!p.sameTab)seen[p.peer]=Object.assign({},pr,{id:p.peer,on:true,at:Date.now()});if(pr.g==="auto"&&!p.sameTab)AUTO[p.peer]=Object.assign({},pr,{id:p.peer,on:true,at:Date.now()})});(ch.left||[]).forEach(p=>{if(seen[p.peer])seen[p.peer].on=false;if(AUTO[p.peer])AUTO[p.peer].on=false})};
     if(window.LQ_STANDALONE&&window.LQ_SIMROOM){LQ_SIMROOM.host(onCh).then(h=>{if(!alive){h.leave();return}room=h;const url=location.origin+location.pathname+"#f"+h.code;
         pushCtl();$("cJoin").innerHTML=`<div class="net-bar"><div><span class="label">รหัสจอกลาง</span><b class="net-code">${h.code}</b><small>ผู้เล่นสแกน QR หรือเปิด <span class="net-url">${esc(url)}</span> ใส่ชื่อ แล้วเล่น "เปิดโรงงานประกอบปากกา" เปิดหน้านี้ค้างไว้ตลอดเกม</small></div><div id="cQR" class="net-qr"></div></div>`;
         try{new QRCode($("cQR"),{text:url,width:132,height:132})}catch(e){}draw()}).catch(e=>{$("cBody").innerHTML=`<div class="notice"><b>เปิดจอกลางไม่สำเร็จ</b><span>ตรวจสอบอินเทอร์เน็ต หรือ Wi-Fi ที่บล็อกการเชื่อมต่อ (${esc(String(e))})</span></div>`})}
     else if(CAP.room&&CAP.room.join){CAP.room.join("lean-factory").then(r=>{if(!alive){r.leave();return}room=r;pushCtl();r.onPeers(ch=>{onCh(ch);draw()},()=>{})}).catch(()=>{$("cBody").innerHTML=`<div class="notice"><b>เชื่อมต่อห้องไม่ได้</b></div>`})}
     else{$("cBody").innerHTML=`<div class="notice"><b>จอกลางต้องเปิดผ่าน claude.ai โดยล็อกอิน หรือผ่านลิงก์ GitHub</b></div>`;return}
-    tick=setInterval(()=>{draw();if(room&&room.broadcast)room.broadcast({t:"rank",l:rankRows(Object.values(seen)),c:ctl()})},1200);
-    function draw(){if(!alive)return;const ps=rankRows(Object.values(seen));
+    tick=setInterval(()=>{draw();if(room&&room.broadcast)room.broadcast({t:"rank",l:rankRows(Object.values(seen)),c:ctl(),plant:Object.values(AUTO).filter(p=>p.on)})},1200);
+    function autoPanel(){const ap=Object.values(AUTO).filter(p=>p.on||p.done);if(!ap.length)return "";const SHN={weld:["Welding","#d97706"],paint:["Painting","#7c3aed"],batt:["Battery","#0d9488"],assy:["Assembly","#2563eb"]};const lead=ap.slice().sort((a,b)=>(b.t||0)-(a.t||0))[0]||{};const buf=lead.buf||{};
+      return `<section class="kb" style="background:linear-gradient(160deg,#0f3d3e,#0b2a3b)"><h3>🚗 Lean Auto Plant · โรงงานรถยนต์ร่วมใจ <small>ส่งแล้ว ${lead.ship||0}/${lead.or||0} คัน · บัฟเฟอร์ ตัวถัง ${buf.body||0} · พ่นสีแล้ว ${buf.painted||0} · แบต ${buf.pack||0}</small></h3>
+        <div class="au-map">${["weld","paint","batt","assy"].map(k=>{const ps=ap.filter(p=>p.shop===k);return `<div class="au-cell" style="--c:${SHN[k][1]}"><b>${SHN[k][0]}</b>${ps.length?ps.map(p=>`<span class="${p.req?"req":""}">${esc(p.n)}${p.tm?" · "+esc(p.tm):""}<em>${p.rate||0} /ชม.${p.down?" · 🔴เสีย":""}${p.req?" · ✋ขอความช่วยเหลือ":""}</em></span>`).join(""):`<span class="ai">AI</span>`}</div>`}).join("")}</div>
+        <div class="board" style="margin-top:8px">${ap.slice().sort((a,b)=>(b.sc||0)-(a.sc||0)).map((p,i)=>`<div class="brow"><span class="pos">${i+1}</span><span class="nm">${esc(p.n)} <small class="note2">${SHN[p.shop]?SHN[p.shop][0]:""}</small></span><span class="gain zero">LBE ${p.lbe||0}% · ช่วย ${p.helps||0}</span><span class="sc">${(p.sc||0).toLocaleString()}</span></div>`).join("")}</div></section>`}
+    function draw(){if(!alive)return;const ps=rankRows(Object.values(seen));const ap=autoPanel();
+      if(!ps.length&&ap){$("cBody").innerHTML=`<div class="kb-wrap" style="grid-template-columns:1fr">${ap}</div>`;built=false;return}
       if(!ps.length){built=false;$("cBody").innerHTML=`<div class="notice"><b>รอผู้เล่นเริ่มกะ…</b><span>ผู้เล่นเปิดแท็บเกมจำลอง ใส่ชื่อ${window.LQ_STANDALONE?" และรหัสจอกลาง":""} แล้วเล่น "เปิดโรงงานประกอบปากกา" เมื่อกดเริ่มกะ ชื่อจะขึ้นที่นี่ทันที</span></div>`;return}
       if(!built){built=true;$("cBody").innerHTML=`<div class="kb-wrap"><section class="kb main"><h3>🏆 อันดับรวม <small>กำไร ÷ 2 + LBE × 1,000 + เป้า SQDCPME</small></h3><div class="kb-list" id="kbS"></div></section>
         <section class="kb"><h3>💰 กำไรสูงสุด</h3><div class="kb-list" id="kbP"></div></section><section class="kb"><h3>⚖️ Line Balance สูงสุด <small>LBE เฉลี่ยถึงตอนนี้</small></h3><div class="kb-list" id="kbL"></div></section></div>
-        <div class="kb-foot" id="kbFoot"></div><div class="cards" id="kbCards"></div>`}
+        <div class="kb-foot" id="kbFoot"></div><div id="kbAuto"></div><div class="cards" id="kbCards"></div>`}
       kboard($("kbS"),ps,r=>r.sc,v=>Math.round(v).toLocaleString(),"c-s");
       kboard($("kbP"),ps.slice().sort((a,b)=>b.profit-a.profit),r=>r.profit,v=>(v<0?"-":"")+Math.abs(Math.round(v)).toLocaleString()+" ฿","c-p");
       kboard($("kbL"),ps.slice().sort((a,b)=>b.lbe-a.lbe||b.profit-a.profit),r=>r.lbe,v=>Math.round(v)+"%","c-l");
       const all=Object.values(seen),t=Math.max(0,...all.map(p=>p.t||0));$("kbFoot").innerHTML=`ระดับ${LVN[cL]} · ผู้เล่น ${all.length} คน · กำลังเล่น ${all.filter(p=>p.on&&!p.done).length} · จบแล้ว ${all.filter(p=>p.done).length} · เล่นมาแล้ว ${Math.floor(t/360)}:${String(Math.floor(t/6)%60).padStart(2,"0")} นาที · รอบ ${Math.floor(t/720)+1}`;
+      const apEl=$("kbAuto");if(apEl)apEl.innerHTML=ap;
       $("kbCards").innerHTML=Object.values(seen).sort((a,b)=>(b.sc||0)-(a.sc||0)).map(p=>{const mx=Math.max(p.tk*1.5,...(p.ct||[]));return `<div class="ccard ${p.on?"":"off"}"><div class="cc-h"><b>${esc(p.n||"-")}</b><span>${esc(p.tm||"")} · ${LVN[p.L]||""}</span></div>
           <div class="cc-bar"><i style="width:${((p.t||0)%720)/7.2}%"></i></div>
           <div class="cc-kpi"><span>JPH<b>${p.jph}</b></span><span>กำไร<b>${baht0(p.profit)}</b></span><span>LBE<b>${p.now}%</b></span><span>ส่งมอบ<b>${p.sh}/${p.or}</b></span><span>คน<b>${p.hired}</b></span></div>
@@ -2750,6 +2768,10 @@ function cpsRadar(sk,size){size=size||260;const n=CPS_DIM.length,cx=size/2,cy=si
   const P=CPS_DIM.map((x,i)=>pt(i,R*Math.max(.04,sk.d[x.id]||0)).join(",")).join(" ");
   return `<svg viewBox="-24 -6 ${size+48} ${size+12}" width="100%" style="max-width:${size+40}px" role="img" aria-label="ทักษะ CPS 8 ด้าน">${g}<polygon points="${P}" fill="rgba(42,109,244,.25)" stroke="#2a6df4" stroke-width="2"/>${CPS_DIM.map((x,i)=>{const [a,b]=pt(i,R*Math.max(.04,sk.d[x.id]||0));return `<circle cx="${a}" cy="${b}" r="3.5" fill="#2a6df4"/>`}).join("")}</svg>`}
 window.CPSLV={level:cpsLevel,skill:cpsSkill,radar:cpsRadar,LV:CPS_LV,DIM:CPS_DIM};
+function stageMap(c){const cur=c.stage,from=Math.max(1,cur-3),to=cur+4,N=to-from+1,W2=640,H2=150;const pts=[];for(let i=0;i<N;i++){const x=50+i*(W2-100)/(N-1),y=H2/2+Math.sin(i*1.3)*34;pts.push([x,y])}
+  const path=pts.map((p,i)=>(i?"L":"M")+p[0]+","+p[1]).join(" ");const passed=new Set((c.hist||[]).filter(h=>h.pass).map(h=>h.stage));
+  return `<div class="stage-map"><svg viewBox="0 0 ${W2} ${H2}" width="100%" role="img" aria-label="แผนที่ด่าน"><path d="${path}" stroke="#fff" stroke-width="14" fill="none" stroke-linecap="round" opacity=".9"/><path d="${path}" stroke="#ffc233" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="2 10"/>
+    ${pts.map((p,i)=>{const st=from+i,isCur=st===cur,done=st<cur||passed.has(st),lock=st>cur;const J=careerLV(st).jph[0];return `<g><circle cx="${p[0]}" cy="${p[1]}" r="${isCur?22:17}" fill="${done?"#22c55e":isCur?"#ffc233":"#cbd5e1"}" stroke="#fff" stroke-width="4"/><text x="${p[0]}" y="${p[1]+1}" text-anchor="middle" dominant-baseline="middle" font-size="${isCur?16:13}" font-weight="700" fill="${lock?"#64748b":"#1b222a"}" font-family="Kanit,sans-serif">${st}</text><text x="${p[0]}" y="${p[1]+(isCur?36:30)}" text-anchor="middle" font-size="10" fill="#5b6b85" font-family="Kanit,sans-serif">${J}/ชม.${st>=5?" 🔥":""}</text>${done?`<text x="${p[0]+12}" y="${p[1]-14}" font-size="12">⭐</text>`:""}</g>`}).join("")}</svg></div>`}
 function careerLoad(){const c=lsGet(CKEY,null);return c&&c.v===1?c:null}
 function careerLV(stage){const J=Math.round(60*Math.pow(1.22,stage-1)/10)*10;return {jph:[J,J,J,J,J],colorsFrom:stage>=3?0:99,pcFrom:stage>=4?0:99,brkFrom:stage>=2?0:99,absent:stage>=6?1:-1,absentEvery:stage>=8?2:0,goalC:[500,1000,1600],god:stage>=5,brk:stage>=7?1.5:1,dev:stage>=7?1.4:1,stage,dur:1080}}
 SIMS.push({id:"career",name:"โรงงานของฉัน · เล่นต่อเนื่อง",genre:"มือถือ · ผ่านด่าน · อัปเกรดโรงงาน",desc:"โรงงานปากกาของคุณที่เซฟอัตโนมัติ เล่นได้ทุกเมื่อ ด่านละ 3 นาที ออเดอร์ใหญ่ขึ้นทุกด่าน ใช้กำไรอัปเกรดโรงงาน แต่ทุกอัปเกรดต้องทำกิจกรรม Lean ให้ผ่านก่อน",
@@ -2777,6 +2799,7 @@ function createGame(api,career){
       M().innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">โรงงานของฉัน · ด่าน ${career.stage}</span><h3>สัญญาลูกค้าด่าน ${career.stage}: ${J} ด้าม/ชม. (Takt ${tk.toFixed(0)} วินาที) นาน 3 นาที</h3><p>${career.stage===1?"เริ่มจากจ้างพนักงาน ออกแบบโต๊ะประกอบ แล้วจัดไลน์":"ใช้กำไรอัปเกรดโรงงานก่อนเปิดกะ ทุกอัปเกรดต้องทำกิจกรรม Lean ให้ได้ 70% ขึ้นไป"} ${career.stage>=3?"· ด่านนี้มี 3 สี":""}${career.stage>=2?" · เครื่องอัดเสียได้":""}${career.stage>=5?" · มีปัญหาหน้างาน 6 KUP":""}</p></div><div class="kz-total"><span class="label">เงินสด</span><b>${baht(career.cash)}</b></div></div>
         ${(()=>{const X=cpsLevel(career);return `<div class="cps-card"><span class="cps-em">${X.lv.em}</span><div><span class="label">ระดับ CPS ของคุณ</span><b>${X.lv.n}</b><div class="cps-bar"><i style="width:${Math.round(X.prog*100)}%"></i></div><small>${X.next?"ถัดไป "+X.next.em+" "+X.next.n+": "+X.need.join(" · "):"ระดับสูงสุดแล้ว"}</small></div></div>`})()}
         <div class="st-kpi"><div class="hudi"><span>คะแนนรวม</span><b>${Math.round(career.total||0).toLocaleString()}</b></div><div class="hudi"><span>พนักงาน</span><b>${hired.length}</b></div><div class="hudi"><span>อัปเกรดแล้ว</span><b>${Object.keys(UP).length}/${UPG.length}</b></div><div class="hudi"><span>โต๊ะประกอบ</span><b>${R?R.ct.toFixed(1)+"s":"-"}</b></div></div>
+        ${stageMap(career)}
         <span class="label">อัปเกรดโรงงาน (ซื้อได้เมื่อทำกิจกรรมผ่าน)</span>
         <div class="kz-acts">${UPG.map(u=>`<div class="kz-act ${UP[u.id]?"done":""}"><div class="kz-ah"><span class="kz-tag">${u.lean}</span><span class="kz-sc" style="background:${UP[u.id]?"var(--go)":career.cash>=u.cost?"var(--ink)":"var(--muted)"}">${UP[u.id]?"ติดตั้งแล้ว":u.cost.toLocaleString()+" ฿"}</span></div><b>${u.n}</b><small>${u.eff}</small>${UP[u.id]?"":`<button type="button" class="btn small" data-up="${u.id}" ${career.cash>=u.cost?"":"disabled"}>ทำกิจกรรมและติดตั้ง</button>`}</div>`).join("")}</div>
         ${hist.length?`<span class="label">ผลด่านที่ผ่านมา</span><div class="kz-sum">${hist.map(h=>`<span class="chip-s ${h.pass?"":"off"}">ด่าน ${h.stage}: ${h.pass?"ผ่าน":"ไม่ผ่าน"} · กำไร ${baht(h.profit)} · LBE ${h.lbe}%</span>`).join("")}</div>`:""}
@@ -3032,6 +3055,217 @@ function demoState(lv){const d=newBench();CLUTTER.forEach(c=>d.clutter[c.id]=c.n
   S.forEach(x=>{x.broken=false;x.repair=0;x.dev=false});S[2].broken=true;
   return {lv,t:1500,round:2,jph:lv.jph[2],cash:ECON.cash+1240,lbeSum:0,S,workers:ws,rank:[{n:"สมชาย",profit:1240,lbe:82,me:true},{n:"ศิริพร",profit:980,lbe:76},{n:"ธนากร",profit:640,lbe:71}],buf:[[{ink:INKS[0]},{ink:INKS[1]}],[{ink:INKS[2]}],[{ink:INKS[0]},{ink:INKS[0]},{ink:INKS[1]},{ink:INKS[2]},{ink:INKS[0]}],[],[{},{}]],shipped:40,fx:[],truck:0,hourly:lv.jph.map((j,i)=>({plan:j/5,act:i<2?Math.round(j/5)-2:i===2?14:0})),goalRows:GOALS.map((g,i)=>({k:g.k,col:g.col,txt:["0","97%","88%","1.2k","82%","1.5","3"][i],ok:i!==2}))}}
 window.PENF={render,demoState,LEVELS,evalBench,idealSearch,newBench,stationList,TASKS,PARTS,CLUTTER,SLOTS};
+})();
+
+// =====================================================================
+// GAME: Lean Auto Plant — โรงงานรถยนต์ร่วมใจ (Welding → Painting → Assembly ← Battery)
+// Every player runs one shop; shops are coupled by real buffers; the plant result is shared, and shops must support each other.
+// Solo: other shops are AI that ask for help. Classroom: each shop is a real player, synced through the center-screen room.
+// =====================================================================
+(()=>{
+const W=960,H=560,SPEED=6,STAGE=1080,ROUND=216;// 3 real minutes = 18 shift minutes; demand rises 5 times
+const SH={
+  weld:{n:"Welding",th:"ตัวถัง (Body Shop)",col:"#d97706",x:60,y:70,w:300,h:200,in:null,out:"body",st:[["Underbody",150],["Side frame",170],["Roof & closures",160],["Door hang",140],["Metal finish",120]],mach:"หุ่นยนต์เชื่อม",risk:"จุดเชื่อมไม่ติด"},
+  paint:{n:"Painting",th:"พ่นสี",col:"#7c3aed",x:400,y:70,w:300,h:200,in:"body",out:"painted",st:[["E-coat",120],["Sealer",140],["Primer",150],["Top coat",180],["Inspection",110]],mach:"หุ่นยนต์พ่นสี",risk:"สีเป็นเม็ด/ไม่สม่ำเสมอ"},
+  batt:{n:"Battery",th:"แบตเตอรี่แพ็ก",col:"#0d9488",x:400,y:320,w:300,h:200,in:null,out:"pack",st:[["Cell sorting",130],["Module assembly",170],["BMS wiring",160],["Pack sealing",140],["EOL test",120]],mach:"เครื่องทดสอบ EOL",risk:"เซลล์ไม่แมตช์"},
+  assy:{n:"Assembly",th:"ประกอบขั้นสุดท้าย",col:"#2563eb",x:740,y:170,w:200,h:260,in:"painted",in2:"pack",out:"car",st:[["Trim",170],["Chassis · Marriage",180],["Doors & glass",160],["Final",150],["Test & OK",130]],mach:"ลิฟต์ Marriage",risk:"ชิ้นส่วนขาด/ใส่ผิด"}
+};
+const BUF={body:{n:"ตัวถังดิบ",cap:6},painted:{n:"ตัวถังพ่นสีแล้ว",cap:6},pack:{n:"แบตเตอรี่แพ็ก",cap:8}};
+const ORDER=["weld","paint","batt","assy"];
+const LEVELS=[{jph:[20,22,24,27,30],brk:.6,ai:1.0,goal:.85},{jph:[24,27,30,34,38],brk:1,ai:.92,goal:.85},{jph:[27,30,36,42,48],brk:1.4,ai:.85,goal:.9},{jph:[30,36,42,50,60],brk:1.8,ai:.8,goal:.9,god:true}];
+const ECON={wage:400,hire:300,car:12000,mat:4000,late:800,scrap:1500,cash:30000};
+const fmtT=s=>{s=Math.max(0,Math.floor(s));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`};
+const baht=v=>(v<0?"-":"")+Math.abs(Math.round(v)).toLocaleString()+" ฿";
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const KZ_ACTS={
+  weld:{lean:"Jidoka · Poka-yoke",title:"จุดเชื่อมไม่ติด ทำอย่างไร",kind:"choice",data:{q:"หุ่นยนต์เชื่อมพบจุดเชื่อมไม่ติดเป็นครั้งคราว ควรทำอย่างไร",opts:[{t:"ให้ตรวจที่ท้ายไลน์ แล้วซ่อมทีหลัง",s:.1,why:"ของเสียไหลต่อไปถึง Paint และ Assembly ต้องรื้อ"},{t:"ติดเซ็นเซอร์กระแสเชื่อม หยุดและแจ้งทันทีเมื่อผิดปกติ (Jidoka)",s:1,why:"ถูกต้อง: หยุดที่ต้นเหตุ ไม่ส่งของเสียต่อ"},{t:"เพิ่มคนตรวจ 2 คน",s:.3,why:"เพิ่มต้นทุน ไม่ลดการเกิด"}]},effect:s=>`ของเสียจากการเชื่อมลดลง ${Math.round(s*70)}%`},
+  paint:{lean:"SMED",title:"เปลี่ยนสีพ่นให้เร็ว",kind:"classify",data:{q:"งานตอนเปลี่ยนสีพ่น เป็นงานภายใน (ต้องหยุดพ่น) หรือภายนอก (เตรียมล่วงหน้าได้)",cats:["ภายใน (หยุดพ่น)","ภายนอก (เตรียมล่วงหน้า)"],items:[{t:"ล้างหัวพ่นสีเดิม",cat:0,why:"ทำได้เมื่อหัวพ่นว่าง"},{t:"ผสมสีใหม่ให้พร้อม",cat:1,why:"เตรียมระหว่างพ่นคันก่อน"},{t:"นำถังสีใหม่มาวางรอข้างบูธ",cat:1,why:"เตรียมล่วงหน้าได้"},{t:"เปลี่ยนท่อส่งสี",cat:0,why:"ต้องหยุดพ่น"},{t:"หาเอกสารค่าความหนาสี",cat:1,why:"ควรเตรียมไว้ก่อน"},{t:"ทดสอบพ่นแผ่นตัวอย่าง",cat:0,why:"ต้องใช้หัวพ่นจริง"}]},effect:s=>`เวลาเปลี่ยนสีลดลง ${Math.round(s*80)}%`},
+  batt:{lean:"Standardized Work · Poka-yoke",title:"กันเซลล์ไม่แมตช์",kind:"sort",data:{q:"สิ่งใดควรมีที่สถานี Cell sorting (เก็บไว้) และสิ่งใดต้องนำออก",items:[{em:"🏷️",name:"ป้ายสีแยกเกรดเซลล์ + ช่องแยก",need:true,why:"มองเห็นเกรดทันที ไม่หยิบปน"},{em:"📦",name:"เซลล์เกรดต่างกันกองรวมในลังเดียว",need:false,why:"ต้นเหตุของการแมตช์ผิด"},{em:"📋",name:"OIS ฉบับปัจจุบันที่สถานี",need:true,why:"มาตรฐานอยู่หน้างาน"},{em:"🧋",name:"แก้วน้ำบนโต๊ะเซลล์",need:false,why:"เสี่ยงลัดวงจร"},{em:"🔍",name:"เครื่องสแกนบาร์โค้ดเซลล์",need:true,why:"ยืนยันเกรดก่อนประกอบ"},{em:"📄",name:"ใบตรวจเซลล์ของสัปดาห์ก่อน",need:false,why:"เอกสารเก่า สับสน"}]},effect:s=>`แบตเตอรี่แพ็กทดสอบไม่ผ่านลดลง ${Math.round(s*70)}%`},
+  assy:{lean:"Line Balance · ECRS",title:"จัดสมดุลสถานี Marriage",kind:"classify",data:{q:"ไอเดียลดเวลาสถานี Chassis · Marriage ใช้หลักใด",cats:["E ตัดออก","C รวม","R สลับลำดับ","S ทำให้ง่าย"],items:[{t:"ยกเลิกการขันน็อตซ้ำที่ประแจทอร์คคุมแล้ว",cat:0,why:"งานเกิน (Over-processing)"},{t:"ย้ายการติดสติกเกอร์ไปทำที่ Trim ซึ่งว่างกว่า",cat:2,why:"เกลี่ยงานไปสถานีที่ว่าง"},{t:"ใช้จิ๊กยกแบตเตอรี่เข้าตำแหน่งครั้งเดียว",cat:3,why:"ทำให้ง่าย"},{t:"หยิบน็อต 8 ตัวในถาดเดียวแทนแยก 2 กล่อง",cat:1,why:"รวมการหยิบ"},{t:"ให้ชิ้นส่วนมาเป็นชุด (Kitting) ตามคัน",cat:3,why:"ไม่ต้องค้นหา"},{t:"เดินไปถามหัวหน้าทุกครั้งที่ชิ้นส่วนขาด → ใช้ Kanban",cat:0,why:"ตัดการเดินและรอ"}]},effect:s=>`เวลางานสถานีลดลง ${Math.round(s*12)}%`}
+};
+const REQK={worker:{em:"🧑‍🏭",n:"ขอยืมคน 1 คน",dur:120,desc:"ส่งคนจากสถานีที่ว่างที่สุดไปช่วย 2 นาที"},maint:{em:"🔧",n:"ขอช่างซ่อม",dur:0,desc:"ปล่อยช่างที่กำลังซ่อมของคุณให้เขาก่อน (ซ่อมของคุณช้าลง)"},material:{em:"🚜",n:"ขอรถส่งชิ้นส่วน",dur:60,desc:"ส่งรถ Forklift ของคุณไปช่วย 1 นาที (ชิ้นส่วนของคุณมาช้าลง)"}};
+
+function shopState(id,lv,ai){const s=SH[id];return {id,ai:!!ai,alloc:s.st.map(()=>1),sk:ai?.95:1,wc:s.st.map(x=>x[1]),down:0,needTech:false,tech:false,repairT:0,defect:0,changeT:0,req:null,reqT:0,loan:0,loanT:0,lent:0,lentT:0,forkOut:0,matShort:0,cur:0,progress:0,made:0,scrap:0,helps:0,helped:0,lbeSum:0,busy:0,kz:{},cash:ECON.cash,hired:5,wages:0,notes:[]}}
+function shopCT(sh){const cts=sh.wc.map((w,i)=>{const a=sh.alloc[i]+(i===0?sh.loan:0)-(i===sh.lentFrom?sh.lent:0);return a>0?w/(a*sh.sk):Infinity});return {cts,max:Math.max(...cts)}}
+function shopLBE(sh){const {cts,max}=shopCT(sh);const n=sh.alloc.reduce((a,b)=>a+b,0)+sh.loan-sh.lent;return isFinite(max)&&n?Math.min(1,sh.wc.reduce((a,b)=>a+b,0)/(n*max)):0}
+
+function newPlant(lv,myShop){const P={lv,t:0,round:0,jph:lv.jph[0],shops:{},buf:{body:2,painted:2,pack:3},ship:0,orders:0,backlog:0,nextOrd:3600/lv.jph[0],techFree:2,fork:true,fx:[],banner:null,log:[],my:myShop,score:0,plantQ:0,plantScrap:0,remote:{},helpsGiven:0,helpsGot:0,missedReq:0,ev:null};
+  ORDER.forEach(id=>P.shops[id]=shopState(id,lv,id!==myShop));return P}
+
+// ---------- drawing: cheerful isometric cartoon plant ----------
+const ISO={ox:456,oy:84,tw:30,th:15};
+const iso=(gx,gy,z)=>({x:ISO.ox+(gx-gy)*ISO.tw,y:ISO.oy+(gx+gy)*ISO.th-(z||0)});
+const SHOPG={weld:{gx:0,gy:1,w:6,d:4,col:"#f59e0b",wall:"#fde68a"},paint:{gx:7,gy:1,w:6,d:4,col:"#8b5cf6",wall:"#ddd6fe"},batt:{gx:7,gy:7.6,w:6,d:4,col:"#14b8a6",wall:"#99f6e4"},assy:{gx:14.6,gy:3.6,w:5,d:6,col:"#3b82f6",wall:"#bfdbfe"}};
+function isoTile(c,gx,gy,w,d,fill,stroke){const p=[iso(gx,gy),iso(gx+w,gy),iso(gx+w,gy+d),iso(gx,gy+d)];c.beginPath();p.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=1.5;c.stroke()}}
+function isoBox(c,gx,gy,w,d,h,col,top){const t=iso(gx,gy,h),r=iso(gx+w,gy,h),bt=iso(gx+w,gy+d,h),l=iso(gx,gy+d,h);
+  const r0=iso(gx+w,gy),b0=iso(gx+w,gy+d),l0=iso(gx,gy+d);
+  c.fillStyle=G.shade(col,-.22);c.beginPath();c.moveTo(l.x,l.y);c.lineTo(bt.x,bt.y);c.lineTo(b0.x,b0.y);c.lineTo(l0.x,l0.y);c.closePath();c.fill();
+  c.fillStyle=G.shade(col,-.38);c.beginPath();c.moveTo(bt.x,bt.y);c.lineTo(r.x,r.y);c.lineTo(r0.x,r0.y);c.lineTo(b0.x,b0.y);c.closePath();c.fill();
+  c.fillStyle=top||G.shade(col,.18);c.beginPath();c.moveTo(t.x,t.y);c.lineTo(r.x,r.y);c.lineTo(bt.x,bt.y);c.lineTo(l.x,l.y);c.closePath();c.fill();
+  c.strokeStyle="rgba(0,0,0,.12)";c.lineWidth=1;c.stroke()}
+function isoCar(c,gx,gy,z,col,painted,s){s=s||1;const p=iso(gx,gy,z);const w=34*s,h=12*s;G.shadow(c,p.x,p.y+6*s,w*.55,5*s,.25);
+  c.fillStyle=painted?G.shade(col,-.25):"#8d969e";c.beginPath();c.moveTo(p.x-w/2,p.y+2);c.lineTo(p.x+w*.1,p.y+h);c.lineTo(p.x+w/2,p.y+h-7*s);c.lineTo(p.x+w*.1-6*s,p.y-6*s);c.closePath();c.fill();
+  c.fillStyle=painted?col:"#aeb6bd";c.beginPath();c.moveTo(p.x-w/2,p.y-2*s);c.lineTo(p.x-w*.3,p.y-12*s);c.lineTo(p.x+w*.3,p.y-12*s);c.lineTo(p.x+w/2,p.y-2*s);c.lineTo(p.x+w*.1,p.y+6*s);c.lineTo(p.x-w*.4,p.y+2*s);c.closePath();c.fill();
+  c.fillStyle=painted?"#dbeafe":"rgba(40,46,52,.55)";c.beginPath();c.moveTo(p.x-w*.22,p.y-10*s);c.lineTo(p.x+w*.22,p.y-10*s);c.lineTo(p.x+w*.3,p.y-4*s);c.lineTo(p.x-w*.3,p.y-4*s);c.closePath();c.fill();
+  c.fillStyle="#1f2430";[[-w*.3,p.y+4*s],[w*.12,p.y+9*s]].forEach(q=>{c.beginPath();c.ellipse(p.x+q[0],q[1],5*s,3*s,0,0,7);c.fill()})}
+function isoPack(c,gx,gy,z,s){s=s||1;const p=iso(gx,gy,z);G.shadow(c,p.x,p.y+5,14*s,4*s,.25);c.fillStyle="#0f766e";G.rr(c,p.x-14*s,p.y-6*s,28*s,12*s,3*s);c.fill();c.fillStyle="#5eead4";for(let k=0;k<4;k++)c.fillRect(p.x-11*s+k*7*s,p.y-3*s,5*s,6*s);c.fillStyle="#facc15";c.fillRect(p.x-3*s,p.y-10*s,6*s,4*s)}
+function chibi(c,x,y,s,shirt,hat){G.shadow(c,x,y+2,7*s,3*s,.3);c.fillStyle=shirt||"#2e3d5c";G.rr(c,x-6*s,y-14*s,12*s,13*s,4*s);c.fill();c.fillStyle="#c8322b";c.fillRect(x-.6*s,y-13*s,1.2*s,10*s);
+  c.fillStyle="#f1cfae";c.beginPath();c.arc(x,y-20*s,7*s,0,7);c.fill();c.fillStyle="#22180f";c.fillRect(x-2.6*s,y-21*s,1.6*s,1.6*s);c.fillRect(x+1*s,y-21*s,1.6*s,1.6*s);
+  c.fillStyle=hat||"#1f5fd0";c.beginPath();c.arc(x,y-22*s,7.4*s,Math.PI,0);c.fill();c.fillRect(x-8.4*s,y-22.5*s,16.8*s,2*s)}
+function robotIso(c,x,y,s,col,on,t){const a=on?Math.sin(t*7)*.45:0;c.fillStyle="#3a4048";G.rr(c,x-7*s,y-5*s,14*s,8*s,2*s);c.fill();c.strokeStyle=col;c.lineWidth=5*s;c.lineCap="round";c.beginPath();c.moveTo(x,y-3*s);c.lineTo(x+Math.cos(-1.3+a)*22*s,y-3*s+Math.sin(-1.3+a)*22*s);c.lineTo(x+Math.cos(-1.3+a)*22*s+Math.cos(.2-a)*16*s,y-3*s+Math.sin(-1.3+a)*22*s+Math.sin(.2-a)*16*s);c.stroke();c.lineCap="butt";
+  if(on){const ex=x+Math.cos(-1.3+a)*22*s+Math.cos(.2-a)*16*s,ey=y-3*s+Math.sin(-1.3+a)*22*s+Math.sin(.2-a)*16*s;G.light(c,ex,ey,12*s,"rgb(255,230,120)",.9);c.fillStyle="#fff";for(let k=0;k<3;k++)c.fillRect(ex+(Math.random()-.5)*14*s,ey+(Math.random()-.5)*14*s,2,2)}}
+function bubble(c,x,y,text,bg,fg){c.font=`700 13px "Kanit","IBM Plex Sans Thai",system-ui,sans-serif`;const w=c.measureText(text).width+20,h=26;c.fillStyle=bg;G.rr(c,x-w/2,y-h-8,w,h,13);c.fill();c.beginPath();c.moveTo(x-6,y-8);c.lineTo(x+6,y-8);c.lineTo(x,y-1);c.closePath();c.fill();c.fillStyle=fg||"#1b222a";c.textAlign="center";c.textBaseline="middle";c.fillText(text,x,y-h/2-8)}
+function render(c,P,sc,t){sc=sc||1;c.save();c.scale(sc,sc);
+  let g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,"#dff1ff");g.addColorStop(1,"#bfe3f7");c.fillStyle=g;c.fillRect(0,0,W,H);
+  // ground tiles
+  for(let gx=-3;gx<22;gx++)for(let gy=-2;gy<13;gy++){isoTile(c,gx,gy,1,1,(gx+gy)%2?"#cfd9e3":"#d9e2ea")}
+  // roads (yellow iso strips) between shops
+  [[6,2.5,1,1],[13,2.5,1.6,2],[13,9.2,1.6,1],[19.6,6,1.5,1]].forEach(r=>{isoTile(c,r[0],r[1],r[2],r[3],"#f6d34f")});
+  // trees/decor
+  const tree=(gx,gy)=>{const p=iso(gx,gy);G.shadow(c,p.x,p.y+2,10,4,.25);c.fillStyle="#8b5a2b";c.fillRect(p.x-2,p.y-10,4,10);c.fillStyle="#34c759";c.beginPath();c.arc(p.x,p.y-16,10,0,7);c.fill();c.fillStyle="#22a447";c.beginPath();c.arc(p.x-4,p.y-12,6,0,7);c.fill()};
+  [[-1,0],[-1,6],[6,0],[13,0],[20,1],[5,11],[12,12],[20,10]].forEach(q=>tree(q[0],q[1]));
+  const tk=3600/P.jph;
+  // shops (draw back-to-front by gy)
+  const ids=ORDER.slice().sort((a,b)=>(SHOPG[a].gy+SHOPG[a].gx)-(SHOPG[b].gy+SHOPG[b].gx));
+  ids.forEach(id=>{const s=SH[id],gsh=SHOPG[id],sh=P.shops[id],mine=id===P.my,rem=P.remote[id];
+    // floor slab + low walls
+    isoBox(c,gsh.gx,gsh.gy,gsh.w,gsh.d,6,mine?"#ffffff":"#eef2f6","#f8fafc");
+    isoBox(c,gsh.gx,gsh.gy,gsh.w,.3,18,gsh.col,gsh.wall);isoBox(c,gsh.gx,gsh.gy,.3,gsh.d,18,gsh.col,gsh.wall);
+    // roof sign
+    const tp=iso(gsh.gx+gsh.w*.62,gsh.gy-.2,46);G.pill(c,`${s.n} · ${s.th}`,tp.x,tp.y,gsh.col,"#fff");
+    const who=rem?rem.n:sh.ai?"AI":"คุณ";G.pill(c,mine?"คุณคุม":who,tp.x,tp.y+22,mine?"#ffd84d":rem?"#2fbf6b":"rgba(0,0,0,.4)",mine?"#1b222a":"#fff");
+    // stations along the slab
+    const n=s.st.length,{cts}=shopCT(sh);
+    for(let i=0;i<n;i++){const gx=gsh.gx+.8+i*((gsh.w-1.6)/(n-1)),gy=gsh.gy+gsh.d*.55;const busy=sh.progress>0&&sh.down<=0&&Math.floor(sh.progress*n)%n===i;const p=iso(gx,gy,6);
+      if(id==="weld"){isoCar(c,gx,gy,6,"#9aa3ab",false,.6);robotIso(c,p.x-9,p.y-12,.7,"#f59e0b",busy,t)}
+      else if(id==="paint"){isoBox(c,gx-.45,gy-.55,.9,.9,16,"#c4b5fd","rgba(196,181,253,.5)");isoCar(c,gx,gy,8,i>=3?"#2f6fd0":"#dfe3e6",i>=3,.6);if(busy){c.fillStyle="rgba(99,102,241,.55)";for(let k=0;k<6;k++)c.fillRect(p.x-12+k*4,p.y-24+Math.sin(t*9+k)*3,3,3)}}
+      else if(id==="batt"){isoPack(c,gx,gy,8,.7);if(i===4){isoBox(c,gx-.4,gy-.8,.8,.5,14,"#1f2937");c.fillStyle=busy?"#4ade80":"#6b7280";c.fillRect(p.x-8,p.y-24,16,5)}}
+      else{isoCar(c,gx,gy,6,"#2f6fd0",true,.65);if(i===1)isoPack(c,gx,gy,4,.45)}
+      const a=sh.alloc[i]+(i===0?sh.loan:0);for(let k=0;k<Math.min(3,a);k++){const q=iso(gx-.1+k*.3,gy+1.0,6);chibi(c,q.x,q.y,.62,mine?"#2e3d5c":"#475569",mine?"#1f5fd0":"#f2b705")}
+      const over=isFinite(cts[i])&&cts[i]>tk;const q2=iso(gx,gy+1.3,6);c.fillStyle=over?"#ef4444":"#22c55e";G.rr(c,q2.x-12,q2.y-2,24,4,2);c.fill()}
+    // status
+    const bp=iso(gsh.gx+gsh.w*.25,gsh.gy+gsh.d*.5,62);
+    const state=sh.down>0?(sh.tech?"🔧 กำลังซ่อม "+Math.ceil(sh.repairT/60)+" น.":"🔴 "+s.mach+"เสีย รอช่าง"):sh.changeT>0?"🎨 เปลี่ยนสี":sh.matShort>0?"📦 ชิ้นส่วนขาด":sh.starved?"⏳ รอชิ้นงาน":sh.blocked?"⛔ ถูกบล็อก":"";
+    if(state)bubble(c,bp.x,bp.y,state,sh.down>0?"#fecaca":"#fef3c7");
+    if(sh.req){const r=REQK[sh.req];bubble(c,bp.x,bp.y-(state?34:0),`${r.em} ${r.n}!`,"#ffd84d")}
+    const cp=iso(gsh.gx+gsh.w*.5,gsh.gy+gsh.d+.3,0);const {max}=shopCT(sh);G.pill(c,`CT ${isFinite(max)?Math.round(max):"-"}s / Takt ${Math.round(tk)}s`,cp.x,cp.y+10,isFinite(max)&&max<=tk?"rgba(29,145,82,.92)":"rgba(207,58,46,.92)");
+    if(sh.loan>0)G.pill(c,`+1 ยืม ${Math.ceil(sh.loanT/SPEED)}s`,cp.x-90,cp.y+10,"#2fbf6b");if(sh.lentT>0)G.pill(c,"−1 ให้ยืม",cp.x-90,cp.y+10,"#c98f00","#1b222a")});
+  // buffers as stacks on the roads
+  const bufDraw=(gx,gy,key,kind)=>{const b=BUF[key],v=Math.floor(P.buf[key]);for(let k=0;k<Math.min(b.cap,v);k++){if(kind==="pack")isoPack(c,gx+k*.18,gy,k*3,.7);else isoCar(c,gx+k*.2,gy,k*2,"#2f6fd0",kind==="painted",.6)}const p=iso(gx+.5,gy,40);G.pill(c,`${b.n} ${v}/${b.cap}`,p.x,p.y,v<=0?"#cf3a2e":v>=b.cap?"#c98f00":"rgba(0,0,0,.6)")};
+  bufDraw(6,2.6,"body","body");bufDraw(13,2.9,"painted","painted");bufDraw(13,9.4,"pack","pack");
+  // shipping yard
+  const sp=iso(19.5,6.5,0);G.pill(c,`🚚 ส่งลูกค้า ${P.ship} คัน · รอ ${P.backlog}`,sp.x,sp.y-46,P.backlog>2?"#cf3a2e":"#1f3f8f");for(let k=0;k<Math.min(5,P.ship);k++)isoCar(c,19.3+k*.22,6.3+k*.1,0,["#c7392d","#2f6fd0","#e8e8e3"][k%3],true,.65);
+  // shared resources + demand
+  G.pill(c,`🔧 ช่างว่าง ${P.techFree}/2`,110,536,P.techFree?"rgba(0,0,0,.65)":"#cf3a2e");G.pill(c,P.fork?"🚜 Forklift ว่าง":"🚜 Forklift กำลังส่ง",262,536,"rgba(0,0,0,.65)");
+  G.pill(c,`ลูกค้าต้องการ ${P.jph} คัน/ชม. · Takt ${Math.round(3600/P.jph)}s · รอบ ${P.round+1}/5`,600,536,"#1f3f8f");
+  P.fx.forEach(f=>G.text(c,f.t,f.x,f.y,15,f.col));
+  if(P.banner&&P.banner.life>0){c.globalAlpha=Math.min(1,P.banner.life);c.fillStyle="rgba(15,18,22,.8)";G.rr(c,230,230,500,80,14);c.fill();G.text(c,P.banner.t,480,258,22,"#ffd84d","center",700);G.text(c,P.banner.s,480,288,14,"#fff","center",500);c.globalAlpha=1}
+  c.restore()}
+SIMS.push({id:"auto",name:"Lean Auto Plant · โรงงานรถยนต์ร่วมใจ",genre:"4 ช็อป · เล่นร่วมกันทั้งโรงงาน",desc:"Welding → Painting → Assembly ← Battery แต่ละคนคุมช็อปของตัวเอง ช็อปเชื่อมกันด้วยบัฟเฟอร์จริง ผลของโรงงานคือจำนวนรถที่ส่งลูกค้า ต้องช่วยเหลือกันถึงจะชนะ",
+  chips:["Welding","Painting","Assembly","Battery","บัฟเฟอร์ / Pull","ช่วยเหลือกัน","LBE","Jidoka · SMED"],levels:LEVELS,
+  thumb(c,w,h){const P=newPlant(LEVELS[1],"paint");P.buf={body:4,painted:2,pack:5};P.ship=7;P.shops.weld.req="maint";P.shops.weld.down=100;P.shops.batt.loan=1;P.shops.batt.loanT=300;render(c,P,w/W,1.3)},
+  create(api){
+    const lv=api.lv,L=api.level,WHO0=lsGet("lq-sim-who",{});let P=null,loop={stop(){},pause(){}},room=null,ended=false,my=null,taken={};
+    api.root.innerHTML=`<div id="auPick"></div><div id="auKz"></div><div class="sim-wrap" id="auWrap" hidden></div><div class="sim-hud" id="auHud"></div><div class="sim-ctl" id="auCtl" hidden><div class="panel"><h3 id="auT1">Yamazumi · ช็อปของคุณ</h3><div id="auYama"></div><p class="label" id="auLBE" style="text-transform:none;letter-spacing:0"></p><div id="auReq" class="pf-alerts"></div></div><div class="panel"><h3>ทีมงานและทรัพยากร</h3><div id="auTeam"></div><h3>คำขอจากช็อปอื่น</h3><div id="auHelp" class="pf-alerts"></div><h3>ขอความช่วยเหลือ</h3><div id="auAsk"></div></div></div>`;
+    // ---- shop pick ----
+    function pickUI(){const el=$("auPick");el.innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">Lean Auto Plant · ระดับ${LVN[L]}</span><h3>เลือกช็อปที่คุณจะคุม</h3><p>โรงงานมี 4 ช็อป ผลิตรถไฟฟ้า ทุกช็อปต้องส่งงานให้กันตามจังหวะ Takt เดียวกัน ${window.LQ_STANDALONE||CAP.room?"ถ้าเล่นในห้องเรียน แต่ละแผนกเลือกคนละช็อป ช็อปที่ไม่มีคนคุมจะเป็น AI":""}</p></div></div>
+      <div class="au-shops">${ORDER.map(id=>{const s=SH[id],t=taken[id];return `<button type="button" class="au-shop" data-shop="${id}" style="--c:${s.col}" ${t?"disabled":""}><b>${s.n}</b><span>${s.th}</span><small>${s.st.map(x=>x[0]).join(" · ")}</small>${t?`<em>มี ${esc(t)} คุมแล้ว</em>`:""}</button>`}).join("")}</div>
+      <div class="lesson">ตัวถังจาก Welding → Painting → Assembly · แบตเตอรี่แพ็กจาก Battery → Assembly · ถ้าช็อปใดช้า ช็อปถัดไปจะขาดงาน ถ้าช็อปถัดไปช้า ช็อปก่อนหน้าจะถูกบล็อก (Pull) · ช่างซ่อม 2 คนและ Forklift 1 คันใช้ร่วมกันทั้งโรงงาน</div></div>`;
+      el.querySelectorAll("[data-shop]").forEach(b=>b.onclick=()=>{my=b.dataset.shop;el.innerHTML="";start()})}
+    SIMHUB.joinRoom().then(r=>{room=r;if(r.onPlant)r.onPlant(onPlant)}).catch(()=>{});
+    function onPlant(list){list.forEach(p=>{if(p.me||!p.shop)return;taken[p.shop]=p.n;if(P){P.remote[p.shop]=p}});if(!P)pickUI()}
+    pickUI();
+    // ---- kaizen before start ----
+    function start(){const act=Object.assign({id:"kz"},KZ_ACTS[my],{doneLabel:"เปิดกะ →"});KZ.single($("auKz"),act,s=>{P=newPlant(lv,my);P.shops[my].kz=s;run()})}
+    // ---- run ----
+    function run(){$("auWrap").hidden=false;$("auCtl").hidden=false;const wrap=$("auWrap"),{c}=api.canvas(wrap,W,H);let syncT=0,presT=0,tt=0;
+      const me=()=>P.shops[my];
+      function fx(t,x,y,col){P.fx.push({t,x,y,col,life:1.6})}
+      function sync(full){const sh=me(),s=SH[my],tk=3600/P.jph,{cts,max}=shopCT(sh),mx=Math.max(tk*1.4,...cts.filter(isFinite)),free=sh.hired-sh.alloc.reduce((a,b)=>a+b,0);
+        $("auT1").textContent=`Yamazumi · ${s.n} (เส้นแดง = Takt)`;
+        $("auYama").innerHTML=`<div class="yama">${s.st.map((x,i)=>`<div class="ycol"><div class="ybar"><i style="height:${isFinite(cts[i])?Math.min(100,cts[i]/mx*100):100}%;background:${isFinite(cts[i])&&cts[i]<=tk?"var(--go)":"var(--stop)"}"></i><b style="bottom:${tk/mx*100}%"></b></div><span>${x[0]}</span><small>${isFinite(cts[i])?Math.round(cts[i])+"s":"-"} · งาน ${Math.round(sh.wc[i])}s</small><div class="ypm"><button data-w="${i}" data-d="-1" ${sh.alloc[i]<=0?"disabled":""}>−</button><b>${sh.alloc[i]}</b><button data-w="${i}" data-d="1" ${free<=0?"disabled":""}>+</button></div></div>`).join("")}</div>`;
+        $("auYama").querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const i=+b.dataset.w,d=+b.dataset.d;if(d>0&&free<=0)return;sh.alloc[i]=Math.max(0,sh.alloc[i]+d);sync(true)});
+        $("auLBE").innerHTML=`LBE <b>${Math.round(shopLBE(sh)*100)}%</b> · Takt ${tk.toFixed(0)} วิ · ต้องใช้อย่างน้อย ${Math.ceil(sh.wc.reduce((a,b)=>a+b,0)/tk)} คน · ค่าแรง ${ECON.wage} ฿/คน/ชม.`;
+        const al=[];if(sh.down>0&&!sh.tech)al.push(`<div class="lesson" style="border-color:var(--stop)">🔴 ${s.mach}เสีย ${P.techFree?"ช่างกำลังมา":"ช่างทั้ง 2 คนไม่ว่าง ขอให้ช็อปอื่นปล่อยช่างให้ (ปุ่มด้านขวา)"}</div>`);if(sh.starved)al.push(`<div class="lesson">⏳ รอชิ้นงานจากช็อปก่อนหน้า (บัฟเฟอร์ว่าง) ช่วยเขาจะช่วยคุณ</div>`);if(sh.blocked)al.push(`<div class="lesson">⛔ บัฟเฟอร์ถัดไปเต็ม ผลิตต่อไม่ได้ (Pull) ลดคนลงหรือส่งคนไปช่วยช็อปถัดไป</div>`);$("auReq").innerHTML=al.join("");
+        // requests from others
+        const reqs=ORDER.filter(id=>id!==my&&P.shops[id].req).map(id=>{const r=REQK[P.shops[id].req],can=P.shops[id].req==="worker"?free>0||sh.alloc.some(a=>a>1):P.shops[id].req==="maint"?sh.tech:P.fork&&sh.forkOut<=0;return `<div class="pf-ev"><div class="kz-ah"><span class="kz-tag" style="background:${SH[id].col}">${SH[id].n}</span><span class="kz-sc" style="background:var(--warn);color:#1b222a">เหลือ ${Math.ceil(P.shops[id].reqT/SPEED)} วิ</span></div><b>${r.em} ${r.n}</b><small>${r.desc}</small><button type="button" class="btn small" data-help="${id}" ${can?"":"disabled"}>${can?"ช่วยเลย":"ตอนนี้ช่วยไม่ได้"}</button></div>`});
+        $("auHelp").innerHTML=reqs.join("")||`<p class="label" style="text-transform:none;letter-spacing:0">ยังไม่มีคำขอ</p>`;
+        $("auHelp").querySelectorAll("[data-help]").forEach(b=>b.onclick=()=>help(b.dataset.help));
+        $("auAsk").innerHTML=`<div class="actions" style="justify-content:flex-start">${Object.entries(REQK).map(([k,r])=>`<button type="button" class="btn ghost small" data-ask="${k}" ${sh.req?"disabled":""}>${r.em} ${r.n}</button>`).join("")}</div><p class="label" style="text-transform:none;letter-spacing:0">${sh.req?"กำลังขอ "+REQK[sh.req].n+" ("+Math.ceil(sh.reqT/SPEED)+" วิ)":"ขอได้เมื่อจำเป็นจริง ขอบ่อยเกินไปคนอื่นจะเหนื่อย"}</p>`;
+        $("auAsk").querySelectorAll("[data-ask]").forEach(b=>b.onclick=()=>{if(sh.req)return;sh.req=b.dataset.ask;sh.reqT=240;sync(true)});
+        if(full){$("auTeam").innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span>พนักงาน <b>${sh.hired}</b> · ว่าง <b>${free}</b></span><button class="btn small" id="auHire" ${sh.cash>=ECON.hire?"":"disabled"}>+ จ้าง 1 คน (${ECON.hire} ฿)</button><button class="btn ghost small" id="auFire" ${free>0?"":"disabled"}>− เลิกจ้างคนว่าง</button></div>`;
+          $("auHire").onclick=()=>{if(sh.cash<ECON.hire)return;sh.cash-=ECON.hire;sh.hired++;sync(true)};$("auFire").onclick=()=>{if(free<=0)return;sh.hired--;sync(true)}}
+        const q=P.plantQ+P.plantScrap?P.plantQ/(P.plantQ+P.plantScrap):1;
+        $("auHud").innerHTML=[["เหลือเวลา",fmtT(Math.max(0,STAGE-P.t)/SPEED)],["โรงงานส่งแล้ว",P.ship+" คัน"],["ลูกค้าสั่ง",P.orders+" คัน"],["รอส่ง",P.backlog,P.backlog>2],["คุณภาพโรงงาน",Math.round(q*100)+"%",q<.95],["ช็อปของคุณ LBE",Math.round(shopLBE(sh)*100)+"%"],["ช่วยคนอื่น",sh.helps+" ครั้ง"],["เงินสดช็อป",baht(sh.cash),sh.cash<ECON.hire]].map(h=>`<div class="hudi ${h[2]?"alert":""}"><span>${h[0]}</span><b>${h[1]}</b></div>`).join("")}
+      function help(id){const sh=me(),o=P.shops[id],k=o.req;if(!k)return;
+        if(k==="worker"){const free=sh.hired-sh.alloc.reduce((a,b)=>a+b,0);if(free<=0){const {cts}=shopCT(sh);let i=cts.indexOf(Math.min(...cts));if(sh.alloc[i]<=1)i=sh.alloc.findIndex(a=>a>1);if(i<0)return;sh.alloc[i]--}else sh.hired--;sh.lentT=REQK.worker.dur;sh.lentHired=free<=0?0:1;o.loan=1;o.loanT=REQK.worker.dur;if(free<=0){sh.lentIdx=null}sh.lent=0;sh.lentRestore=free<=0?"alloc":"hired";sh._lent={free:free>0}}
+        else if(k==="maint"){if(!sh.tech)return;sh.tech=false;sh.repairT=0;P.techFree++;o.tech=true;P.techFree--;o.repairT=60;sh.needTech=true}
+        else if(k==="material"){if(!P.fork)return;P.fork=false;sh.forkOut=REQK.material.dur;o.matShort=0;o.matBoost=3}
+        o.req=null;o.reqT=0;sh.helps++;P.helpsGiven++;{const q=iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50);fx("🤝 ช่วย "+SH[id].n,q.x,q.y,"#16a34a")};try{PARTY.SFX.right()}catch(e){}sync(true)}
+      function aiDecide(id,dt){const sh=P.shops[id],s=SH[id],tk=3600/P.jph,{cts,max}=shopCT(sh);
+        // AI re-balances toward takt with its own skill level; sometimes short of people
+        if(Math.random()<dt/40){const need=Math.ceil(sh.wc.reduce((a,b)=>a+b,0)/tk*(1/lv.ai));const have=sh.alloc.reduce((a,b)=>a+b,0);if(have<need&&sh.hired<need){if(Math.random()<.6)sh.hired++;else if(!sh.req){sh.req="worker";sh.reqT=240}}
+          sh.alloc=sh.wc.map(()=>0);let left=sh.hired;for(let r=0;r<left;r++){const cc=sh.wc.map((w,i)=>sh.alloc[i]?w/sh.alloc[i]:Infinity);sh.alloc[cc.indexOf(Math.max(...cc))]++}}
+        if(sh.down>0&&!sh.tech&&P.techFree<=0&&!sh.req&&Math.random()<dt/20){sh.req="maint";sh.reqT=240}
+        if(sh.matShort>0&&!sh.req&&Math.random()<dt/15){sh.req="material";sh.reqT=240}
+        // AI helps the player when asked, if it has slack
+        const mine=P.shops[my];if(mine.req&&Math.random()<dt/(lv.ai>=.9?25:45)){if(mine.req==="worker"&&max<tk*.8){const i=cts.indexOf(Math.min(...cts));if(sh.alloc[i]>1){sh.alloc[i]--;sh.lentT=REQK.worker.dur;mine.loan=1;mine.loanT=REQK.worker.dur;mine.req=null;sh.helps++;P.helpsGot++;fx(`🤝 ${s.n} ส่งคนมาช่วย`,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).y,"#16a34a")}}
+          else if(mine.req==="maint"&&sh.tech){sh.tech=false;P.techFree++;mine.req=null;sh.helps++;P.helpsGot++;fx(`🤝 ${s.n} ปล่อยช่างให้`,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).y,"#16a34a")}
+          else if(mine.req==="material"&&P.fork){P.fork=false;sh.forkOut=REQK.material.dur;mine.matShort=0;mine.matBoost=3;mine.req=null;sh.helps++;P.helpsGot++;fx(`🤝 ${s.n} ส่ง Forklift มา`,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).y,"#16a34a")}}}
+      function stepShop(id,dt){const sh=P.shops[id],s=SH[id],tk=3600/P.jph;
+        // loans / lends timers
+        if(sh.loanT>0){sh.loanT-=dt;if(sh.loanT<=0){sh.loan=0}}
+        if(sh.lentT>0){sh.lentT-=dt;if(sh.lentT<=0){if(sh._lent&&sh._lent.free)sh.hired++;else{const {cts}=shopCT(sh);sh.alloc[cts.indexOf(Math.max(...cts))]++}sh._lent=null}}
+        if(sh.forkOut>0){sh.forkOut-=dt;if(sh.forkOut<=0)P.fork=true}
+        if(sh.req){sh.reqT-=dt;if(sh.reqT<=0){sh.req=null;if(id===my)P.missedReq++}}
+        // breakdowns & technicians (shared pool)
+        if(sh.down<=0&&Math.random()<dt/900*lv.brk*(1-.6*(sh.kz&&id==="weld"?sh.kz:0))){sh.down=1;sh.tech=false;sh.repairT=0;fx(`🔴 ${s.mach}เสีย`,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).y,"#dc2626")}
+        if(sh.down>0){if(!sh.tech&&P.techFree>0){P.techFree--;sh.tech=true;sh.repairT=90}if(sh.tech){sh.repairT-=dt;if(sh.repairT<=0){sh.down=0;sh.tech=false;P.techFree++}}return}
+        if(sh.changeT>0){sh.changeT-=dt;return}
+        // material (weld & batt consume purchased parts)
+        if(!s.in){if(sh.matShort>0){sh.matShort-=dt*(sh.matBoost?3:1);if(sh.matShort<=0)sh.matBoost=0;return}if(Math.random()<dt/700&&!sh.matBoost){sh.matShort=60;fx("📦 ชิ้นส่วนขาด",iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,50).y,"#b45309")}}
+        // input availability
+        const inOk=(!s.in||P.buf[s.in]>=1)&&(!s.in2||P.buf[s.in2]>=1);sh.starved=!inOk;
+        const outKey=s.out,outOk=outKey==="car"||P.buf[outKey]<BUF[outKey].cap;sh.blocked=!outOk&&sh.progress>=1;
+        const {max}=shopCT(sh);if(!isFinite(max))return;
+        if(sh.progress<=0){if(!inOk)return;if(s.in)P.buf[s.in]-=1;if(s.in2)P.buf[s.in2]-=1;sh.progress=.0001;if(id==="paint"&&Math.random()<.3){sh.changeT=60*(1-.8*(sh.kz||0));sh.changes=(sh.changes||0)+1}}
+        sh.progress+=dt/max;sh.busy+=dt;
+        if(sh.progress>=1){if(!outOk)return;sh.progress=0;sh.made++;
+          const defectP={weld:.08*(1-.7*(sh.kz||0)),paint:.07,batt:.08*(1-.7*(sh.kz||0)),assy:.05}[id]*(sh.ai?1:1);
+          if(Math.random()<defectP){sh.scrap++;P.plantScrap++;if(id===my)sh.cash-=ECON.scrap;fx(`✗ ${s.risk}`,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,30).x,iso(SHOPG[id].gx+SHOPG[id].w/2,SHOPG[id].gy+SHOPG[id].d/2,30).y,"#dc2626");return}
+          if(outKey==="car"){P.plantQ++;P.fin=(P.fin||0)+1}else P.buf[outKey]+=1}}
+      function step(dtp){const dt=dtp*SPEED;P.t+=dt;tt+=dtp;
+        const rd=Math.min(4,Math.floor(P.t/ROUND));if(rd!==P.round){P.round=rd;P.jph=lv.jph[rd];P.banner={t:`รอบ ${rd+1}: ลูกค้าเพิ่มเป็น ${P.jph} คัน/ชม.`,s:`Takt ${Math.round(3600/P.jph)} วินาที ทุกช็อปต้องทัน`,life:4};try{PARTY.SFX.go()}catch(e){}sync(true)}
+        if(P.banner)P.banner.life-=dtp;
+        P.nextOrd-=dt;while(P.nextOrd<=0){P.nextOrd+=3600/P.jph;P.orders++;P.backlog++}
+        ORDER.forEach(id=>{if(P.remote[id]&&!P.remote[id].done)remoteShop(id,dt);else{if(P.shops[id].ai)aiDecide(id,dt);stepShop(id,dt)}});
+        while((P.fin||0)>0&&P.backlog>0){P.fin--;P.backlog--;P.ship++;const sh=me();sh.cash+=ECON.car/4;fx("+ ส่งรถ 1 คัน",iso(19.5,6.5,70).x,iso(19.5,6.5,70).y,"#16a34a")}
+        const sh=me();sh.cash-=sh.hired*ECON.wage*dt/3600;sh.lbeSum+=shopLBE(sh)*dt;
+        P.fx.forEach(f=>{f.life-=dtp;f.y-=dtp*26});P.fx=P.fx.filter(f=>f.life>0);
+        render(c,P,1,tt);syncT-=dtp;if(syncT<=0){syncT=.4;sync(false)}
+        if(room){presT-=dtp;if(presT<=0){presT=.8;publish(false)}}
+        if(P.t>=STAGE&&!ended){ended=true;loop.stop();finish()}}
+      // remote (real player) shop: use their published rate instead of simulating decisions
+      function remoteShop(id,dt){const r=P.remote[id],sh=P.shops[id],s=SH[id];sh.ai=false;if(r.alloc)sh.alloc=r.alloc;if(r.down!=null)sh.down=r.down;sh.req=r.req||null;sh.reqT=r.reqT||0;
+        const inOk=(!s.in||P.buf[s.in]>=1)&&(!s.in2||P.buf[s.in2]>=1),outKey=s.out,outOk=outKey==="car"||P.buf[outKey]<BUF[outKey].cap;const rate=(r.rate||0)/3600;
+        if(sh.down>0||!inOk||!outOk)return;sh.progress+=rate*dt;if(sh.progress>=1){sh.progress-=1;if(s.in)P.buf[s.in]-=1;if(s.in2)P.buf[s.in2]-=1;if(outKey==="car"){P.plantQ++;P.fin=(P.fin||0)+1}else P.buf[outKey]+=1}}
+      function result(){const sh=me(),deliv=P.orders?P.ship/P.orders:1,q=P.plantQ+P.plantScrap?P.plantQ/(P.plantQ+P.plantScrap):1,lbe=sh.lbeSum/Math.max(1,P.t);
+        const plant=Math.round(deliv*600+q*400),mine=Math.round(lbe*600+Math.min(8,sh.helps)*50),score=Math.round(plant*.6+mine*.4)*2;return {deliv,q,lbe,plant,mine,score}}
+      function publish(done){if(!room)return;const sh=me(),r=result(),{max}=shopCT(sh);room.presence({g:"auto",n:(WHO0.name||"ผู้เล่น").slice(0,16),tm:(WHO0.team||"").slice(0,16),L,shop:my,rate:isFinite(max)&&sh.down<=0?Math.round(3600/max):0,alloc:sh.alloc.slice(),down:sh.down>0?1:0,req:sh.req,reqT:Math.round(sh.reqT),ship:P.ship,or:P.orders,helps:sh.helps,lbe:Math.round(r.lbe*100),sc:r.score,t:Math.round(P.t),buf:{body:Math.round(P.buf.body),painted:Math.round(P.buf.painted),pack:Math.round(P.buf.pack)},done:!!done}).catch(()=>{})}
+      function finish(){const r=result(),sh=me(),s=SH[my];if(room)publish(true);
+        const stars=r.deliv>=lv.goal&&r.q>=.9?3:r.deliv>=.7?2:r.deliv>=.5?1:0;
+        const L2=[`<b>ผลของโรงงาน (ทุกคนได้เท่ากัน):</b> ส่งมอบ ${P.ship}/${P.orders} คัน (${Math.round(r.deliv*100)}%) คุณภาพ ${Math.round(r.q*100)}% → ${r.plant} คะแนน`,
+          `<b>ช็อป ${s.n} ของคุณ:</b> LBE เฉลี่ย ${Math.round(r.lbe*100)}% ผลิต ${sh.made} ชิ้น ของเสีย ${sh.scrap} ช่วยช็อปอื่น ${sh.helps} ครั้ง ได้รับความช่วยเหลือ ${P.helpsGot} ครั้ง → ${r.mine} คะแนน`,
+          `<b>บทเรียน:</b> ${r.deliv<lv.goal?"โรงงานส่งไม่ทันแม้ช็อปคุณจะดี เพราะไลน์ผลิตคือโซ่ที่แข็งเท่าข้อที่อ่อนที่สุด การช่วยช็อปคอขวดคือการช่วยตัวเอง":"โรงงานส่งทันเพราะทุกช็อปเดินตาม Takt เดียวกันและช่วยกันเมื่อเกิดปัญหา"}`];
+        if(P.missedReq)L2.push(`<b>คำขอที่ไม่มีใครช่วย:</b> ${P.missedReq} ครั้ง ${P.remote&&Object.keys(P.remote).length?"ลองคุยกันในห้องว่าใครมีคนว่าง":"AI ช่วยได้เฉพาะตอนที่เขามีคนว่าง ลองขอให้เร็วขึ้นก่อนเป็นคอขวด"}`);
+        if(sh.blockedT>0)L2.push(`<b>Pull:</b> ช็อปคุณถูกบล็อกบ่อย แปลว่าผลิตเร็วกว่าที่ช็อปถัดไปรับได้ ลดคนแล้วส่งไปช่วยเขาดีกว่าผลิตเกิน`);
+        if(window.CLOUD)CLOUD.post({game:"auto",stage:L,score:r.score,deliv:Math.round(r.deliv*100),lbe:Math.round(r.lbe*100),title:s.n,pass:r.deliv>=lv.goal});
+        api.end(wrap,{score:r.score,stars,stats:[["ส่งมอบโรงงาน",`${P.ship}/${P.orders}`],["คุณภาพ",Math.round(r.q*100)+"%"],["ช็อปของคุณ",s.n],["LBE",Math.round(r.lbe*100)+"%"],["ช่วยคนอื่น",sh.helps+" ครั้ง"],["คะแนน",r.score.toLocaleString()]],lessons:L2})}
+      sync(true);render(c,P,1,0);
+      api.overlay(wrap,`<span class="label">Lean Auto Plant · คุณคุม ${SH[my].n}</span><h3>กะ 18 นาที (เล่นจริง 3 นาที)</h3><ul><li>ลูกค้าเพิ่มออเดอร์ทุก 36 วินาที: ${lv.jph.join(" → ")} คัน/ชม.</li><li>จัดคนให้ทุกสถานีต่ำกว่า Takt · ถ้าช็อปก่อนหน้าช้า คุณจะรอชิ้นงาน ถ้าช็อปถัดไปช้า คุณจะถูกบล็อก</li><li>ช่างซ่อม 2 คน และ Forklift 1 คัน ใช้ร่วมกันทั้งโรงงาน · เมื่อมีคำขอจากช็อปอื่น กด "ช่วยเลย"</li><li>คะแนน = 60% ผลของโรงงาน + 40% ช็อปของคุณ (LBE + จำนวนครั้งที่ช่วย)</li></ul>`,[["เปิดกะ →",()=>{loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});window.LQ_AU=P;window.LQ_TICK=(n,d)=>{for(let j=0;j<n&&!ended;j++)step(d||.05);return P.t};publish(false)}]])}
+    return {stop(){loop.stop()}};
+  }
+});
 })();
 
 // =====================================================================
@@ -3314,9 +3548,9 @@ boot();
         pr.on("connection",cn=>{conns.set(cn.peer,cn);cn.on("data",m=>{if(m&&m.t==="pres"&&m.d&&typeof m.d==="object")onChange({peers:[{peer:cn.peer,presence:m.d}],left:[]})});
           const gone=()=>{conns.delete(cn.peer);onChange({peers:[],left:[{peer:cn.peer}]})};cn.on("close",gone);cn.on("error",gone)});
         pr.on("disconnected",()=>{try{pr.reconnect()}catch(e){}})};open()})},
-    join(code){return new Promise((res,rej)=>{if(typeof Peer==="undefined")return rej("nopeer");const pr=new Peer();let cn=null,last=null,rankCb=null,ctlCb=null,dead=false,myId="";
-      const connect=()=>{if(dead)return;cn=pr.connect(FPX+code,{reliable:true});cn.on("open",()=>{if(last)cn.send({t:"pres",d:last})});cn.on("data",m=>{if(!m)return;if(m.t==="rank"){if(rankCb)rankCb(m.l||[]);if(m.c&&ctlCb)ctlCb(m.c)}if(m.t==="ctl"&&ctlCb)ctlCb(m.c)});cn.on("close",()=>setTimeout(connect,3000))};
-      pr.on("open",id=>{myId=id;connect();res({id:()=>myId,presence:d=>{last=d;try{if(cn&&cn.open)cn.send({t:"pres",d})}catch(e){}return Promise.resolve()},onRank(cb){rankCb=cb},onCtl(cb){ctlCb=cb},leave(){dead=true;try{pr.destroy()}catch(e){}}})});
+    join(code){return new Promise((res,rej)=>{if(typeof Peer==="undefined")return rej("nopeer");const pr=new Peer();let cn=null,last=null,rankCb=null,ctlCb=null,plantCb=null,dead=false,myId="";
+      const connect=()=>{if(dead)return;cn=pr.connect(FPX+code,{reliable:true});cn.on("open",()=>{if(last)cn.send({t:"pres",d:last})});cn.on("data",m=>{if(!m)return;if(m.t==="rank"){if(rankCb)rankCb(m.l||[]);if(m.c&&ctlCb)ctlCb(m.c);if(plantCb)plantCb(m.plant||[])}if(m.t==="ctl"&&ctlCb)ctlCb(m.c)});cn.on("close",()=>setTimeout(connect,3000))};
+      pr.on("open",id=>{myId=id;connect();res({id:()=>myId,presence:d=>{last=d;try{if(cn&&cn.open)cn.send({t:"pres",d})}catch(e){}return Promise.resolve()},onRank(cb){rankCb=cb},onCtl(cb){ctlCb=cb},onPlant(cb){plantCb=cb},leave(){dead=true;try{pr.destroy()}catch(e){}}})});
       pr.on("error",e=>{if(e.type==="peer-unavailable"){setTimeout(connect,5000)}else if(!myId)rej(e.type)})})}
   };
   if(window.SIMHUB)setTimeout(()=>SIMHUB.open(),0);// hub may have opened before this script: join the center-screen room now
