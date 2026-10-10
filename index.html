@@ -703,6 +703,31 @@ h1,h2,h3{font-family:var(--f-display);font-weight:600}
 .tbl{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
 .tbl th,.tbl td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 .tbl th{font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;position:sticky;top:0;background:var(--surface)}
+/* CPS level */
+.cps-strip{border:0;text-align:left;cursor:pointer;background:linear-gradient(135deg,#fff7e0,#ffffff)}
+.cps-card{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#1b2b5c,#46178f);color:#fff;border-radius:16px;padding:14px 16px;box-shadow:var(--sh)}
+.cps-card .label{color:rgba(255,255,255,.75)}
+.cps-card b{display:block;font-family:var(--f-display);font-size:22px;line-height:1.2}
+.cps-card small{display:block;font-size:13px;opacity:.9}
+.cps-card>div{flex:1;min-width:0;display:grid;gap:4px}
+.cps-em{font-size:46px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.cps-card.big .cps-em{font-size:64px}
+.cps-bar{height:10px;border-radius:5px;background:rgba(255,255,255,.2);overflow:hidden}
+.cps-bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#ffc233,#7dffa8);transition:width .6s}
+.cps-bar.sm{height:8px;background:var(--sunk)}
+.cps-wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:640px){.cps-wrap{grid-template-columns:1fr}}
+.cps-radar{background:var(--surface);border-radius:16px;padding:8px;box-shadow:var(--sh);display:grid;justify-items:center}
+.cps-ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:12px 0}
+@media (max-width:640px){.cps-ladder{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cps-ladder div{background:var(--surface);border-radius:12px;padding:8px 6px;text-align:center;opacity:.5;box-shadow:var(--sh);display:grid;gap:2px}
+.cps-ladder div.on{opacity:1}.cps-ladder div.cur{outline:3px solid var(--tape)}
+.cps-ladder i{font-style:normal;font-size:26px}.cps-ladder b{font-family:var(--f-display);font-size:13px}.cps-ladder small{font-size:10px;color:var(--muted)}
+.cps-dims{display:grid;gap:8px;background:var(--surface);border-radius:16px;padding:12px;box-shadow:var(--sh)}
+.cps-dims>div{display:grid;grid-template-columns:150px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:13px}
+.cps-dims>div small{grid-column:1/-1;color:var(--muted);font-size:12px;margin-top:-4px}
+.cps-dims b{font-family:var(--f-mono);text-align:right}
+@media (max-width:480px){.cps-dims>div{grid-template-columns:110px minmax(0,1fr) 40px}}
 
 </style>
 
@@ -1537,6 +1562,7 @@ function renderHome(){
     <div class="hero-art" id="heroArt">${thumbCanvas("career")}</div>
   </section>
   <div class="strip">
+    ${(()=>{const X=window.CPSLV?CPSLV.level(c):null;return X?`<button type="button" class="strip-i cps-strip" id="hLv"><i>${X.lv.em}</i><div><b>${X.lv.n}</b><small>${X.next?"อีก "+Math.round((1-X.prog)*100)+"% ถึง "+X.next.n:"ระดับสูงสุด"}</small></div></button>`:""})()}
     <div class="strip-i"><i>🔥</i><div><b>${sk.streak} วันติด</b><small>เล่นแล้ว ${sk.total} วัน · วันนี้ +50</small></div></div>
     <div class="strip-i"><i>🗓️</i><div><b>ซีซัน ${se.n}</b><small>${SEASON.fmt(se.a)} – ${SEASON.fmt(se.b)} · เหลือ ${se.left} วัน</small></div></div>
     <div class="strip-i"><i>🏆</i><div><b>${my?"อันดับ #"+my.pos:"ยังไม่มีอันดับ"}</b><small>${my?my.score.toLocaleString()+" คะแนน":"เล่นให้จบ 1 ด่านเพื่อขึ้นตาราง"}</small></div></div>
@@ -1555,18 +1581,19 @@ function renderHome(){
   $("hLive").onclick=()=>goTab("live");
   $("hClass").onclick=()=>{show("scrSims");SIMHUB.open();setTimeout(()=>{const e=document.getElementById("whoF");if(e){e.focus();e.scrollIntoView({block:"center"})}},50)};
   if($("hProf"))$("hProf").onclick=()=>goTab("profile");
+  if($("hLv"))$("hLv").onclick=()=>{goTab("profile");setTimeout(()=>{const e=$("cpsBox");if(e)e.scrollIntoView({block:"start",behavior:"smooth"})},80)};
   hud();
 }
 function myRankLocal(){const rows=rankRowsLocal();const p=PROF.get();const i=rows.findIndex(r=>r.me);return i<0?null:{pos:i+1,score:rows[i].score}}
 function rankRowsLocal(){// this device only until the shared scoreboard (Google Sheets) is connected
   const p=PROF.get(),c=lsGet("lq-career",null),sk=lsGet("lq-streak",{days:[]}),loc=lsGet("lq-sim-local",[]);
-  const rows=[];if(c||loc.length){let s=Math.round(c?c.total||0:0);(loc.find(r=>r.id==="me")||{best:{}}).best&&Object.entries((loc.find(r=>r.id==="me")||{best:{}}).best).forEach(([k,v])=>{if(!k.startsWith("career"))s+=Math.round((+v||0))});s+=Math.min(10,sk.days.length)*50;rows.push({name:p.name||"คุณ",team:p.team,score:s,me:true,stage:c?c.stage:0})}
+  const rows=[];if(c||loc.length){let s=Math.round(c?c.total||0:0);(loc.find(r=>r.id==="me")||{best:{}}).best&&Object.entries((loc.find(r=>r.id==="me")||{best:{}}).best).forEach(([k,v])=>{if(!k.startsWith("career"))s+=Math.round((+v||0))});s+=Math.min(10,sk.days.length)*50;rows.push({name:p.name||"คุณ",team:p.team,score:s,me:true,stage:c?c.stage:0,lvl:window.CPSLV&&c?(()=>{const L=CPSLV.level(c).lv;return L.em+" "+L.n})():""})}
   return rows.sort((a,b)=>b.score-a.score)}
 async function renderRank(){const se=SEASON.cur(),day=lsGet("lq-day-results",[]);let rows=rankRowsLocal(),cloud=false,src="";
   if(window.CLOUD&&CLOUD.enabled()){$("rankBody").innerHTML=`<div class="notice"><b>กำลังโหลดตารางอันดับ…</b></div>`;const b=await CLOUD.board();if(b&&b.rows){const me=PROF.get();rows=b.rows.map(r=>Object.assign({},r,{me:(me.emp&&r.emp===me.emp)||(!me.emp&&r.name===me.name)}));cloud=true;src=b.season||""}}
   $("rankBody").innerHTML=`<div class="live-head"><div><span class="label">Season ${se.n} · ${SEASON.fmt(se.a)} – ${SEASON.fmt(se.b)}</span><h1>ตารางอันดับ</h1></div><span class="chip">เหลือ ${se.left} วัน</span></div>
     <div class="lesson">คะแนนซีซัน = คะแนนรวมโรงงานของฉัน + คะแนนเกมอื่น + โบนัสเข้าเล่น (50/วัน สูงสุด 10 วัน) สรุปทุก 2 สัปดาห์</div>
-    <div class="board big">${rows.length?rows.map((r,i)=>`<div class="brow ${r.me?"me":""}"><span class="pos">${i+1}</span><span class="nm">${esc(r.name)}${r.me?" (คุณ)":""}<small class="note2"> ${esc(r.team||"")}${r.stage?" · ด่าน "+r.stage:""}</small></span><span class="gain zero">${r.days?r.days+" วัน":""}</span><span class="sc">${r.score.toLocaleString()}</span></div>`).join(""):`<p class="label">ยังไม่มีคะแนนในซีซันนี้</p>`}</div>
+    <div class="board big">${rows.length?rows.map((r,i)=>`<div class="brow ${r.me?"me":""}"><span class="pos">${i+1}</span><span class="nm">${esc(r.name)}${r.me?" (คุณ)":""}<small class="note2"> ${r.lvl?esc(String(r.lvl).split(" ")[0])+" ":""}${esc(r.team||"")}${r.stage?" · ด่าน "+r.stage:""}</small></span><span class="gain zero">${r.days?r.days+" วัน":""}</span><span class="sc">${r.score.toLocaleString()}</span></div>`).join(""):`<p class="label">ยังไม่มีคะแนนในซีซันนี้</p>`}</div>
     <p class="note2" style="margin-top:8px">${cloud?"กระดานคะแนนกลาง · อัปเดตทุกครั้งที่มีคนเล่นจบ":"ตอนนี้แสดงเฉพาะคะแนนบนเครื่องนี้ เมื่อวิทยากรเชื่อมต่อกระดานคะแนนกลาง (Google Sheets) จะเห็นทุกคนในบริษัท"}</p>
     ${day.length?`<h2 class="sec-h">ผล Live Quiz ล่าสุด</h2><div class="board">${day.slice(-20).reverse().map(d=>`<div class="brow"><span class="pos">⚡</span><span class="nm">${esc(d.title||d.game||"Live")}<small class="note2"> ${esc(d.date||"")}</small></span><span class="gain zero">${(d.rows||[]).length} คน</span><span class="sc">${(d.rows&&d.rows[0])?esc(d.rows[0].name||""):""}</span></div>`).join("")}</div>`:""}`}
 function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=lsGet("lq-career",null);
@@ -1579,6 +1606,10 @@ function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=ls
       <div class="field">สีหมวก<div class="hats">${HATS.map(h=>`<button type="button" data-hat="${h[0]}" aria-pressed="${p.hat===h[0]}" style="--h:${h[0]}" title="${h[1]}"></button>`).join("")}</div></div>
     </div></div>
     <div class="st-kpi"><div class="hudi"><span>XP</span><b>${totalXp().toLocaleString()}</b></div><div class="hudi"><span>วันที่เล่น</span><b>${sk.days.length}</b></div><div class="hudi"><span>ด่านโรงงาน</span><b>${c?c.stage:"-"}</b></div><div class="hudi"><span>คะแนนโรงงาน</span><b>${c?Math.round(c.total||0).toLocaleString():"-"}</b></div></div>
+    ${(()=>{if(!window.CPSLV)return "";const X=CPSLV.level(c);return `<h2 class="sec-h" id="cpsBox">ระดับ CPS</h2><div class="cps-wrap"><div class="cps-card big"><span class="cps-em">${X.lv.em}</span><div><span class="label">ระดับปัจจุบัน</span><b>${X.lv.n}</b><small>${X.lv.desc}</small><div class="cps-bar"><i style="width:${Math.round(X.prog*100)}%"></i></div><small>${X.next?"ถัดไป <b>"+X.next.em+" "+X.next.n+"</b> ต้อง "+X.need.join(" และ "):"ระดับสูงสุดแล้ว 🎉"}</small></div></div>
+      <div class="cps-radar">${CPSLV.radar(X.skill,240)}<p class="note2" style="text-align:center">ทักษะ CPS รวม <b>${Math.round(X.skill.total*100)}%</b></p></div></div>
+      <div class="cps-ladder">${CPSLV.LV.map(L=>`<div class="${L.k<=X.lv.k?"on":""} ${L.k===X.lv.k?"cur":""}"><i>${L.em}</i><b>${L.n}</b><small>ด่าน ${L.stage}+ · ทักษะ ${Math.round(L.skill*100)}%+</small></div>`).join("")}</div>
+      <div class="cps-dims">${CPSLV.DIM.map(x=>{const v=X.skill.d[x.id]||0;return `<div><span>${x.n}</span><div class="cps-bar sm"><i style="width:${Math.round(v*100)}%;background:${v>=.8?"var(--go)":v>=.5?"var(--warn)":"var(--stop)"}"></i></div><b>${Math.round(v*100)}%</b>${v<.8?`<small>${x.fix}</small>`:""}</div>`}).join("")}</div>`})()}
     <h2 class="sec-h">สำหรับวิทยากร</h2>
     <div class="actions"><button class="btn" id="pfAdmin">🔐 หลังบ้านวิทยากร (อันดับ + ประวัติ)</button><button class="btn" id="pfCenter">📺 เปิดจอกลาง (ห้องเรียน)</button><button class="btn ghost" id="pfEditor">✍️ สร้างชุดคำถาม Live Quiz</button><button class="btn ghost" id="pfHow">🎬 วิดีโอวิธีเล่น</button></div>
     <details class="bulk" style="margin-top:14px"><summary>⚙️ กระดานคะแนนกลาง (Google Sheets) · ${window.CLOUD&&CLOUD.enabled()?"เชื่อมต่อแล้ว":"ยังไม่เชื่อมต่อ"}</summary><label class="field">URL ของ Apps Script Web App<input id="pfSheet" value="${esc((window.CLOUD&&CLOUD.url())||"")}" placeholder="https://script.google.com/macros/s/…/exec"></label><div class="actions"><button class="btn small" id="pfSheetSave">บันทึกและทดสอบ</button></div><p class="note2" id="pfSheetMsg">${window.LQ_SHEET_URL?"ค่าตั้งต้นจากตัวเกม: "+esc(window.LQ_SHEET_URL):"ใส่เฉพาะตอนทดสอบ เมื่อยืนยันแล้วผมจะฝังลงในตัวเกมให้ทุกคน"}</p></details>
@@ -1605,11 +1636,11 @@ async function renderAdmin(){show("scrProfile");const root=$("profBody");let pin
     const rows=(j.rows||[]).filter(r=>+r.season===+sel&&(game==="all"||r.game===game));
     $("adBody").innerHTML=`<div class="tools" style="margin-bottom:10px"><label class="field">ซีซัน<select id="adS">${seasons.map(x=>`<option value="${x}" ${+x===+sel?"selected":""}>ซีซัน ${x}${+x===+cur?" (ปัจจุบัน)":""}</option>`).join("")}</select></label><label class="field">เกม<select id="adG">${[["all","ทุกเกม"],["career","โรงงานของฉัน"],["factory","ห้องเรียน"],["live","Live Quiz"]].map(x=>`<option value="${x[0]}" ${x[0]===game?"selected":""}>${x[1]}</option>`).join("")}</select></label><button class="btn small" id="adXls">⬇ Excel ซีซันนี้</button></div>
       <h2 class="sec-h">อันดับซีซัน ${sel}${b&&b.label?" · "+esc(b.label):""}</h2>
-      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>คะแนน</th><th>โรงงาน</th><th>ด่าน</th><th>ห้องเรียน</th><th>Live</th><th>วัน</th><th>ครั้ง</th></tr></thead><tbody>${(b&&b.rows||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td><b>${(+r.score).toLocaleString()}</b></td><td>${r.career}</td><td>${r.stage}</td><td>${r.cls}</td><td>${r.live}</td><td>${r.days}</td><td>${r.plays}</td></tr>`).join("")||`<tr><td colspan="11">ยังไม่มีข้อมูล</td></tr>`}</tbody></table></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>คะแนน</th><th>โรงงาน</th><th>ด่าน</th><th>ห้องเรียน</th><th>Live</th><th>วัน</th><th>ครั้ง</th><th>ระดับ CPS</th><th>ทักษะ</th></tr></thead><tbody>${(b&&b.rows||[]).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td><b>${(+r.score).toLocaleString()}</b></td><td>${r.career}</td><td>${r.stage}</td><td>${r.cls}</td><td>${r.live}</td><td>${r.days}</td><td>${r.plays}</td><td>${esc(r.lvl||"")}</td><td>${r.skill!==""&&r.skill!=null?r.skill+"%":""}</td></tr>`).join("")||`<tr><td colspan="13">ยังไม่มีข้อมูล</td></tr>`}</tbody></table></div>
       <h2 class="sec-h">ประวัติการเล่น (${rows.length} รายการล่าสุด)</h2>
       <div class="tbl-wrap"><table class="tbl"><thead><tr><th>เวลา</th><th>รหัส</th><th>ชื่อ</th><th>แผนก</th><th>เกม</th><th>ด่าน</th><th>คะแนน</th><th>กำไร</th><th>LBE</th><th>ส่งมอบ</th><th>ผ่าน</th></tr></thead><tbody>${rows.slice(0,400).map(r=>`<tr><td>${new Date(r.ts).toLocaleString("th-TH",{dateStyle:"short",timeStyle:"short"})}</td><td>${esc(r.emp)}</td><td>${esc(r.name)}</td><td>${esc(r.team)}</td><td>${GN[r.game]||esc(r.game)}${r.title?" · "+esc(r.title):""}</td><td>${esc(r.stage)}</td><td><b>${esc(r.score)}</b></td><td>${esc(r.profit)}</td><td>${r.lbe!==""&&r.lbe!=null?r.lbe+"%":""}</td><td>${r.deliv!==""&&r.deliv!=null?r.deliv+"%":""}</td><td>${r.pass==="Y"?"✅":r.pass==="N"?"❌":""}</td></tr>`).join("")}</tbody></table></div>`;
     $("adS").onchange=e=>{sel=+e.target.value;draw()};$("adG").onchange=e=>{game=e.target.value;draw()};
-    $("adXls").onclick=async()=>{try{const X=await loadXLSX();const wb=X.utils.book_new();X.utils.book_append_sheet(wb,X.utils.json_to_sheet((b&&b.rows||[]).map((r,i)=>({อันดับ:i+1,รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,คะแนนซีซัน:r.score,คะแนนโรงงาน:r.career,ด่านสูงสุด:r.stage,ห้องเรียน:r.cls,LiveQuiz:r.live,วันที่เล่น:r.days,จำนวนครั้ง:r.plays}))),"อันดับซีซัน "+sel);
+    $("adXls").onclick=async()=>{try{const X=await loadXLSX();const wb=X.utils.book_new();X.utils.book_append_sheet(wb,X.utils.json_to_sheet((b&&b.rows||[]).map((r,i)=>({อันดับ:i+1,รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,คะแนนซีซัน:r.score,คะแนนโรงงาน:r.career,ด่านสูงสุด:r.stage,ห้องเรียน:r.cls,LiveQuiz:r.live,วันที่เล่น:r.days,จำนวนครั้ง:r.plays,ระดับCPS:r.lvl||"",ทักษะCPS:r.skill}))),"อันดับซีซัน "+sel);
       X.utils.book_append_sheet(wb,X.utils.json_to_sheet((j.rows||[]).filter(r=>+r.season===+sel).map(r=>({เวลา:new Date(r.ts).toLocaleString("th-TH"),รหัสพนักงาน:r.emp,ชื่อ:r.name,แผนก:r.team,เกม:GN[r.game]||r.game,ชุด:r.title||"",ด่าน:r.stage,คะแนน:r.score,กำไร:r.profit,LBE:r.lbe,ส่งมอบ:r.deliv,ผ่าน:r.pass}))),"ประวัติการเล่น");
       X.writeFile(wb,`LeanQuest-season${sel}.xlsx`)}catch(e){alert("ดาวน์โหลดไม่สำเร็จ ต้องมีอินเทอร์เน็ตเพื่อโหลดตัวสร้าง Excel")}}};
   draw()}
@@ -2574,6 +2605,39 @@ const UPACT={
   vm2:{lean:"KUP 4 · Visual Management",title:"ออกแบบกติกา Andon",desc:"เลือกการตอบสนองที่ถูกต้องเมื่อไฟ Andon ติด",kind:"classify",data:{q:"เมื่อเกิดเหตุนี้ ไฟ Andon ควรเป็นสีใด",cats:["🔴 แดง หยุดไลน์","🟡 เหลือง ขอความช่วยเหลือ","🟢 เขียว ปกติ"],items:[
     {t:"เครื่องอัดด้ามเสีย ผลิตต่อไม่ได้",cat:0,why:"หยุดและเรียกช่างทันที"},{t:"ไส้ปากกาเหลือต่ำกว่าเส้น Min",cat:1,why:"ขอเติมของ ยังผลิตต่อได้"},{t:"ทุกสถานีทัน Takt",cat:2,why:"ปกติ"},{t:"พบปากกาเขียนไม่ออก 3 ด้ามติด",cat:0,why:"ปัญหาคุณภาพซ้ำ ต้องหยุดหาสาเหตุ"},{t:"พนักงานใหม่ทำไม่ทัน ขอให้หัวหน้ามาช่วย",cat:1,why:"ขอความช่วยเหลือ"}]}}
 };
+// ---------- CPS level: needs both progress (stage) and skill (8 dimensions) ----------
+const CPS_LV=[
+  {k:0,em:"👶",n:"ทารก CPS",stage:1,skill:0,desc:"เพิ่งเริ่มรู้จัก Lean และ CPS"},
+  {k:1,em:"🎒",n:"นักเรียน CPS",stage:3,skill:.40,desc:"เข้าใจ Takt งานมาตรฐาน และ 5ส เบื้องต้น"},
+  {k:2,em:"🎓",n:"มหาลัย CPS",stage:5,skill:.55,desc:"จัดสมดุลไลน์และใช้ 6 KUP ได้"},
+  {k:3,em:"🥋",n:"เซียน CPS",stage:8,skill:.70,desc:"แก้ปัญหาหน้างานได้เร็ว ไลน์สมดุล คุณภาพดี"},
+  {k:4,em:"⚡",n:"เทพ CPS",stage:12,skill:.82,desc:"บริหารไลน์ความต้องการสูงได้ครบทุก KUP"},
+  {k:5,em:"👑",n:"ตำนาน CPS",stage:16,skill:.90,desc:"เป็นต้นแบบ CPS ให้คนอื่นได้"}];
+const CPS_DIM=[
+  {id:"pd",sh:"Policy",n:"Policy Deployment",fix:"ส่งมอบให้ได้ ≥95% ทุกด่าน และตอบปัญหาหน้างานให้ถูก"},
+  {id:"tdm",sh:"Time&Data",n:"Time & Data",fix:"ทำกิจกรรม Takt time ใน 6 KUP และติดตาม Hourly Board"},
+  {id:"std",sh:"Std Work",n:"Standardized Work",fix:"ปรับโต๊ะประกอบให้ใกล้แบบที่ดีที่สุดและไม่มีท่าทางเสี่ยง"},
+  {id:"vm",sh:"Visual",n:"Visual Management",fix:"ทำกิจกรรม Visual ให้ผ่าน และติดตั้ง Andon"},
+  {id:"pc",sh:"Confirm",n:"Process Confirmation",fix:"ทำกิจกรรม Process Confirmation และยืนยันกระบวนการให้ทันเวลา"},
+  {id:"ci",sh:"Kaizen",n:"Continuous Improvement",fix:"ทำ ECRS ให้ผ่าน และอัปเกรดโรงงานให้ครบ"},
+  {id:"lbe",sh:"Balance",n:"Line Balance",fix:"จัดคนและแบ่งงานให้ LBE เฉลี่ย ≥85%"},
+  {id:"q",sh:"Quality",n:"Quality",fix:"กันหยิบผิดด้วย Poka-yoke ให้ FPY ≥98%"}];
+function cpsSkill(c){if(!c)return null;const K=c.K||{},H=(c.hist||[]).slice(-5),avg=f=>H.length?H.reduce((a,h)=>a+f(h),0)/H.length:0,cl=v=>Math.max(0,Math.min(1,v||0));
+  const ev=(c.evTot||0)?(c.evOk||0)/c.evTot:null;let std=0;if(c.B){try{const R=evalBench(Object.assign(newBench(),c.B));if(R.ok)std=Math.min(1,IDEAL_CT/R.ct)*(R.risky?.85:1)}catch(e){}}
+  const up=Object.keys(c.up||{}).length/UPG.length;
+  const d={pd:cl(ev==null?avg(h=>Math.min(1,h.deliv/95)):.6*avg(h=>Math.min(1,h.deliv/95))+.4*ev),tdm:cl(K.tdm),std:cl(std),vm:cl(Math.max(K.vm||0,(c.up||{}).andon?1:0)),pc:cl(Math.max(K.pc||0,(c.up||{}).pc?1:0)*(c.pcMiss?Math.max(.5,1-c.pcMiss*.05):1)),ci:cl(.5*(K.ci||0)+.5*up),lbe:cl(avg(h=>Math.min(1,(h.lbe||0)/85))),q:cl(avg(h=>h.fpy==null?.9:Math.min(1,h.fpy/98)))};
+  const total=CPS_DIM.reduce((a,x)=>a+d[x.id],0)/CPS_DIM.length;return {d,total}}
+function cpsLevel(c){const sk=cpsSkill(c)||{d:{},total:0},stage=c?c.stage:1;let lv=CPS_LV[0];CPS_LV.forEach(L=>{if(stage>=L.stage&&sk.total>=L.skill)lv=L});
+  const next=CPS_LV[lv.k+1]||null,need=[];if(next){if(stage<next.stage)need.push(`ผ่านถึงด่าน ${next.stage} (ตอนนี้ด่าน ${stage})`);if(sk.total<next.skill)need.push(`ทักษะ CPS ${Math.round(next.skill*100)}% (ตอนนี้ ${Math.round(sk.total*100)}%)`)}
+  const weak=CPS_DIM.map(x=>({x,v:sk.d[x.id]||0})).sort((a,b)=>a.v-b.v).slice(0,3);
+  const prog=next?Math.min(1,.5*Math.min(1,(stage-lv.stage)/Math.max(1,next.stage-lv.stage))+.5*Math.min(1,Math.max(0,sk.total-lv.skill)/Math.max(.01,next.skill-lv.skill))):1;
+  return {lv,next,need,weak,skill:sk,prog}}
+function cpsRadar(sk,size){size=size||260;const n=CPS_DIM.length,cx=size/2,cy=size/2,R=size*.34,pt=(i,r)=>[cx+Math.sin(i/n*2*Math.PI)*r,cy-Math.cos(i/n*2*Math.PI)*r];
+  let g="";[.25,.5,.75,1].forEach(k=>{g+=`<polygon points="${CPS_DIM.map((_,i)=>pt(i,R*k).join(",")).join(" ")}" fill="none" stroke="var(--line)" stroke-width="1"/>`});
+  CPS_DIM.forEach((x,i)=>{const [a,b]=pt(i,R),[lx,ly]=pt(i,R+22);g+=`<line x1="${cx}" y1="${cy}" x2="${a}" y2="${b}" stroke="var(--line)"/><text x="${lx}" y="${ly}" font-size="10" text-anchor="middle" dominant-baseline="middle" fill="var(--muted)">${x.sh}</text>`});
+  const P=CPS_DIM.map((x,i)=>pt(i,R*Math.max(.04,sk.d[x.id]||0)).join(",")).join(" ");
+  return `<svg viewBox="-24 -6 ${size+48} ${size+12}" width="100%" style="max-width:${size+40}px" role="img" aria-label="ทักษะ CPS 8 ด้าน">${g}<polygon points="${P}" fill="rgba(42,109,244,.25)" stroke="#2a6df4" stroke-width="2"/>${CPS_DIM.map((x,i)=>{const [a,b]=pt(i,R*Math.max(.04,sk.d[x.id]||0));return `<circle cx="${a}" cy="${b}" r="3.5" fill="#2a6df4"/>`}).join("")}</svg>`}
+window.CPSLV={level:cpsLevel,skill:cpsSkill,radar:cpsRadar,LV:CPS_LV,DIM:CPS_DIM};
 function careerLoad(){const c=lsGet(CKEY,null);return c&&c.v===1?c:null}
 function careerLV(stage){const J=Math.round(60*Math.pow(1.22,stage-1)/10)*10;return {jph:[J,J,J,J,J],colorsFrom:stage>=3?0:99,pcFrom:stage>=4?0:99,brkFrom:stage>=2?0:99,absent:stage>=6?1:-1,absentEvery:stage>=8?2:0,goalC:[500,1000,1600],god:stage>=5,brk:stage>=7?1.5:1,dev:stage>=7?1.4:1,stage,dur:1080}}
 SIMS.push({id:"career",name:"โรงงานของฉัน · เล่นต่อเนื่อง",genre:"มือถือ · ผ่านด่าน · อัปเกรดโรงงาน",desc:"โรงงานปากกาของคุณที่เซฟอัตโนมัติ เล่นได้ทุกเมื่อ ด่านละ 3 นาที ออเดอร์ใหญ่ขึ้นทุกด่าน ใช้กำไรอัปเกรดโรงงาน แต่ทุกอัปเกรดต้องทำกิจกรรม Lean ให้ผ่านก่อน",
@@ -2599,6 +2663,7 @@ function createGame(api,career){
     // ----- career stage hub: contract + upgrade shop -----
     function stageUI(){const J=lv.jph[0],tk=3600/J,ready=hired.length&&R&&line.cells.length;const hist=career.hist.slice(-5).reverse();
       M().innerHTML=`<div class="kz-board"><div class="kz-head"><div><span class="label">โรงงานของฉัน · ด่าน ${career.stage}</span><h3>สัญญาลูกค้าด่าน ${career.stage}: ${J} ด้าม/ชม. (Takt ${tk.toFixed(0)} วินาที) นาน 3 นาที</h3><p>${career.stage===1?"เริ่มจากจ้างพนักงาน ออกแบบโต๊ะประกอบ แล้วจัดไลน์":"ใช้กำไรอัปเกรดโรงงานก่อนเปิดกะ ทุกอัปเกรดต้องทำกิจกรรม Lean ให้ได้ 70% ขึ้นไป"} ${career.stage>=3?"· ด่านนี้มี 3 สี":""}${career.stage>=2?" · เครื่องอัดเสียได้":""}${career.stage>=5?" · มีปัญหาหน้างาน 6 KUP":""}</p></div><div class="kz-total"><span class="label">เงินสด</span><b>${baht(career.cash)}</b></div></div>
+        ${(()=>{const X=cpsLevel(career);return `<div class="cps-card"><span class="cps-em">${X.lv.em}</span><div><span class="label">ระดับ CPS ของคุณ</span><b>${X.lv.n}</b><div class="cps-bar"><i style="width:${Math.round(X.prog*100)}%"></i></div><small>${X.next?"ถัดไป "+X.next.em+" "+X.next.n+": "+X.need.join(" · "):"ระดับสูงสุดแล้ว"}</small></div></div>`})()}
         <div class="st-kpi"><div class="hudi"><span>คะแนนรวม</span><b>${Math.round(career.total||0).toLocaleString()}</b></div><div class="hudi"><span>พนักงาน</span><b>${hired.length}</b></div><div class="hudi"><span>อัปเกรดแล้ว</span><b>${Object.keys(UP).length}/${UPG.length}</b></div><div class="hudi"><span>โต๊ะประกอบ</span><b>${R?R.ct.toFixed(1)+"s":"-"}</b></div></div>
         <span class="label">อัปเกรดโรงงาน (ซื้อได้เมื่อทำกิจกรรมผ่าน)</span>
         <div class="kz-acts">${UPG.map(u=>`<div class="kz-act ${UP[u.id]?"done":""}"><div class="kz-ah"><span class="kz-tag">${u.lean}</span><span class="kz-sc" style="background:${UP[u.id]?"var(--go)":career.cash>=u.cost?"var(--ink)":"var(--muted)"}">${UP[u.id]?"ติดตั้งแล้ว":u.cost.toLocaleString()+" ฿"}</span></div><b>${u.n}</b><small>${u.eff}</small>${UP[u.id]?"":`<button type="button" class="btn small" data-up="${u.id}" ${career.cash>=u.cost?"":"disabled"}>ทำกิจกรรมและติดตั้ง</button>`}</div>`).join("")}</div>
@@ -2826,10 +2891,10 @@ function createGame(api,career){
         if(lv.god)L2.push(`<b>ระดับเทพ · ปัญหาหน้างาน 6 KUP:</b> ตัดสินใจถูก ${st.evRight}/${st.evDone.length} ครั้ง (${st.evScore>=0?"+":""}${st.evScore} คะแนน)`);
         const newbies=st.workers.filter(w=>w.done>0);if(newbies.length)L2.push(`<b>People:</b> ${newbies.map(w=>`${esc(w.n)} ${Math.round(w.sk*100)}%`).join(", ")} หลังทำงาน (สอนงาน JI ${KZ.pct(K.ji)}%)`);
         if(career){const deliv=st.orders?st.shipped/st.orders:1,pass=deliv>=.85&&r.profit>-500;career.runCk=null;career.cash=Math.round(st.cash-r.penalty);if(career.cash<800){career.cash=1500;L2.push("<b>เงินสดต่ำ:</b> ธนาคารให้กู้ฉุกเฉิน เริ่มด่านถัดไปด้วย 1,500 ฿")}
-          hired.length=0;st.workers.forEach(w=>hired.push({id:w.id,n:w.n,exp:w.exp,sk:w.sk,cap:w.cap,wage:w.wage,look:w.look}));career.hist.push({stage:career.stage,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),score:r.score,pass,deliv:Math.round(deliv*100)});career.total=(career.total||0)+r.score;if(pass)career.stage++;career.step=0;cSave();
+          hired.length=0;st.workers.forEach(w=>hired.push({id:w.id,n:w.n,exp:w.exp,sk:w.sk,cap:w.cap,wage:w.wage,look:w.look}));const lvBefore=cpsLevel(career).lv;career.hist.push({stage:career.stage,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),score:r.score,pass,deliv:Math.round(deliv*100),fpy:Math.round((st.tested?1-st.firstFail/st.tested:1)*1000)/10});career.hist=career.hist.slice(-40);career.evTot=(career.evTot||0)+st.evDone.length;career.evOk=(career.evOk||0)+st.evRight;career.pcMiss=Math.max(0,(career.pcMiss||0)+(st.escaped>0?1:-1));career.total=(career.total||0)+r.score;if(pass)career.stage++;career.step=0;cSave();const LVx=cpsLevel(career);if(LVx.lv.k>lvBefore.k){L2.unshift(`<b>🎉 เลื่อนระดับ!</b> คุณเป็น <b>${LVx.lv.em} ${LVx.lv.n}</b> แล้ว · ${LVx.lv.desc}`);try{if(window.PARTY){PARTY.confetti(160);PARTY.SFX.fanfare()}}catch(e){}}else if(LVx.next)L2.push(`<b>ระดับ CPS:</b> ${LVx.lv.em} ${LVx.lv.n} · เลื่อนเป็น ${LVx.next.em} ${LVx.next.n} ต้อง ${LVx.need.join(" และ ")} · จุดที่ควรฝึก: ${LVx.weak.map(w=>w.x.n).join(", ")}`);
           L2.unshift(`<b>ด่าน ${pass?career.stage-1:career.stage}:</b> ${pass?"ผ่าน! ส่งมอบ "+Math.round(deliv*100)+"% ไปด่าน "+career.stage+" ลูกค้าจะสั่ง "+careerLV(career.stage).jph[0]+" ด้าม/ชม.":"ยังไม่ผ่าน (ต้องส่งมอบ ≥85% และไม่ขาดทุนเกิน 500 ฿) ลองอัปเกรดโรงงานแล้วเล่นด่านนี้อีกครั้ง"}`);
-          if(window.CLOUD)CLOUD.post({game:"career",stage:career.stage-(pass?1:0),score:r.score,total:Math.round(career.total),pass,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),deliv:Math.round(deliv*100)});
-          api.end(wrap,{score:Math.round(career.total),stars:pass?(deliv>=.98?3:2):1,buttons:[[pass?"ไปด่าน "+career.stage+" →":"เล่นด่านนี้อีกครั้ง",()=>SIMHUB.play("career",0)],["กลับหน้าเลือกเกม",()=>{SIMHUB.leave();SIMHUB.renderHub()}]],stats:[["ด่าน",String(pass?career.stage-1:career.stage)],["กำไรด่านนี้",baht(r.profit)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["LBE เฉลี่ย",pct(r.lbe)],["เงินสด",baht(career.cash)],["คะแนนรวม",Math.round(career.total).toLocaleString()]],lessons:L2});return}
+          if(window.CLOUD){const LVc=cpsLevel(career);CLOUD.post({game:"career",stage:career.stage-(pass?1:0),score:r.score,total:Math.round(career.total),pass,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),deliv:Math.round(deliv*100),lvl:LVc.lv.k,skill:Math.round(LVc.skill.total*100)})}
+          api.end(wrap,{score:Math.round(career.total),stars:pass?(deliv>=.98?3:2):1,buttons:[[pass?"ไปด่าน "+career.stage+" →":"เล่นด่านนี้อีกครั้ง",()=>SIMHUB.play("career",0)],["กลับหน้าเลือกเกม",()=>{SIMHUB.leave();SIMHUB.renderHub()}]],stats:[["ระดับ CPS",(()=>{const x=cpsLevel(career).lv;return x.em+" "+x.n})()],["ด่าน",String(pass?career.stage-1:career.stage)],["กำไรด่านนี้",baht(r.profit)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["LBE เฉลี่ย",pct(r.lbe)],["เงินสด",baht(career.cash)],["คะแนนรวม",Math.round(career.total).toLocaleString()]],lessons:L2});return}
         if(window.CLOUD)CLOUD.post({game:"factory",stage:L,score:r.score,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),gok:r.gok});
         api.end(wrap,{score:r.score,stars,stats:[["เป้า SQDCPME",`${r.gok}/7`],["กำไร",baht(r.profit)],["LBE เฉลี่ย",pct(r.lbe)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["FPY",pct(st.tested?1-st.firstFail/st.tested:1)],["คะแนน",r.score.toLocaleString()]],lessons:L2})}
       sync(true);render(c,st);ovRank();
