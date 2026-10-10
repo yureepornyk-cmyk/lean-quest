@@ -949,12 +949,12 @@ function board(){
 // ---- keep every player's answers (even after they disconnect) for the Excel export ----
 let LIVE_SEEN={},LIVE_SEEN_G=null;
 function rememberPlayers(){if(!LIVE||!LIVE.gameId)return;if(LIVE_SEEN_G!==LIVE.gameId){LIVE_SEEN={};LIVE_SEEN_G=LIVE.gameId}
-  PEERS.forEach(p=>{const pr=p.presence||{};if(pr.g!==LIVE.gameId||!pr.n)return;const prev=LIVE_SEEN[p.peer]||{a:{}};LIVE_SEEN[p.peer]={name:String(pr.n).slice(0,24),a:Object.assign({},prev.a,(pr.a&&typeof pr.a==="object")?pr.a:{})}})}
+  PEERS.forEach(p=>{const pr=p.presence||{};if(pr.g!==LIVE.gameId||!pr.n)return;const prev=LIVE_SEEN[p.peer]||{a:{}};LIVE_SEEN[p.peer]={name:String(pr.n).slice(0,24),emp:String(pr.e||"").slice(0,12),team:String(pr.tm||"").slice(0,20),a:Object.assign({},prev.a,(pr.a&&typeof pr.a==="object")?pr.a:{})}})}
 function loadXLSX(){return new Promise((ok,bad)=>{if(window.XLSX)return ok(window.XLSX);const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";sc.onload=()=>ok(window.XLSX);sc.onerror=()=>bad(new Error("load"));document.head.appendChild(sc)})}
 // results of every finished game are kept on the facilitator's computer for a whole-day Excel
 function saveDayResult(){if(!LIVE||!LIVE.qs||!LIVE.gameId)return;rememberPlayers();const T=(LIVE.T||20)*1000,keys=LIVE.keys||{};
-  const players=Object.values(LIVE_SEEN).map(pl=>{let score=0,right=0;LIVE.qs.forEach((q,i)=>{const x=pl.a[i];if(Array.isArray(x)&&keys[i]!=null&&x[0]===keys[i]){score+=ptsFor(x[1],T);right++}});return {name:pl.name,score,right}});
-  const day=lsGet("lq-day-results",[]).filter(g=>g.id!==LIVE.gameId);day.push({id:LIVE.gameId,title:LIVE.title||"Live Quiz",when:Date.now(),n:LIVE.qs.length,players});lsSet("lq-day-results",day)}
+  const players=Object.values(LIVE_SEEN).map(pl=>{let score=0,right=0;LIVE.qs.forEach((q,i)=>{const x=pl.a[i];if(Array.isArray(x)&&keys[i]!=null&&x[0]===keys[i]){score+=ptsFor(x[1],T);right++}});return {name:pl.name,emp:pl.emp||"",team:pl.team||"",score,right}});
+  const day=lsGet("lq-day-results",[]).filter(g=>g.id!==LIVE.gameId);day.push({id:LIVE.gameId,title:LIVE.title||"Live Quiz",when:Date.now(),n:LIVE.qs.length,players});lsSet("lq-day-results",day);if(window.CLOUD)CLOUD.postLive(LIVE.gameId,LIVE.title||"Live Quiz",players)}
 async function exportDay(btn){const day=lsGet("lq-day-results",[]);if(!day.length){if(btn)btn.textContent="ยังไม่มีผลเกมที่จบแล้ว";return}
   const old=btn?btn.textContent:"";try{const X=await loadXLSX();const names=[...new Set(day.flatMap(g=>g.players.map(p=>p.name.trim())))];
     const head=["ชื่อผู้เล่น"].concat(day.map(g=>g.title)).concat(["คะแนนรวม","ตอบถูกรวม","จำนวนข้อรวม","% ถูก"]);
@@ -1143,7 +1143,7 @@ async function hostClose(){try{await CAP.db.doc("live/state").set({status:"idle"
 function joinGame(){
   if(!LIVE||!LIVE.gameId)return;
   if(ME.g!==LIVE.gameId){ME.g=LIVE.gameId;ME.ans=lsGet("lq-ans-"+LIVE.gameId,{})}
-  CAP.room.presence({g:ME.g,n:ME.name,a:ME.ans}).catch(()=>{});
+  {const pf=lsGet("lq-sim-who",{});CAP.room.presence({g:ME.g,n:ME.name,e:pf.emp||"",tm:pf.team||"",a:ME.ans}).catch(()=>{})}
   renderLive(true);
 }
 function playerPick(k){
@@ -1491,6 +1491,26 @@ const PARTY=(()=>{
 window.PARTY=PARTY;
 
 // =====================================================================
+// CLOUD — shared scoreboard on Google Sheets (Apps Script web app). Works without login; queues offline.
+// =====================================================================
+const CLOUD=(()=>{
+  const url=()=>{try{return localStorage.getItem("lq-sheet-url")||window.LQ_SHEET_URL||""}catch(e){return window.LQ_SHEET_URL||""}};
+  const who=()=>Object.assign({name:"",team:"",emp:""},lsGet("lq-sim-who",{}));
+  const dev=()=>{let d="";try{d=localStorage.getItem("lq-dev")||"";if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem("lq-dev",d)}}catch(e){}return d};
+  let cache=null,cacheAt=0;
+  function enabled(){return !!url()}
+  async function send(rows){if(!enabled())return false;try{const r=await fetch(url(),{method:"POST",body:JSON.stringify({rows})});const j=await r.json().catch(()=>null);return !!(j&&j.ok)}catch(e){return false}}
+  async function flush(){const q=lsGet("lq-cloud-q",[]);if(!q.length||!enabled())return;if(await send(q))lsSet("lq-cloud-q",[])}
+  function post(o){const w=who(),days=lsGet("lq-streak",{days:[]}).days.length;const row=Object.assign({ts:Date.now(),dev:dev(),emp:w.emp||"",name:w.name||"ผู้เล่น",team:w.team||"",days},o);const q=lsGet("lq-cloud-q",[]);q.push(row);lsSet("lq-cloud-q",q.slice(-200));flush()}
+  function postLive(gameId,title,players){if(!enabled())return;const rows=players.map(p=>({ts:Date.now(),dev:"live",emp:p.emp||"",name:p.name,team:p.team||"",game:"live",stage:0,score:p.score,title,gid:gameId}));send(rows)}
+  async function board(force){if(!enabled())return null;if(!force&&cache&&Date.now()-cacheAt<30000)return cache;try{const r=await fetch(url()+(url().includes("?")?"&":"?")+"season=current&_="+Date.now());const j=await r.json();if(j&&j.rows){cache=j;cacheAt=Date.now();return j}}catch(e){}return cache}
+  async function test(u){try{const r=await fetch(u+"?ping=1&_="+Date.now());const j=await r.json();return !!(j&&j.ok)}catch(e){return false}}
+  setTimeout(flush,2000);window.addEventListener("online",flush);
+  return {post,postLive,board,flush,enabled,test,url,setUrl(u){try{if(u)localStorage.setItem("lq-sheet-url",u);else localStorage.removeItem("lq-sheet-url")}catch(e){}cache=null}};
+})();
+window.CLOUD=CLOUD;
+
+// =====================================================================
 // APP SHELL — home, season ranking, profile (mobile-first)
 // =====================================================================
 const PROF={get(){return Object.assign({name:"",team:"",emp:"",hat:"#1f5fd0",fcode:""},lsGet("lq-sim-who",{}))},set(p){lsSet("lq-sim-who",p)}};
@@ -1537,11 +1557,12 @@ function rankRowsLocal(){// this device only until the shared scoreboard (Google
   const p=PROF.get(),c=lsGet("lq-career",null),sk=lsGet("lq-streak",{days:[]}),loc=lsGet("lq-sim-local",[]);
   const rows=[];if(c||loc.length){let s=Math.round(c?c.total||0:0);(loc.find(r=>r.id==="me")||{best:{}}).best&&Object.entries((loc.find(r=>r.id==="me")||{best:{}}).best).forEach(([k,v])=>{if(!k.startsWith("career"))s+=Math.round((+v||0))});s+=Math.min(10,sk.days.length)*50;rows.push({name:p.name||"คุณ",team:p.team,score:s,me:true,stage:c?c.stage:0})}
   return rows.sort((a,b)=>b.score-a.score)}
-function renderRank(){const se=SEASON.cur(),rows=rankRowsLocal(),day=lsGet("lq-day-results",[]);
+async function renderRank(){const se=SEASON.cur(),day=lsGet("lq-day-results",[]);let rows=rankRowsLocal(),cloud=false,src="";
+  if(window.CLOUD&&CLOUD.enabled()){$("rankBody").innerHTML=`<div class="notice"><b>กำลังโหลดตารางอันดับ…</b></div>`;const b=await CLOUD.board();if(b&&b.rows){const me=PROF.get();rows=b.rows.map(r=>Object.assign({},r,{me:(me.emp&&r.emp===me.emp)||(!me.emp&&r.name===me.name)}));cloud=true;src=b.season||""}}
   $("rankBody").innerHTML=`<div class="live-head"><div><span class="label">Season ${se.n} · ${SEASON.fmt(se.a)} – ${SEASON.fmt(se.b)}</span><h1>ตารางอันดับ</h1></div><span class="chip">เหลือ ${se.left} วัน</span></div>
     <div class="lesson">คะแนนซีซัน = คะแนนรวมโรงงานของฉัน + คะแนนเกมอื่น + โบนัสเข้าเล่น (50/วัน สูงสุด 10 วัน) สรุปทุก 2 สัปดาห์</div>
-    <div class="board big">${rows.length?rows.map((r,i)=>`<div class="brow ${r.me?"me":""}"><span class="pos">${i+1}</span><span class="nm">${esc(r.name)}${r.me?" (คุณ)":""}<small class="note2"> ${esc(r.team||"")}${r.stage?" · ด่าน "+r.stage:""}</small></span><span class="gain zero"></span><span class="sc">${r.score.toLocaleString()}</span></div>`).join(""):`<p class="label">ยังไม่มีคะแนนในซีซันนี้</p>`}</div>
-    <p class="note2" style="margin-top:8px">ตอนนี้แสดงเฉพาะคะแนนบนเครื่องนี้ เมื่อเชื่อมต่อกระดานคะแนนกลาง (Google Sheets) จะเห็นทุกคนในบริษัท</p>
+    <div class="board big">${rows.length?rows.map((r,i)=>`<div class="brow ${r.me?"me":""}"><span class="pos">${i+1}</span><span class="nm">${esc(r.name)}${r.me?" (คุณ)":""}<small class="note2"> ${esc(r.team||"")}${r.stage?" · ด่าน "+r.stage:""}</small></span><span class="gain zero">${r.days?r.days+" วัน":""}</span><span class="sc">${r.score.toLocaleString()}</span></div>`).join(""):`<p class="label">ยังไม่มีคะแนนในซีซันนี้</p>`}</div>
+    <p class="note2" style="margin-top:8px">${cloud?"กระดานคะแนนกลาง · อัปเดตทุกครั้งที่มีคนเล่นจบ":"ตอนนี้แสดงเฉพาะคะแนนบนเครื่องนี้ เมื่อวิทยากรเชื่อมต่อกระดานคะแนนกลาง (Google Sheets) จะเห็นทุกคนในบริษัท"}</p>
     ${day.length?`<h2 class="sec-h">ผล Live Quiz ล่าสุด</h2><div class="board">${day.slice(-20).reverse().map(d=>`<div class="brow"><span class="pos">⚡</span><span class="nm">${esc(d.title||d.game||"Live")}<small class="note2"> ${esc(d.date||"")}</small></span><span class="gain zero">${(d.rows||[]).length} คน</span><span class="sc">${(d.rows&&d.rows[0])?esc(d.rows[0].name||""):""}</span></div>`).join("")}</div>`:""}`}
 function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=lsGet("lq-career",null);
   const HATS=[["#1f5fd0","น้ำเงิน"],["#f2f4f6","ขาว (หัวหน้า)"],["#f2b705","เหลือง"],["#2fbf6b","เขียว"],["#c8322b","แดง"]];
@@ -1555,10 +1576,12 @@ function renderProfile(){const p=PROF.get(),sk=lsGet("lq-streak",{days:[]}),c=ls
     <div class="st-kpi"><div class="hudi"><span>XP</span><b>${totalXp().toLocaleString()}</b></div><div class="hudi"><span>วันที่เล่น</span><b>${sk.days.length}</b></div><div class="hudi"><span>ด่านโรงงาน</span><b>${c?c.stage:"-"}</b></div><div class="hudi"><span>คะแนนโรงงาน</span><b>${c?Math.round(c.total||0).toLocaleString():"-"}</b></div></div>
     <h2 class="sec-h">สำหรับวิทยากร</h2>
     <div class="actions"><button class="btn" id="pfCenter">📺 เปิดจอกลาง (ห้องเรียน)</button><button class="btn ghost" id="pfEditor">✍️ สร้างชุดคำถาม Live Quiz</button><button class="btn ghost" id="pfHow">🎬 วิดีโอวิธีเล่น</button></div>
+    <details class="bulk" style="margin-top:14px"><summary>⚙️ กระดานคะแนนกลาง (Google Sheets) · ${window.CLOUD&&CLOUD.enabled()?"เชื่อมต่อแล้ว":"ยังไม่เชื่อมต่อ"}</summary><label class="field">URL ของ Apps Script Web App<input id="pfSheet" value="${esc((window.CLOUD&&CLOUD.url())||"")}" placeholder="https://script.google.com/macros/s/…/exec"></label><div class="actions"><button class="btn small" id="pfSheetSave">บันทึกและทดสอบ</button></div><p class="note2" id="pfSheetMsg">${window.LQ_SHEET_URL?"ค่าตั้งต้นจากตัวเกม: "+esc(window.LQ_SHEET_URL):"ใส่เฉพาะตอนทดสอบ เมื่อยืนยันแล้วผมจะฝังลงในตัวเกมให้ทุกคน"}</p></details>
     <p class="note2" style="margin-top:14px">ข้อมูลโปรไฟล์เก็บในเครื่องนี้ ใช้ระบุคะแนนของคุณบนกระดานกลาง</p>`;
   const save=()=>{const q=PROF.get();q.name=$("pfName").value.trim();q.emp=$("pfEmp").value.trim();q.team=$("pfTeam").value.trim();PROF.set(q);$("pAv").innerHTML=avatarSvg(q,96)};
   ["pfName","pfEmp","pfTeam"].forEach(id=>$(id).oninput=save);
   $("profBody").querySelectorAll("[data-hat]").forEach(b=>b.onclick=()=>{const q=PROF.get();q.hat=b.dataset.hat;PROF.set(q);renderProfile()});
+  $("pfSheetSave").onclick=async()=>{const u=$("pfSheet").value.trim();$("pfSheetMsg").textContent="กำลังทดสอบ…";if(!u){CLOUD.setUrl("");$("pfSheetMsg").textContent="ล้างค่าแล้ว";return}const ok=await CLOUD.test(u);if(ok){CLOUD.setUrl(u);CLOUD.flush();$("pfSheetMsg").textContent="✅ เชื่อมต่อสำเร็จ คะแนนที่ค้างในเครื่องส่งแล้ว"}else $("pfSheetMsg").textContent="❌ เชื่อมต่อไม่ได้ ตรวจว่า Deploy เป็น Web app แบบ Anyone และ URL ลงท้ายด้วย /exec"};
   $("pfCenter").onclick=()=>{show("scrSims");SIMHUB.open();setTimeout(()=>SIMHUB.center(),50)};
   $("pfEditor").onclick=()=>goTab("editor");$("pfHow").onclick=()=>SIMHUB.howto()}
 
@@ -2776,7 +2799,9 @@ function createGame(api,career){
         if(career){const deliv=st.orders?st.shipped/st.orders:1,pass=deliv>=.85&&r.profit>-500;career.runCk=null;career.cash=Math.round(st.cash-r.penalty);if(career.cash<800){career.cash=1500;L2.push("<b>เงินสดต่ำ:</b> ธนาคารให้กู้ฉุกเฉิน เริ่มด่านถัดไปด้วย 1,500 ฿")}
           hired.length=0;st.workers.forEach(w=>hired.push({id:w.id,n:w.n,exp:w.exp,sk:w.sk,cap:w.cap,wage:w.wage,look:w.look}));career.hist.push({stage:career.stage,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),score:r.score,pass,deliv:Math.round(deliv*100)});career.total=(career.total||0)+r.score;if(pass)career.stage++;career.step=0;cSave();
           L2.unshift(`<b>ด่าน ${pass?career.stage-1:career.stage}:</b> ${pass?"ผ่าน! ส่งมอบ "+Math.round(deliv*100)+"% ไปด่าน "+career.stage+" ลูกค้าจะสั่ง "+careerLV(career.stage).jph[0]+" ด้าม/ชม.":"ยังไม่ผ่าน (ต้องส่งมอบ ≥85% และไม่ขาดทุนเกิน 500 ฿) ลองอัปเกรดโรงงานแล้วเล่นด่านนี้อีกครั้ง"}`);
+          if(window.CLOUD)CLOUD.post({game:"career",stage:career.stage-(pass?1:0),score:r.score,total:Math.round(career.total),pass,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),deliv:Math.round(deliv*100)});
           api.end(wrap,{score:Math.round(career.total),stars:pass?(deliv>=.98?3:2):1,buttons:[[pass?"ไปด่าน "+career.stage+" →":"เล่นด่านนี้อีกครั้ง",()=>SIMHUB.play("career",0)],["กลับหน้าเลือกเกม",()=>{SIMHUB.leave();SIMHUB.renderHub()}]],stats:[["ด่าน",String(pass?career.stage-1:career.stage)],["กำไรด่านนี้",baht(r.profit)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["LBE เฉลี่ย",pct(r.lbe)],["เงินสด",baht(career.cash)],["คะแนนรวม",Math.round(career.total).toLocaleString()]],lessons:L2});return}
+        if(window.CLOUD)CLOUD.post({game:"factory",stage:L,score:r.score,profit:Math.round(r.profit),lbe:Math.round(r.lbe*100),gok:r.gok});
         api.end(wrap,{score:r.score,stars,stats:[["เป้า SQDCPME",`${r.gok}/7`],["กำไร",baht(r.profit)],["LBE เฉลี่ย",pct(r.lbe)],["ส่งมอบ",`${st.shipped}/${st.orders}`],["FPY",pct(st.tested?1-st.firstFail/st.tested:1)],["คะแนน",r.score.toLocaleString()]],lessons:L2})}
       sync(true);render(c,st);ovRank();
       if(career){if(resumed){api.toast(wrap,"▶ เล่นต่อจากที่ค้างไว้");st.banner={t:"เล่นต่อจากที่ค้างไว้",s:`เหลือเวลา ${fmtT(Math.max(0,lv.dur-st.t)/SPEED)}`,life:3};loop=api.loop(dtp=>{const k=window.LQ_FAST||1;for(let j=0;j<k&&!ended;j++)step(dtp)});connectRank();return}
